@@ -3,7 +3,8 @@ package school.sptech.sistema_estoque.client;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import school.sptech.sistema_estoque.config.FeignConfig;
-import school.sptech.sistema_estoque.dto.TagsResponse;
+import school.sptech.sistema_estoque.dto.LabelsRequest;
+import school.sptech.sistema_estoque.dto.TagsRequest;
 
 @FeignClient(
         name= "classAppClient",
@@ -12,8 +13,17 @@ import school.sptech.sistema_estoque.dto.TagsResponse;
 )
 public interface ClassAppClient {
     @GetMapping("/tags")
-    public TagsResponse getTags();
+    TagsRequest getTags();
 
     @GetMapping("/groups")
-    public String getGroups();
+    String getGroups();
+
+    @GetMapping("/student")
+    String getStudents();
+
+    @GetMapping("/staff")
+    String getStaffs();
+
+    @GetMapping("/labels")
+    LabelsRequest getLabels();
 }
