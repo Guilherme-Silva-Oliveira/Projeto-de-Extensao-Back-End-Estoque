@@ -3,22 +3,22 @@ package school.sptech.sistema_estoque.model.estoque;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import org.springframework.data.annotation.Id;
+import jakarta.persistence.Id;
 
 @Entity
-public class Categoria {
+public class UnidadeMedida {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String nomeCategoria;
+    private String nomeUnidade;
 
-    public Categoria(Integer id, String nomeCategoria) {
+    public UnidadeMedida(Integer id, String nomeUnidade) {
         this.id = id;
-        this.nomeCategoria = nomeCategoria;
+        this.nomeUnidade = nomeUnidade;
     }
-    public Categoria() {}
+    public UnidadeMedida() {}
 
     public Integer getId() {return id;}
     public void setId(Integer id) {this.id = id;}
-    public String getNomeCategoria() {return nomeCategoria;}
-    public void setNomeCategoria(String nomeCategoria) {this.nomeCategoria = nomeCategoria;}
+    public String getNomeUnidade() {return nomeUnidade;}
+    public void setNomeUnidade(String nomeUnidade) {this.nomeUnidade = nomeUnidade;}
 }

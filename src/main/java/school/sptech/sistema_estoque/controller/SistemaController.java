@@ -1,37 +1,40 @@
 package school.sptech.sistema_estoque.controller;
 
-import feign.Response;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import school.sptech.sistema_estoque.dto.classapp.LabelsRequest;
 import school.sptech.sistema_estoque.dto.classapp.TagsRequest;
+import school.sptech.sistema_estoque.dto.estoque.*;
+import school.sptech.sistema_estoque.dto.mapper.SistemaMapper;
+import school.sptech.sistema_estoque.service.ClassAppService;
 import school.sptech.sistema_estoque.service.SistemaService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/v1")
 public class SistemaController {
+    private final ClassAppService serviceClassApp;
     private final SistemaService service;
-    public SistemaController(SistemaService service) {
+    public SistemaController(ClassAppService serviceClassApp, SistemaService service) {
+        this.serviceClassApp = serviceClassApp;
         this.service = service;
     }
 
-    // CLASSAPP - INTREGRAÇÃO COM API
+    // CLASSAPP - INTREGRAÇÃO COM API (PARA EXCLUIR)
     @GetMapping("/tags")
     public ResponseEntity<TagsRequest> pegarTags(){
-        return ResponseEntity.ok(service.getTags());
+        return ResponseEntity.ok(serviceClassApp.getTags());
     }
 
     @GetMapping("/students")
-    public ResponseEntity<String> pegarEstudantes() {return ResponseEntity.ok(service.getStudents());}
+    public ResponseEntity<String> pegarEstudantes() {return ResponseEntity.ok(serviceClassApp.getStudents());}
 
     @GetMapping("/staffs")
-    public ResponseEntity<String> pegarAdministradores() {return ResponseEntity.ok(service.getStaffs());}
+    public ResponseEntity<String> pegarAdministradores() {return ResponseEntity.ok(serviceClassApp.getStaffs());}
 
     @GetMapping("/labels")
-    public ResponseEntity<LabelsRequest> pegarLabels() {return ResponseEntity.ok(service.getLabels());}
+    public ResponseEntity<LabelsRequest> pegarLabels() {return ResponseEntity.ok(serviceClassApp.getLabels());}
 
     // CRUD - SISTEMA ALMOXARIFADO XINGU
     // GETS
@@ -42,13 +45,19 @@ public class SistemaController {
     public ResponseEntity<Void> listarFornecedores(){}
 
     @GetMapping("/materiais/unidades")
-    public ResponseEntity<Void> listarUnidadesDeMedida(){}
+    public ResponseEntity<List<UnidadeMedidaResponse>> listarUnidadesDeMedida(){
+        return ResponseEntity.ok(service.listarUnidadeMedida());
+    }
 
     @GetMapping("/materiais")
-    public ResponseEntity<Void> listarMateriais(){}
+    public ResponseEntity<List<MaterialResponse>> listarMateriais(){
+        return ResponseEntity.ok(service.listarMateriais());
+    }
 
     @GetMapping("/categorias")
-    public ResponseEntity<Void> listarCategorias(){}
+    public ResponseEntity<List<CategoriaResponse>> listarCategorias(){
+        return ResponseEntity.ok(service.listarCategorias());
+    }
 
     @GetMapping("/almoxarifes")
     public ResponseEntity<Void> listarAlmoxarifes(){}
@@ -76,13 +85,19 @@ public class SistemaController {
     public ResponseEntity<Void> cadastrarFornecedor(){}
 
     @PostMapping("/categorias")
-    public ResponseEntity<Void> cadastrarUnidadeMedida(){}
+    public ResponseEntity<UnidadeMedidaResponse> cadastrarUnidadeMedida(@RequestBody UnidadeMedidaRequest request){
+        return ResponseEntity.status(201).body(service.cadastrarUnidadeMedida(request));
+    }
 
     @PostMapping("/materiais")
-    public ResponseEntity<Void> cadastrarMaterial(){}
+    public ResponseEntity<MaterialResponse> cadastrarMaterial(@RequestBody MaterialRequest request){
+        return ResponseEntity.status(201).body(service.cadastrarMaterial(request));
+    }
 
     @PostMapping("/categorias")
-    public ResponseEntity<Void> cadastrarCaregoria(){}
+    public ResponseEntity<CategoriaResponse> cadastrarCaregoria(@RequestBody CategoriaRequest request){
+        return ResponseEntity.status(201).body(service.cadastrarCategoria(request));
+    }
 
     @PostMapping("/solicitacoes")
     public ResponseEntity<Void> cadastrarSolicitacao(){}
