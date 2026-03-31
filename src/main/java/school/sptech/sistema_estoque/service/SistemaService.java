@@ -4,14 +4,8 @@ import org.springframework.stereotype.Service;
 import school.sptech.sistema_estoque.dto.estoque.*;
 import school.sptech.sistema_estoque.dto.mapper.SistemaMapper;
 import school.sptech.sistema_estoque.exception.*;
-import school.sptech.sistema_estoque.model.estoque.Categoria;
-import school.sptech.sistema_estoque.model.estoque.Estoque;
-import school.sptech.sistema_estoque.model.estoque.Material;
-import school.sptech.sistema_estoque.model.estoque.UnidadeMedida;
-import school.sptech.sistema_estoque.repository.CategoriaRepository;
-import school.sptech.sistema_estoque.repository.EstoqueRepository;
-import school.sptech.sistema_estoque.repository.MaterialRepository;
-import school.sptech.sistema_estoque.repository.UnidadeMedidaRepository;
+import school.sptech.sistema_estoque.model.estoque.*;
+import school.sptech.sistema_estoque.repository.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,12 +18,15 @@ public class SistemaService {
     private final UnidadeMedidaRepository unirepository;
 
     private final SistemaMapper mapper;
-    public SistemaService(CategoriaRepository catrepository, MaterialRepository matrepository, EstoqueRepository estrepository, UnidadeMedidaRepository unirepository, SistemaMapper mapper) {
+    private final ProfessorRepository professorRepository;
+
+    public SistemaService(CategoriaRepository catrepository, MaterialRepository matrepository, EstoqueRepository estrepository, UnidadeMedidaRepository unirepository, SistemaMapper mapper, ProfessorRepository professorRepository) {
         this.catrepository = catrepository;
         this.matrepository = matrepository;
         this.estrepository = estrepository;
         this.unirepository = unirepository;
         this.mapper = mapper;
+        this.professorRepository = professorRepository;
     }
 
     // -------------- CATEGORIA --------------
@@ -106,6 +103,29 @@ public class SistemaService {
 
     // -------------- PROFESSOR --------------
     // CRUD PARA PROFESSOR
+    public ProfessorResponse cadastrarProfessor(ProfessorRequest request){
+        if (request == null){
+            throw new InvalidProfessorRequestException("Professor Inválido");
+        }
+
+        Professor professor = mapper.toProfessorEntity(request);
+        professorRepository.save(professor);
+        return mapper.toProfessorResponse(professor);
+    }
+
+    public List<ProfessorResponse> listarProfessor(){
+        return professorRepository.findAll().stream()
+                .map(mapper::toProfessorResponse)
+                .toList();
+    }
+
+    public void excluirProfessor(Integer id){
+        Optional<Professor> opt = professorRepository.findById(id);
+        if (opt.isEmpty()){
+            throw new InvalidProfessorRequestException("Professor Não Encontrada");
+        }
+        professorRepository.delete(opt.get());
+    }
     // -------------- FIM PROFESSOR --------------
 
     // -------------- SOLICITAÇÃO --------------

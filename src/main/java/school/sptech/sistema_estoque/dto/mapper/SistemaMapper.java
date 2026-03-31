@@ -2,10 +2,7 @@ package school.sptech.sistema_estoque.dto.mapper;
 
 import org.springframework.stereotype.Component;
 import school.sptech.sistema_estoque.dto.estoque.*;
-import school.sptech.sistema_estoque.model.estoque.Categoria;
-import school.sptech.sistema_estoque.model.estoque.Estoque;
-import school.sptech.sistema_estoque.model.estoque.Material;
-import school.sptech.sistema_estoque.model.estoque.UnidadeMedida;
+import school.sptech.sistema_estoque.model.estoque.*;
 
 @Component
 public class SistemaMapper {
@@ -40,4 +37,18 @@ public class SistemaMapper {
     public UnidadeMedidaResponse toUnidadeMedidaResponse(UnidadeMedida entity){
         return new UnidadeMedidaResponse(entity.getId(),entity.getNomeUnidade());
     }
+
+    public Professor toProfessorEntity(ProfessorRequest professorRequest){
+        Professor entity = new Professor();
+        entity.setEmail(professorRequest.email());
+        entity.setNome(professorRequest.nome());
+        entity.setTelefone(professorRequest.telefone());
+        return entity;
+    }
+
+    public ProfessorResponse toProfessorResponse(Professor entity){
+        return new ProfessorResponse(entity.getId(), entity.getNome(), entity.getEmail(), entity.getTelefone());
+    }
+
+
 }

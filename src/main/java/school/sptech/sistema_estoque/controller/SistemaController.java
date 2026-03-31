@@ -74,8 +74,10 @@ public class SistemaController {
 //    @GetMapping("/historicos/saida")
 //    public ResponseEntity<Void> listarHistoricoSaida(){}
 //
-//    @GetMapping("/professores")
-//    public ResponseEntity<Void> listarProfessores(){}
+    @GetMapping("/professores")
+    public ResponseEntity<List<ProfessorResponse>> listarProfessores(){
+        return ResponseEntity.ok(service.listarProfessor());
+    }
 //
 //    // POSTS
 //    @PostMapping
@@ -117,6 +119,16 @@ public class SistemaController {
 //    @PostMapping("/historico")
 //    public ResponseEntity<Void> registroHistoricoEntrada(){}
 //
-//    @PostMapping("/professores")
-//    public ResponseEntity<Void> cadastrarProfessor(){}
+    @PostMapping("/professores")
+    public ResponseEntity<ProfessorResponse> cadastrarProfessor(@RequestBody ProfessorRequest request){
+        return ResponseEntity.status(201).body(service.cadastrarProfessor(request));
+    }
+
+    @DeleteMapping("/professores/{id}")
+    public ResponseEntity<Void> excluirProfessor(@PathVariable Integer id){
+        service.excluirProfessor(id);
+        return ResponseEntity.noContent().build();
+
+    }
+
 }
