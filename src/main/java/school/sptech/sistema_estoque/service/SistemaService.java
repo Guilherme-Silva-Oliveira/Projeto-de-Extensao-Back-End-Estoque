@@ -1,5 +1,6 @@
 package school.sptech.sistema_estoque.service;
 
+import org.springframework.stereotype.Service;
 import school.sptech.sistema_estoque.dto.estoque.*;
 import school.sptech.sistema_estoque.dto.mapper.SistemaMapper;
 import school.sptech.sistema_estoque.exception.*;
@@ -15,6 +16,7 @@ import school.sptech.sistema_estoque.repository.UnidadeMedidaRepository;
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class SistemaService {
     private final CategoriaRepository catrepository;
     private final MaterialRepository matrepository;
