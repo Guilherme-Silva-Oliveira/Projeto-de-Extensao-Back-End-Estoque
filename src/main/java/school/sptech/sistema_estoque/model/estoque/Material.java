@@ -10,14 +10,16 @@ import jakarta.persistence.Id;
 public class Material {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    private String nomeMaterial;
     @ManyToOne private Categoria categoria;
-    @ManyToOne private Estoque estoque;
+    @ManyToOne private Almoxarifado almoxarifado;
     @ManyToOne private UnidadeMedida unidadeMedida;
 
-    public Material(Integer id, Categoria categoria, Estoque estoque, UnidadeMedida unidadeMedida) {
+    public Material(Integer id, String nomeMaterial, Categoria categoria, Almoxarifado almoxarifado, UnidadeMedida unidadeMedida) {
         this.id = id;
+        this.nomeMaterial = nomeMaterial;
         this.categoria = categoria;
-        this.estoque = estoque;
+        this.almoxarifado = almoxarifado;
         this.unidadeMedida = unidadeMedida;
     }
     public Material() {}
@@ -26,8 +28,12 @@ public class Material {
     public void setId(Integer id) {this.id = id;}
     public Categoria getCategoria() {return categoria;}
     public void setCategoria(Categoria categoria) {this.categoria = categoria;}
-    public Estoque getEstoque() {return estoque;}
-    public void setEstoque(Estoque estoque) {this.estoque = estoque;}
+    public Almoxarifado getEstoque() {return almoxarifado;}
+    public void setEstoque(Almoxarifado estoque) {this.almoxarifado = estoque;}
     public UnidadeMedida getUnidadeMedida() {return unidadeMedida;}
     public void setUnidadeMedida(UnidadeMedida unidadeMedida) {this.unidadeMedida = unidadeMedida;}
+    public String getNomeMaterial() {return nomeMaterial;}
+    public void setNomeMaterial(String nomeMaterial) {this.nomeMaterial = nomeMaterial;}
+    public Almoxarifado getAlmoxarifado() {return almoxarifado;}
+    public void setAlmoxarifado(Almoxarifado almoxarifado) {this.almoxarifado = almoxarifado;}
 }

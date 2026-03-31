@@ -5,7 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 
 @Entity
-public class Estoque {
+public class Almoxarifado {
     @Id
     @GeneratedValue
     private Integer id;

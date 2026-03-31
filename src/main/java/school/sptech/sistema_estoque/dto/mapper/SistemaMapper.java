@@ -2,8 +2,8 @@ package school.sptech.sistema_estoque.dto.mapper;
 
 import org.springframework.stereotype.Component;
 import school.sptech.sistema_estoque.dto.estoque.*;
+import school.sptech.sistema_estoque.model.estoque.Almoxarifado;
 import school.sptech.sistema_estoque.model.estoque.Categoria;
-import school.sptech.sistema_estoque.model.estoque.Estoque;
 import school.sptech.sistema_estoque.model.estoque.Material;
 import school.sptech.sistema_estoque.model.estoque.UnidadeMedida;
 
@@ -20,11 +20,12 @@ public class SistemaMapper {
     }
 
     // MATERIAL
-    public Material toMaterialEntity(MaterialRequest request, Categoria categoria, Estoque estoque, UnidadeMedida unidadeMedida){
+    public Material toMaterialEntity(MaterialRequest request, Categoria categoria, Almoxarifado almoxarifado,UnidadeMedida unidadeMedida){
         Material m = new Material();
         m.setCategoria(categoria);
-        m.setEstoque(estoque);
+        m.setEstoque(almoxarifado);
         m.setUnidadeMedida(unidadeMedida);
+        m.setNomeMaterial(request.nomeMaterial());
         return m;
     }
     public MaterialResponse toMaterialResponse(Material entity){

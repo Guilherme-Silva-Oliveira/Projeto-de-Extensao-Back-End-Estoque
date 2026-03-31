@@ -4,12 +4,12 @@ import org.springframework.stereotype.Service;
 import school.sptech.sistema_estoque.dto.estoque.*;
 import school.sptech.sistema_estoque.dto.mapper.SistemaMapper;
 import school.sptech.sistema_estoque.exception.*;
+import school.sptech.sistema_estoque.model.estoque.Almoxarifado;
 import school.sptech.sistema_estoque.model.estoque.Categoria;
-import school.sptech.sistema_estoque.model.estoque.Estoque;
 import school.sptech.sistema_estoque.model.estoque.Material;
 import school.sptech.sistema_estoque.model.estoque.UnidadeMedida;
 import school.sptech.sistema_estoque.repository.CategoriaRepository;
-import school.sptech.sistema_estoque.repository.EstoqueRepository;
+import school.sptech.sistema_estoque.repository.AlmoxarifadoRepository;
 import school.sptech.sistema_estoque.repository.MaterialRepository;
 import school.sptech.sistema_estoque.repository.UnidadeMedidaRepository;
 
@@ -20,11 +20,11 @@ import java.util.Optional;
 public class SistemaService {
     private final CategoriaRepository catrepository;
     private final MaterialRepository matrepository;
-    private final EstoqueRepository estrepository;
+    private final AlmoxarifadoRepository estrepository;
     private final UnidadeMedidaRepository unirepository;
 
     private final SistemaMapper mapper;
-    public SistemaService(CategoriaRepository catrepository, MaterialRepository matrepository, EstoqueRepository estrepository, UnidadeMedidaRepository unirepository, SistemaMapper mapper) {
+    public SistemaService(CategoriaRepository catrepository, MaterialRepository matrepository, AlmoxarifadoRepository estrepository, UnidadeMedidaRepository unirepository, SistemaMapper mapper) {
         this.catrepository = catrepository;
         this.matrepository = matrepository;
         this.estrepository = estrepository;
@@ -59,16 +59,16 @@ public class SistemaService {
         // VALIDAÇÕES OPTIONAL -- POSSÍVEL DE OTIMIZAR
         Optional<Categoria> catOpt = catrepository.findById(request.idCategoria());
         if (catOpt.isEmpty()){throw new CategoriaNaoExisteException("Categoria Não Encontrada");}
-        Optional<Estoque> estOpt = estrepository.findById(request.idEstoque());
+        Optional<Almoxarifado> estOpt = estrepository.findById(request.idEstoque());
         if (estOpt.isEmpty()){throw new EstoqueNaoExisteException("Estoque Não Encontrada");}
         Optional<UnidadeMedida> uniOpt = unirepository.findById(request.idUnidadeMedida());
-        if (uniOpt.isEmpty()){throw new UnidadeMedidaNaoExisteException("Categoria Não Encontrada");}
+        if (uniOpt.isEmpty()){throw new UnidadeMedidaNaoExisteException("Unidade de Medida Não Encontrada");}
 
         // CONVERSÃO OPTIONAL - ENTIDADE CATEGORIA, ESTOQUE E UNIDADE DE MEDIDA
         Categoria c = catOpt.get();
-        Estoque e = estOpt.get();
+        Almoxarifado a = estOpt.get();
         UnidadeMedida u = uniOpt.get();
-        Material m = mapper.toMaterialEntity(request,c,e,u); // CONVERSÃO REQUEST - ENTIDADE MATERIAL
+        Material m = mapper.toMaterialEntity(request,c,a,u); // CONVERSÃO REQUEST - ENTIDADE MATERIAL
         matrepository.save(m);
         return mapper.toMaterialResponse(m);
     }
