@@ -1,11 +1,13 @@
 package school.sptech.sistema_estoque.dto.mapper;
 
+import org.springframework.stereotype.Component;
 import school.sptech.sistema_estoque.dto.estoque.*;
 import school.sptech.sistema_estoque.model.estoque.Categoria;
 import school.sptech.sistema_estoque.model.estoque.Estoque;
 import school.sptech.sistema_estoque.model.estoque.Material;
 import school.sptech.sistema_estoque.model.estoque.UnidadeMedida;
 
+@Component
 public class SistemaMapper {
     // CATEGORIA
     public Categoria toCategoriaEntity(CategoriaRequest request){

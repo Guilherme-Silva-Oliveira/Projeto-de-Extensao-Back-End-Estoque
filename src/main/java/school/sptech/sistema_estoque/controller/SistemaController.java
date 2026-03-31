@@ -38,11 +38,11 @@ public class SistemaController {
 
     // CRUD - SISTEMA ALMOXARIFADO XINGU
     // GETS
-    @GetMapping("/fornecedores/tipos")
-    public ResponseEntity<Void> listarTipoFornecedores(){}
-
-    @GetMapping("/fornecedores")
-    public ResponseEntity<Void> listarFornecedores(){}
+//    @GetMapping("/fornecedores/tipos")
+//    public ResponseEntity<Void> listarTipoFornecedores(){}
+//
+//    @GetMapping("/fornecedores")
+//    public ResponseEntity<Void> listarFornecedores(){}
 
     @GetMapping("/materiais/unidades")
     public ResponseEntity<List<UnidadeMedidaResponse>> listarUnidadesDeMedida(){
@@ -59,32 +59,32 @@ public class SistemaController {
         return ResponseEntity.ok(service.listarCategorias());
     }
 
-    @GetMapping("/almoxarifes")
-    public ResponseEntity<Void> listarAlmoxarifes(){}
+//    @GetMapping("/almoxarifes")
+//    public ResponseEntity<Void> listarAlmoxarifes(){}
+//
+//    @GetMapping("/limites/tipos")
+//    public ResponseEntity<Void> listarTiposLimite(){}
+//
+//    @GetMapping("/limites")
+//    public ResponseEntity<Void> listarLimites(){}
+//
+//    @GetMapping("/historicos/entrada")
+//    public ResponseEntity<Void> listarHistoricoEntrada(){}
+//
+//    @GetMapping("/historicos/saida")
+//    public ResponseEntity<Void> listarHistoricoSaida(){}
+//
+//    @GetMapping("/professores")
+//    public ResponseEntity<Void> listarProfessores(){}
+//
+//    // POSTS
+//    @PostMapping
+//    public ResponseEntity<Void> cadastrarTipoFornecedor(){}
+//
+//    @PostMapping
+//    public ResponseEntity<Void> cadastrarFornecedor(){}
 
-    @GetMapping("/limites/tipos")
-    public ResponseEntity<Void> listarTiposLimite(){}
-
-    @GetMapping("/limites")
-    public ResponseEntity<Void> listarLimites(){}
-
-    @GetMapping("/historicos/entrada")
-    public ResponseEntity<Void> listarHistoricoEntrada(){}
-
-    @GetMapping("/historicos/saida")
-    public ResponseEntity<Void> listarHistoricoSaida(){}
-
-    @GetMapping("/professores")
-    public ResponseEntity<Void> listarProfessores(){}
-
-    // POSTS
-    @PostMapping
-    public ResponseEntity<Void> cadastrarTipoFornecedor(){}
-
-    @PostMapping
-    public ResponseEntity<Void> cadastrarFornecedor(){}
-
-    @PostMapping("/categorias")
+    @PostMapping("/unidadeMedida")
     public ResponseEntity<UnidadeMedidaResponse> cadastrarUnidadeMedida(@RequestBody UnidadeMedidaRequest request){
         return ResponseEntity.status(201).body(service.cadastrarUnidadeMedida(request));
     }
@@ -99,24 +99,24 @@ public class SistemaController {
         return ResponseEntity.status(201).body(service.cadastrarCategoria(request));
     }
 
-    @PostMapping("/solicitacoes")
-    public ResponseEntity<Void> cadastrarSolicitacao(){}
-
-    @PostMapping
-    public ResponseEntity<Void> cadastrarAlmoxarife(){}
-
-    @PostMapping("/historico")
-    public ResponseEntity<Void> cadastrarTipoLimite(){}
-
-    @PostMapping("/historico")
-    public ResponseEntity<Void> cadastrarLimite(){}
-
-    @PostMapping("/historico")
-    public ResponseEntity<Void> registroHistoricoSaida(){}
-
-    @PostMapping("/historico")
-    public ResponseEntity<Void> registroHistoricoEntrada(){}
-
-    @PostMapping("/professores")
-    public ResponseEntity<Void> cadastrarProfessor(){}
+//    @PostMapping("/solicitacoes")
+//    public ResponseEntity<Void> cadastrarSolicitacao(){}
+//
+//    @PostMapping
+//    public ResponseEntity<Void> cadastrarAlmoxarife(){}
+//
+//    @PostMapping("/historico")
+//    public ResponseEntity<Void> cadastrarTipoLimite(){}
+//
+//    @PostMapping("/historico")
+//    public ResponseEntity<Void> cadastrarLimite(){}
+//
+//    @PostMapping("/historico")
+//    public ResponseEntity<Void> registroHistoricoSaida(){}
+//
+//    @PostMapping("/historico")
+//    public ResponseEntity<Void> registroHistoricoEntrada(){}
+//
+//    @PostMapping("/professores")
+//    public ResponseEntity<Void> cadastrarProfessor(){}
 }

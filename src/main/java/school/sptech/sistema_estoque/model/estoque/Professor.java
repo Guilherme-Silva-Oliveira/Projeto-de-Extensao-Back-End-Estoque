@@ -1,9 +1,11 @@
 package school.sptech.sistema_estoque.model.estoque;
 
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import org.springframework.data.annotation.Id;
+import jakarta.persistence.Id;
 
+@Entity
 public class Professor {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
