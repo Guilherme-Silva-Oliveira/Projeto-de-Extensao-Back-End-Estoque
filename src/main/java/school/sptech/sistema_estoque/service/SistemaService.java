@@ -2,8 +2,8 @@ package school.sptech.sistema_estoque.service;
 
 import org.springframework.stereotype.Service;
 import school.sptech.sistema_estoque.client.ClassAppClient;
-import school.sptech.sistema_estoque.dto.LabelsRequest;
-import school.sptech.sistema_estoque.dto.TagsRequest;
+import school.sptech.sistema_estoque.dto.classapp.LabelsRequest;
+import school.sptech.sistema_estoque.dto.classapp.TagsRequest;
 
 @Service
 public class SistemaService {
