@@ -101,4 +101,28 @@ public class SistemaService {
         unirepository.delete(opt.get());
     }
     // -------------- FIM UNIDADE MEDIDA --------------
+
+    // -------------- PROFESSOR --------------
+    // CRUD PARA PROFESSOR
+    // -------------- FIM PROFESSOR --------------
+
+    // -------------- SOLICITAÇÃO --------------
+    // CRUD PARA SOLICITAÇÃO
+    // -------------- FIM SOLICITAÇÃO --------------
+
+    // -------------- ESCALA --------------
+    // CRUD PARA ESCALA
+    // -------------- FIM ESCALA --------------
+
+    // -------------- LIMITE + TIPO_LIMITE --------------
+    // CRUD PARA LIMITE
+    // -------------- FIM LIMITE + TIPO_LIMITE --------------
+
+    // -------------- FORNECEDOR + TIPO_FORNECEDOR --------------
+    // CRUD FORNECEDOR
+    // -------------- FIM FORNECEDOR + TIPO_FORNECEDOR --------------
+
+    // -------------- PEDIDO_SAIDA + PEDIDO ENTRADA --------------
+    // CRUD PEDIDO_SAIDA + PEDIDO_ENTRADA
+    // -------------- FIM PEDIDO_SAIDA + PEDIDO_ENTRADA --------------
 }
