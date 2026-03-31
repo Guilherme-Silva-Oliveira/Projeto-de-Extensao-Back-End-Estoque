@@ -3,8 +3,8 @@ package school.sptech.sistema_estoque.client;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import school.sptech.sistema_estoque.config.FeignConfig;
-import school.sptech.sistema_estoque.dto.LabelsRequest;
-import school.sptech.sistema_estoque.dto.TagsRequest;
+import school.sptech.sistema_estoque.dto.classapp.LabelsRequest;
+import school.sptech.sistema_estoque.dto.classapp.TagsRequest;
 
 @FeignClient(
         name= "classAppClient",

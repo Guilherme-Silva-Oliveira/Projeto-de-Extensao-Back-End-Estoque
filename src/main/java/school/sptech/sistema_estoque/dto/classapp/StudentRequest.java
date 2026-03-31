@@ -1,4 +1,4 @@
-package school.sptech.sistema_estoque.dto;
+package school.sptech.sistema_estoque.dto.classapp;
 
 public record StudentRequest(
         String bucketS3
