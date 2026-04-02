@@ -38,6 +38,7 @@ public class SistemaMapper {
         return new UnidadeMedidaResponse(entity.getId(),entity.getNomeUnidade());
     }
 
+    // PROFESSOR
     public Professor toProfessorEntity(ProfessorRequest professorRequest){
         Professor entity = new Professor();
         entity.setEmail(professorRequest.email());
@@ -50,5 +51,52 @@ public class SistemaMapper {
         return new ProfessorResponse(entity.getId(), entity.getNome(), entity.getEmail(), entity.getTelefone());
     }
 
+    // SOLICITACAO
+    public Solicitacao toSolicitacaoEntity(SolicitacaoRequest request, Professor professor){
+        Solicitacao entity = new Solicitacao();
+        entity.setEscala(request.escala());
+        entity.setDescricao(request.descricao());
+        entity.setDataSolicitacao(request.dataSolicitacao());
+        entity.setProfessor(professor);
+        return entity;
+    }
+
+    public SolicitacaoResponse toSolicitacaoResponse(Solicitacao entity){
+        return new SolicitacaoResponse(entity.getId(), entity.getProfessor(), entity.getEscala(), entity.getDescricao(), entity.getDataSolicitacao());
+    }
+
+    // PEDIDO_SAIDA
+    public PedidoSaida toPedidoSaidaEntity(PedidoSaidaRequest request, Material material, Solicitacao solicitacao, Escala escala) {
+    PedidoSaida entity = new PedidoSaida();
+    entity.setMaterial(material);
+    entity.setSolicitacao(solicitacao);
+    entity.setEscala(escala);
+    entity.setQuantidade(request.quantidade());
+    entity.setDataSaida(request.dataSaida());
+
+    return entity;
+    }
+
+    public PedidoSaidaResponse toPedidoSaidaResponse(PedidoSaida entity) {
+    return new PedidoSaidaResponse(
+        entity.getMaterial(),
+        entity.getSolicitacao(),
+        entity.getQuantidade(),
+        entity.getDataSolicitacao(),
+        entity.getEscala(),
+        entity.getDataSaida()
+    );
+    }
+
+    // ESCALA
+    public Escala toEscalaEntity(EscalaRequest request){
+        Escala e = new Escala();
+        e.setNomeEscala(request.nomeEscala());
+        return e;
+    }
+
+    public EscalaResponse toEscalaResponse(Escala entity){
+        return new EscalaResponse(entity.getId(), entity.getNomeEscala());
+    }
 
 }

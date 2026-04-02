@@ -6,6 +6,8 @@ import school.sptech.sistema_estoque.dto.classapp.LabelsRequest;
 import school.sptech.sistema_estoque.dto.classapp.TagsRequest;
 import school.sptech.sistema_estoque.dto.estoque.*;
 import school.sptech.sistema_estoque.dto.mapper.SistemaMapper;
+import school.sptech.sistema_estoque.model.estoque.PedidoSaida;
+import school.sptech.sistema_estoque.model.estoque.Solicitacao;
 import school.sptech.sistema_estoque.service.ClassAppService;
 import school.sptech.sistema_estoque.service.SistemaService;
 
@@ -78,6 +80,22 @@ public class SistemaController {
     public ResponseEntity<List<ProfessorResponse>> listarProfessores(){
         return ResponseEntity.ok(service.listarProfessor());
     }
+
+    @GetMapping("/solicitacoes")
+    public ResponseEntity<List<SolicitacaoResponse>> listarSolicitacao(){
+        return ResponseEntity.ok(service.listarSolicitacao());
+    }
+
+    @GetMapping("/pedidoSaida")
+    public ResponseEntity<List<PedidoSaidaResponse>> listarPedidos(){
+        return ResponseEntity.ok(service.listarPedidoSaida());
+    }
+
+    @GetMapping("/escalas")
+    public ResponseEntity<List<EscalaResponse>> listarEscala(){
+        return ResponseEntity.ok(service.listarEscala());
+    }
+
 //
 //    // POSTS
 //    @PostMapping
@@ -101,8 +119,10 @@ public class SistemaController {
         return ResponseEntity.status(201).body(service.cadastrarCategoria(request));
     }
 
-//    @PostMapping("/solicitacoes")
-//    public ResponseEntity<Void> cadastrarSolicitacao(){}
+    @PostMapping("/solicitacoes")
+    public ResponseEntity<SolicitacaoResponse> cadastrarSolicitacao(@RequestBody SolicitacaoRequest request){
+        return ResponseEntity.status(201).body(service.cadastrarSolicitacao(request));
+    }
 //
 //    @PostMapping
 //    public ResponseEntity<Void> cadastrarAlmoxarife(){}
@@ -130,5 +150,16 @@ public class SistemaController {
         return ResponseEntity.noContent().build();
 
     }
+
+    @PostMapping("/pedidoSaida")
+    public ResponseEntity<PedidoSaidaResponse> cadastrarPedidoSaida(@RequestBody PedidoSaidaRequest request){
+        return ResponseEntity.status(201).body(service.cadastrarPedidoSaida(request));
+    }
+
+    @PostMapping("/escalas")
+    public ResponseEntity<EscalaResponse> cadastrarEscala(@RequestBody EscalaRequest request){
+        return ResponseEntity.status(201).body(service.cadastrarEscala(request));
+    }
+
 
 }

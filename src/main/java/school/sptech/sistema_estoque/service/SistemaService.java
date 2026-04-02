@@ -19,14 +19,20 @@ public class SistemaService {
 
     private final SistemaMapper mapper;
     private final ProfessorRepository professorRepository;
+    private final SolicitacaoRepository solicitacaoRepository;
+    private final PedidoSaidaRepository pedidoSaidaRepository;
+    private final EscalaRepository escalaRepository;
 
-    public SistemaService(CategoriaRepository catrepository, MaterialRepository matrepository, EstoqueRepository estrepository, UnidadeMedidaRepository unirepository, SistemaMapper mapper, ProfessorRepository professorRepository) {
+    public SistemaService(CategoriaRepository catrepository, MaterialRepository matrepository, EstoqueRepository estrepository, UnidadeMedidaRepository unirepository, SistemaMapper mapper, ProfessorRepository professorRepository, SolicitacaoRepository solicitacaoRepository, PedidoSaidaRepository pedidoSaidaRepository, EscalaRepository escalaRepository) {
         this.catrepository = catrepository;
         this.matrepository = matrepository;
         this.estrepository = estrepository;
         this.unirepository = unirepository;
         this.mapper = mapper;
         this.professorRepository = professorRepository;
+        this.solicitacaoRepository = solicitacaoRepository;
+        this.pedidoSaidaRepository = pedidoSaidaRepository;
+        this.escalaRepository = escalaRepository;
     }
 
     // -------------- CATEGORIA --------------
@@ -126,14 +132,49 @@ public class SistemaService {
         }
         professorRepository.delete(opt.get());
     }
+
+
     // -------------- FIM PROFESSOR --------------
 
     // -------------- SOLICITAÇÃO --------------
     // CRUD PARA SOLICITAÇÃO
+        public List<SolicitacaoResponse> listarSolicitacao() {
+        return solicitacaoRepository.findAll().stream()
+                .map(mapper::toSolicitacaoResponse)
+                .toList();
+    }
+
+    public SolicitacaoResponse cadastrarSolicitacao(SolicitacaoRequest request) {
+        if (request == null){
+            throw new InvalidSolicitacaoRequestException("Solicitacao Inválida");
+        }
+
+        Optional<Professor> professorOptional = professorRepository.findById(request.idProfessor());
+        if (professorOptional.isEmpty()){throw new InvalidProfessorRequestException("Professor não encontrado");}
+
+        Solicitacao solicitacao = mapper.toSolicitacaoEntity(request, professorOptional.get());
+        solicitacaoRepository.save(solicitacao);
+        return mapper.toSolicitacaoResponse(solicitacao);
+    }
+
     // -------------- FIM SOLICITAÇÃO --------------
 
     // -------------- ESCALA --------------
-    // CRUD PARA ESCALA
+    public EscalaResponse cadastrarEscala(EscalaRequest request){
+    if (request == null){ throw new InvalidEscalaRequestException("Escala Inválida"); } // VALIDAÇÃO INICIAL
+
+    Escala e = mapper.toEscalaEntity(request); // CONVERSÃO REQUEST - ENTIDADE ESCALA
+    Escala salvo = escalaRepository.save(e);
+
+    return mapper.toEscalaResponse(salvo);
+    }
+
+    public List<EscalaResponse> listarEscala(){
+        // CONVERTENDO ENTIDADE - RESPONSE ESCALA + EXIBIR
+        return escalaRepository.findAll().stream()
+                .map(mapper::toEscalaResponse)
+                .toList();
+    }
     // -------------- FIM ESCALA --------------
 
     // -------------- LIMITE + TIPO_LIMITE --------------
@@ -146,5 +187,42 @@ public class SistemaService {
 
     // -------------- PEDIDO_SAIDA + PEDIDO ENTRADA --------------
     // CRUD PEDIDO_SAIDA + PEDIDO_ENTRADA
+        public List<PedidoSaidaResponse> listarPedidoSaida() {
+            return pedidoSaidaRepository.findAll().stream()
+                    .map(mapper::toPedidoSaidaResponse)
+                    .toList();
+        }
+
+    public PedidoSaidaResponse cadastrarPedidoSaida(PedidoSaidaRequest request) {
+        if (request == null){
+            throw new InvalidPedidoSaidaRequestException("Pedido Saida Inváldo");
+        }
+        Optional<Material> materialOptional = matrepository.findById(request.materialId());
+        if (materialOptional.isEmpty()) {
+            throw new InvalidMaterialRequestException("Material não encontrado");
+        }
+        Material material = materialOptional.get();
+
+        Optional<Solicitacao> solicitacaoOptional = solicitacaoRepository.findById(request.solicitacaoId());
+        if (solicitacaoOptional.isEmpty()) {
+            throw new InvalidSolicitacaoRequestException("Solicitação de origem não encontrada");
+        }
+        Solicitacao solicitacao = solicitacaoOptional.get();
+
+        Optional<Escala> escalaOptional = escalaRepository.findById(request.escalaId());
+        if (escalaOptional.isEmpty()) {
+            throw new InvalidEscalaRequestException("Escala associada não encontrada");
+        }
+        Escala escala = escalaOptional.get();
+
+        PedidoSaida pedidoSaida = mapper.toPedidoSaidaEntity(request, material, solicitacao, escala);
+        pedidoSaidaRepository.save(pedidoSaida);
+        return mapper.toPedidoSaidaResponse(pedidoSaida);
+
+    }
+
+
+
+
     // -------------- FIM PEDIDO_SAIDA + PEDIDO_ENTRADA --------------
 }
