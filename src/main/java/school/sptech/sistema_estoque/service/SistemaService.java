@@ -22,8 +22,15 @@ public class SistemaService {
     private final SolicitacaoRepository solicitacaoRepository;
     private final PedidoSaidaRepository pedidoSaidaRepository;
     private final EscalaRepository escalaRepository;
+    private final TipoLimiteRepository tipoLimiteRepository;
+    private final LimiteRepository limiteRepository;
+    private final AlmoxarifadoRepository almoxarifadoRepository;
+    private final AlmoxarifeRepository almoxarifeRepository;
+    private final TipoFornecedorRepository tipoFornecedorRepository;
+    private final FornecedorRepository fornecedorRepository;
+    private final PedidoEntradaRepository pedidoEntradaRepository;
 
-    public SistemaService(CategoriaRepository catrepository, MaterialRepository matrepository, EstoqueRepository estrepository, UnidadeMedidaRepository unirepository, SistemaMapper mapper, ProfessorRepository professorRepository, SolicitacaoRepository solicitacaoRepository, PedidoSaidaRepository pedidoSaidaRepository, EscalaRepository escalaRepository) {
+    public SistemaService(CategoriaRepository catrepository, MaterialRepository matrepository, EstoqueRepository estrepository, UnidadeMedidaRepository unirepository, SistemaMapper mapper, ProfessorRepository professorRepository, SolicitacaoRepository solicitacaoRepository, PedidoSaidaRepository pedidoSaidaRepository, EscalaRepository escalaRepository, TipoLimiteRepository tipoLimiteRepository, LimiteRepository limiteRepository, AlmoxarifadoRepository almoxarifadoRepository, AlmoxarifeRepository almoxarifeRepository, TipoFornecedorRepository tipoFornecedorRepository, FornecedorRepository fornecedorRepository, PedidoEntradaRepository pedidoEntradaRepository) {
         this.catrepository = catrepository;
         this.matrepository = matrepository;
         this.estrepository = estrepository;
@@ -33,6 +40,13 @@ public class SistemaService {
         this.solicitacaoRepository = solicitacaoRepository;
         this.pedidoSaidaRepository = pedidoSaidaRepository;
         this.escalaRepository = escalaRepository;
+        this.tipoLimiteRepository = tipoLimiteRepository;
+        this.limiteRepository = limiteRepository;
+        this.almoxarifadoRepository = almoxarifadoRepository;
+        this.almoxarifeRepository = almoxarifeRepository;
+        this.tipoFornecedorRepository = tipoFornecedorRepository;
+        this.fornecedorRepository = fornecedorRepository;
+        this.pedidoEntradaRepository = pedidoEntradaRepository;
     }
 
     // -------------- CATEGORIA --------------
@@ -179,7 +193,164 @@ public class SistemaService {
 
     // -------------- LIMITE + TIPO_LIMITE --------------
     // CRUD PARA LIMITE
+    public TipoLimiteResponse cadastrarTipoLimite(TipoLimiteRequest request){
+    if (request == null){ throw new InvalidTipoLimiteRequestException("Tipo de Limite Inválido"); } // VALIDAÇÃO INICIAL
+
+    TipoLimite tl = mapper.toTipoLimiteEntity(request); // CONVERSÃO REQUEST - ENTIDADE TIPO LIMITE
+    TipoLimite salvo = tipoLimiteRepository.save(tl);
+
+        return mapper.toTipoLimiteResponse(salvo);
+    }
+
+    public List<TipoLimiteResponse> listarTiposLimite(){
+        // CONVERTENDO ENTIDADE - RESPONSE TIPO LIMITE + EXIBIR
+        return tipoLimiteRepository.findAll().stream()
+                .map(mapper::toTipoLimiteResponse)
+                .toList();
+    }
+
+    public LimiteResponse cadastrarLimite(LimiteRequest request){
+    if (request == null){ throw new InvalidLimiteRequestException("Limite Inválido"); } // VALIDAÇÃO INICIAL
+
+    // VALIDAÇÃO DA EXISTÊNCIA DO TIPO LIMITE
+    Optional<TipoLimite> tipoOptional = tipoLimiteRepository.findById(request.idTipoLimite());
+    if (tipoOptional.isEmpty()){ throw new InvalidTipoLimiteRequestException("Tipo de Limite não encontrado"); }
+
+    Limite l = mapper.toLimiteEntity(request, tipoOptional.get()); // CONVERSÃO REQUEST - ENTIDADE LIMITE
+    Limite salvo = limiteRepository.save(l);
+
+    return mapper.toLimiteResponse(salvo);
+    }
+
+    public List<LimiteResponse> listarLimites(){
+        // CONVERTENDO ENTIDADE - RESPONSE LIMITE + EXIBIR
+        return limiteRepository.findAll().stream()
+                .map(mapper::toLimiteResponse)
+                .toList();
+    }
     // -------------- FIM LIMITE + TIPO_LIMITE --------------
+
+    // -------------- ALMOXARIFADO --------------
+    public AlmoxarifadoResponse cadastrarAlmoxarifado(AlmoxarifadoRequest request) {
+        if (request == null) {
+            throw new InvalidAlmoxarifadoRequestException("Almoxarifado invalido");
+        }
+
+        if (request.idsLimites() == null || request.idsLimites().isEmpty()) {
+            throw new InvalidLimiteRequestException("Limites nao informados");
+        }
+
+        List<Limite> limites = limiteRepository.findAllById(request.idsLimites());
+        if (limites.size() != request.idsLimites().size()) {
+            throw new InvalidLimiteRequestException("Limite nao encontrado");
+        }
+
+        Almoxarifado almoxarifado = mapper.toAlmoxarifadoEntity(request, limites);
+        Almoxarifado salvo = almoxarifadoRepository.save(almoxarifado);
+        return mapper.toAlmoxarifadoResponse(salvo);
+    }
+
+    public List<AlmoxarifadoResponse> listarAlmoxarifados() {
+        return almoxarifadoRepository.findAll().stream()
+                .map(mapper::toAlmoxarifadoResponse)
+                .toList();
+    }
+    // -------------- FIM ALMOXARIFADO --------------
+
+    // -------------- ALMOXARIFE --------------
+    public AlmoxarifeResponse cadastrarAlmoxarife(AlmoxarifeRequest request) {
+        if (request == null) {
+            throw new InvalidAlmoxarifeRequestException("Almoxarife invalido");
+        }
+
+        Optional<Almoxarifado> almoxarifadoOptional = almoxarifadoRepository.findById(request.idAlmoxarifado());
+        if (almoxarifadoOptional.isEmpty()) {
+            throw new InvalidAlmoxarifadoRequestException("Almoxarifado nao encontrado");
+        }
+
+        Optional<Estoque> estoqueOptional = estrepository.findById(request.idEstoque());
+        if (estoqueOptional.isEmpty()) {
+            throw new EstoqueNaoExisteException("Estoque nao encontrado");
+        }
+
+        Almoxarife almoxarife = mapper.toAlmoxarifeEntity(request, almoxarifadoOptional.get(), estoqueOptional.get());
+        Almoxarife salvo = almoxarifeRepository.save(almoxarife);
+        return mapper.toAlmoxarifeResponse(salvo);
+    }
+
+    public List<AlmoxarifeResponse> listarAlmoxarifes() {
+        return almoxarifeRepository.findAll().stream()
+                .map(mapper::toAlmoxarifeResponse)
+                .toList();
+    }
+    // -------------- FIM ALMOXARIFE --------------
+
+    // -------------- FORNECEDOR + TIPO_FORNECEDOR --------------
+    public TipoFornecedorResponse cadastrarTipoFornecedor(TipoFornecedorRequest request) {
+        if (request == null) {
+            throw new InvalidTipoFornecedorRequestException("Tipo fornecedor invalido");
+        }
+
+        TipoFornecedor tipoFornecedor = mapper.toTipoFornecedorEntity(request);
+        TipoFornecedor salvo = tipoFornecedorRepository.save(tipoFornecedor);
+        return mapper.toTipoFornecedorResponse(salvo);
+    }
+
+    public List<TipoFornecedorResponse> listarTipoFornecedores() {
+        return tipoFornecedorRepository.findAll().stream()
+                .map(mapper::toTipoFornecedorResponse)
+                .toList();
+    }
+
+    public FornecedorResponse cadastrarFornecedor(FornecedorRequest request) {
+        if (request == null) {
+            throw new InvalidFornecedorRequestException("Fornecedor invalido");
+        }
+
+        Optional<TipoFornecedor> tipoOptional = tipoFornecedorRepository.findById(request.idTipoFornecedor());
+        if (tipoOptional.isEmpty()) {
+            throw new InvalidTipoFornecedorRequestException("Tipo fornecedor nao encontrado");
+        }
+
+        Fornecedor fornecedor = mapper.toFornecedorEntity(request, tipoOptional.get());
+        Fornecedor salvo = fornecedorRepository.save(fornecedor);
+        return mapper.toFornecedorResponse(salvo);
+    }
+
+    public List<FornecedorResponse> listarFornecedores() {
+        return fornecedorRepository.findAll().stream()
+                .map(mapper::toFornecedorResponse)
+                .toList();
+    }
+    // -------------- FIM FORNECEDOR + TIPO_FORNECEDOR --------------
+
+    // -------------- PEDIDO_ENTRADA --------------
+    public PedidoEntradaResponse cadastrarPedidoEntrada(PedidoEntradaRequest request) {
+        if (request == null) {
+            throw new InvalidPedidoEntradaRequestException("Pedido entrada invalido");
+        }
+
+        Optional<Fornecedor> fornecedorOptional = fornecedorRepository.findById(request.fornecedorId());
+        if (fornecedorOptional.isEmpty()) {
+            throw new InvalidFornecedorRequestException("Fornecedor nao encontrado");
+        }
+
+        Optional<Material> materialOptional = matrepository.findById(request.materialId());
+        if (materialOptional.isEmpty()) {
+            throw new InvalidMaterialRequestException("Material nao encontrado");
+        }
+
+        PedidoEntrada pedidoEntrada = mapper.toPedidoEntradaEntity(request, fornecedorOptional.get(), materialOptional.get());
+        PedidoEntrada salvo = pedidoEntradaRepository.save(pedidoEntrada);
+        return mapper.toPedidoEntradaResponse(salvo);
+    }
+
+    public List<PedidoEntradaResponse> listarPedidosEntrada() {
+        return pedidoEntradaRepository.findAll().stream()
+                .map(mapper::toPedidoEntradaResponse)
+                .toList();
+    }
+    // -------------- FIM PEDIDO_ENTRADA --------------
 
     // -------------- FORNECEDOR + TIPO_FORNECEDOR --------------
     // CRUD FORNECEDOR

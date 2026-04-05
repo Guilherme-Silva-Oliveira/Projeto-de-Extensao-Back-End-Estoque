@@ -45,6 +45,15 @@ public class SistemaController {
 //
 //    @GetMapping("/fornecedores")
 //    public ResponseEntity<Void> listarFornecedores(){}
+    @GetMapping("/fornecedores/tipos")
+    public ResponseEntity<List<TipoFornecedorResponse>> listarTipoFornecedores() {
+        return ResponseEntity.ok(service.listarTipoFornecedores());
+    }
+
+    @GetMapping("/fornecedores")
+    public ResponseEntity<List<FornecedorResponse>> listarFornecedores() {
+        return ResponseEntity.ok(service.listarFornecedores());
+    }
 
     @GetMapping("/materiais/unidades")
     public ResponseEntity<List<UnidadeMedidaResponse>> listarUnidadesDeMedida(){
@@ -61,14 +70,16 @@ public class SistemaController {
         return ResponseEntity.ok(service.listarCategorias());
     }
 
-//    @GetMapping("/almoxarifes")
-//    public ResponseEntity<Void> listarAlmoxarifes(){}
-//
-//    @GetMapping("/limites/tipos")
-//    public ResponseEntity<Void> listarTiposLimite(){}
-//
-//    @GetMapping("/limites")
-//    public ResponseEntity<Void> listarLimites(){}
+    @GetMapping("/almoxarifados")
+    public ResponseEntity<List<AlmoxarifadoResponse>> listarAlmoxarifados() {
+        return ResponseEntity.ok(service.listarAlmoxarifados());
+    }
+    
+    @GetMapping("/almoxarifes")
+    public ResponseEntity<List<AlmoxarifeResponse>> listarAlmoxarifes() {
+        return ResponseEntity.ok(service.listarAlmoxarifes());
+    }
+
 //
 //    @GetMapping("/historicos/entrada")
 //    public ResponseEntity<Void> listarHistoricoEntrada(){}
@@ -86,14 +97,29 @@ public class SistemaController {
         return ResponseEntity.ok(service.listarSolicitacao());
     }
 
-    @GetMapping("/pedidoSaida")
+    @GetMapping("/pedido-saida")
     public ResponseEntity<List<PedidoSaidaResponse>> listarPedidos(){
         return ResponseEntity.ok(service.listarPedidoSaida());
+    }
+    
+    @GetMapping("/pedido-entrada")
+    public ResponseEntity<List<PedidoEntradaResponse>> listarPedidosEntrada() {
+        return ResponseEntity.ok(service.listarPedidosEntrada());
     }
 
     @GetMapping("/escalas")
     public ResponseEntity<List<EscalaResponse>> listarEscala(){
         return ResponseEntity.ok(service.listarEscala());
+    }
+
+    @GetMapping("/limites/tipos")
+    public ResponseEntity<List<TipoLimiteResponse>> listarTipoLimite(){
+        return ResponseEntity.ok(service.listarTiposLimite());
+    }
+
+    @GetMapping("/limites")
+    public ResponseEntity<List<LimiteResponse>> listarLimites(){
+        return ResponseEntity.ok(service.listarLimites());
     }
 
 //
@@ -103,6 +129,15 @@ public class SistemaController {
 //
 //    @PostMapping
 //    public ResponseEntity<Void> cadastrarFornecedor(){}
+    @PostMapping("/fornecedores/tipos")
+    public ResponseEntity<TipoFornecedorResponse> cadastrarTipoFornecedor(@RequestBody TipoFornecedorRequest request) {
+        return ResponseEntity.status(201).body(service.cadastrarTipoFornecedor(request));
+    }
+
+    @PostMapping("/fornecedores")
+    public ResponseEntity<FornecedorResponse> cadastrarFornecedor(@RequestBody FornecedorRequest request) {
+        return ResponseEntity.status(201).body(service.cadastrarFornecedor(request));
+    }
 
     @PostMapping("/unidadeMedida")
     public ResponseEntity<UnidadeMedidaResponse> cadastrarUnidadeMedida(@RequestBody UnidadeMedidaRequest request){
@@ -126,6 +161,16 @@ public class SistemaController {
 //
 //    @PostMapping
 //    public ResponseEntity<Void> cadastrarAlmoxarife(){}
+//
+    @PostMapping("/almoxarifados")
+    public ResponseEntity<AlmoxarifadoResponse> cadastrarAlmoxarifado(@RequestBody AlmoxarifadoRequest request) {
+        return ResponseEntity.status(201).body(service.cadastrarAlmoxarifado(request));
+    }
+    
+    @PostMapping("/almoxarifes")
+    public ResponseEntity<AlmoxarifeResponse> cadastrarAlmoxarife(@RequestBody AlmoxarifeRequest request) {
+        return ResponseEntity.status(201).body(service.cadastrarAlmoxarife(request));
+    }
 //
 //    @PostMapping("/historico")
 //    public ResponseEntity<Void> cadastrarTipoLimite(){}
@@ -151,14 +196,29 @@ public class SistemaController {
 
     }
 
-    @PostMapping("/pedidoSaida")
+    @PostMapping("/pedido-saida")
     public ResponseEntity<PedidoSaidaResponse> cadastrarPedidoSaida(@RequestBody PedidoSaidaRequest request){
         return ResponseEntity.status(201).body(service.cadastrarPedidoSaida(request));
+    }
+    
+    @PostMapping("/pedido-entrada")
+    public ResponseEntity<PedidoEntradaResponse> cadastrarPedidoEntrada(@RequestBody PedidoEntradaRequest request) {
+        return ResponseEntity.status(201).body(service.cadastrarPedidoEntrada(request));
     }
 
     @PostMapping("/escalas")
     public ResponseEntity<EscalaResponse> cadastrarEscala(@RequestBody EscalaRequest request){
         return ResponseEntity.status(201).body(service.cadastrarEscala(request));
+    }
+
+    @PostMapping("/tipos-limite")
+    public ResponseEntity<TipoLimiteResponse> cadastrarTipoLimite(@RequestBody TipoLimiteRequest request){
+        return ResponseEntity.status(201).body(service.cadastrarTipoLimite(request));
+    }
+
+    @PostMapping("/limites")
+    public ResponseEntity<LimiteResponse> cadastrarLimite(@RequestBody LimiteRequest request){
+        return ResponseEntity.status(201).body(service.cadastrarLimite(request));
     }
 
 

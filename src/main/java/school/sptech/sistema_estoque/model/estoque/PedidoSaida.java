@@ -12,13 +12,16 @@ public class PedidoSaida {
 
     @Id
     @ManyToOne
+    @JoinColumn(name = "material_id")
     private Material material;
     @Id
     @ManyToOne
+    @JoinColumn(name = "solicitacao_id")
     private Solicitacao solicitacao;
     private Integer quantidade;
     private LocalDateTime dataSolicitacao;
     @ManyToOne
+    @JoinColumn(name = "escala_id")
     private Escala escala;
     private LocalDateTime dataSaida;
 

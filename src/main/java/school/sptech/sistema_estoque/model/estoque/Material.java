@@ -13,14 +13,35 @@ public class Material {
     @ManyToOne private Categoria categoria;
     @ManyToOne private Estoque estoque;
     @ManyToOne private UnidadeMedida unidadeMedida;
+    private String nomeMaterial;
+    private Integer quantidade;
 
-    public Material(Integer id, Categoria categoria, Estoque estoque, UnidadeMedida unidadeMedida) {
+    public Material(Integer id, Categoria categoria, Estoque estoque, UnidadeMedida unidadeMedida, String nomeMaterial, Integer quantidade) {
         this.id = id;
         this.categoria = categoria;
         this.estoque = estoque;
         this.unidadeMedida = unidadeMedida;
+        this.nomeMaterial = nomeMaterial;
+        this.quantidade = quantidade;
     }
+
     public Material() {}
+
+    public String getNomeMaterial() {
+        return nomeMaterial;
+    }
+
+    public void setNomeMaterial(String nomeMaterial) {
+        this.nomeMaterial = nomeMaterial;
+    }
+
+    public Integer getQuantidade() {
+        return quantidade;
+    }
+
+    public void setQuantidade(Integer quantidade) {
+        this.quantidade = quantidade;
+    }
 
     public Integer getId() {return id;}
     public void setId(Integer id) {this.id = id;}
