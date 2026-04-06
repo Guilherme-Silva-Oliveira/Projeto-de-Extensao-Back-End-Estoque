@@ -14,15 +14,34 @@ public class Material {
     @ManyToOne private Categoria categoria;
     @ManyToOne private Almoxarifado almoxarifado;
     @ManyToOne private UnidadeMedida unidadeMedida;
+    private Integer quantidade;
 
-    public Material(Integer id, String nomeMaterial, Categoria categoria, Almoxarifado almoxarifado, UnidadeMedida unidadeMedida) {
+    public Material(Integer id, Categoria categoria, Almoxarifado almoxarifado, UnidadeMedida unidadeMedida, String nomeMaterial, Integer quantidade) {
         this.id = id;
         this.nomeMaterial = nomeMaterial;
         this.categoria = categoria;
         this.almoxarifado = almoxarifado;
         this.unidadeMedida = unidadeMedida;
+        this.quantidade = quantidade;
     }
+
     public Material() {}
+
+    public String getNomeMaterial() {
+        return nomeMaterial;
+    }
+
+    public void setNomeMaterial(String nomeMaterial) {
+        this.nomeMaterial = nomeMaterial;
+    }
+
+    public Integer getQuantidade() {
+        return quantidade;
+    }
+
+    public void setQuantidade(Integer quantidade) {
+        this.quantidade = quantidade;
+    }
 
     public Integer getId() {return id;}
     public void setId(Integer id) {this.id = id;}
@@ -32,8 +51,6 @@ public class Material {
     public void setEstoque(Almoxarifado estoque) {this.almoxarifado = estoque;}
     public UnidadeMedida getUnidadeMedida() {return unidadeMedida;}
     public void setUnidadeMedida(UnidadeMedida unidadeMedida) {this.unidadeMedida = unidadeMedida;}
-    public String getNomeMaterial() {return nomeMaterial;}
-    public void setNomeMaterial(String nomeMaterial) {this.nomeMaterial = nomeMaterial;}
     public Almoxarifado getAlmoxarifado() {return almoxarifado;}
     public void setAlmoxarifado(Almoxarifado almoxarifado) {this.almoxarifado = almoxarifado;}
 }
