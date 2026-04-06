@@ -17,11 +17,12 @@ public class SistemaMapper {
     }
 
     // MATERIAL
-    public Material toMaterialEntity(MaterialRequest request, Categoria categoria, Estoque estoque, UnidadeMedida unidadeMedida){
+    public Material toMaterialEntity(MaterialRequest request, Categoria categoria, Almoxarifado almoxarifado,UnidadeMedida unidadeMedida){
         Material m = new Material();
         m.setCategoria(categoria);
-        m.setEstoque(estoque);
+        m.setEstoque(almoxarifado);
         m.setUnidadeMedida(unidadeMedida);
+        m.setNomeMaterial(request.nomeMaterial());
         return m;
     }
     public MaterialResponse toMaterialResponse(Material entity){
@@ -150,28 +151,20 @@ public class SistemaMapper {
         );
     }
 
-    // ESTOQUE
-    public EstoqueResponse toEstoqueResponse(Estoque entity) {
-        return new EstoqueResponse(entity.getId());
-    }
-
     // ALMOXARIFE
-    public Almoxarife toAlmoxarifeEntity(AlmoxarifeRequest request, Almoxarifado almoxarifado, Estoque estoque) {
+    public Almoxarife toAlmoxarifeEntity(AlmoxarifeRequest request, Almoxarifado almoxarifado) {
         Almoxarife a = new Almoxarife();
         a.setNome(request.nome());
         a.setEmail(request.email());
         a.setTelefone(request.telefone());
         a.setSenha(request.senha());
         a.setAlmoxarifado(almoxarifado);
-        a.setEstoque(estoque);
         return a;
     }
 
     public AlmoxarifeResponse toAlmoxarifeResponse(Almoxarife entity) {
         Integer almoxarifadoId = entity.getAlmoxarifado() != null ? entity.getAlmoxarifado().getId() : null;
-        Integer estoqueId = entity.getEstoque() != null ? entity.getEstoque().getId() : null;
         AlmoxarifadoResponse almoxarifadoResponse = entity.getAlmoxarifado() != null ? toAlmoxarifadoResponse(entity.getAlmoxarifado()) : null;
-        EstoqueResponse estoqueResponse = entity.getEstoque() != null ? toEstoqueResponse(entity.getEstoque()) : null;
         return new AlmoxarifeResponse(
             entity.getId(),
             entity.getNome(),
@@ -179,9 +172,7 @@ public class SistemaMapper {
             entity.getTelefone(),
             entity.getSenha(),
             almoxarifadoId,
-            estoqueId,
-            almoxarifadoResponse,
-            estoqueResponse
+            almoxarifadoResponse
         );
     }
 

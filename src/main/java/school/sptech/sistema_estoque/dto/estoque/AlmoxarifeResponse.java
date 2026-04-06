@@ -7,8 +7,6 @@ public record AlmoxarifeResponse(
         String telefone,
         String senha,
         Integer idAlmoxarifado,
-        Integer idEstoque,
-        AlmoxarifadoResponse almoxarifado,
-        EstoqueResponse estoque
+        AlmoxarifadoResponse almoxarifado
 ) {
 }

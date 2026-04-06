@@ -33,21 +33,16 @@ public class Almoxarife {
     @JoinColumn(name = "almoxarifado_id")
     private Almoxarifado almoxarifado;
 
-    @ManyToOne
-    @JoinColumn(name = "estoque_id")
-    private Estoque estoque;
-
     public Almoxarife() {
     }
 
-    public Almoxarife(Integer id, String nome, String email, String telefone, String senha, Almoxarifado almoxarifado, Estoque estoque) {
+    public Almoxarife(Integer id, String nome, String email, String telefone, String senha, Almoxarifado almoxarifado) {
         this.id = id;
         this.nome = nome;
         this.email = email;
         this.telefone = telefone;
         this.senha = senha;
         this.almoxarifado = almoxarifado;
-        this.estoque = estoque;
     }
 
     public Integer getId() {
@@ -96,13 +91,5 @@ public class Almoxarife {
 
     public void setAlmoxarifado(Almoxarifado almoxarifado) {
         this.almoxarifado = almoxarifado;
-    }
-
-    public Estoque getEstoque() {
-        return estoque;
-    }
-
-    public void setEstoque(Estoque estoque) {
-        this.estoque = estoque;
     }
 }

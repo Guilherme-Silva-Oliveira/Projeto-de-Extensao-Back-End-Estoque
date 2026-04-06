@@ -11,8 +11,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import school.sptech.sistema_estoque.dto.estoque.*;
-import school.sptech.sistema_estoque.model.estoque.Estoque;
-import school.sptech.sistema_estoque.repository.EstoqueRepository;
+import school.sptech.sistema_estoque.model.estoque.Almoxarifado;
+import school.sptech.sistema_estoque.repository.AlmoxarifadoRepository;
 
 import java.time.LocalDateTime;
 
@@ -34,7 +34,7 @@ class SistemaControllerIntegrationTest {
     private ObjectMapper objectMapper;
 
     @Autowired
-    private EstoqueRepository estoqueRepository;
+    private AlmoxarifadoRepository almoxarifadoRepository;
 
     @Test
     void postFornecedorRelacionaTipoFornecedor() throws Exception {
@@ -59,18 +59,20 @@ class SistemaControllerIntegrationTest {
     }
 
     @Test
-    void postMaterialRelacionaCategoriaEstoqueUnidade() throws Exception {
+    void postMaterialRelacionaCategoriaAlmoxarifadoUnidade() throws Exception {
         JsonNode categoriaJson = postJson("/v1/categorias", new CategoriaRequest("Informatica"));
         int categoriaId = categoriaJson.get("id").asInt();
 
         JsonNode unidadeJson = postJson("/v1/unidadeMedida", new UnidadeMedidaRequest("Unidade"));
         int unidadeId = unidadeJson.get("id").asInt();
 
-        Estoque estoque = estoqueRepository.save(new Estoque());
+        Almoxarifado almoxarifado = new Almoxarifado();
+        almoxarifado.setNumeroSala(1);
+        almoxarifado = almoxarifadoRepository.save(almoxarifado);
 
         MaterialRequest materialRequest = new MaterialRequest(
                 categoriaId,
-                estoque.getId(),
+                almoxarifado.getId(),
                 "Mouse",
                 unidadeId
         );
@@ -122,11 +124,13 @@ class SistemaControllerIntegrationTest {
         int categoriaId = categoriaJson.get("id").asInt();
         JsonNode unidadeJson = postJson("/v1/unidadeMedida", new UnidadeMedidaRequest("Caixa"));
         int unidadeId = unidadeJson.get("id").asInt();
-        Estoque estoque = estoqueRepository.save(new Estoque());
+        Almoxarifado almoxarifado = new Almoxarifado();
+        almoxarifado.setNumeroSala(2);
+        almoxarifado = almoxarifadoRepository.save(almoxarifado);
 
         JsonNode materialJson = postJson("/v1/materiais", new MaterialRequest(
                 categoriaId,
-                estoque.getId(),
+                almoxarifado.getId(),
                 "Luva",
                 unidadeId
         ));
@@ -155,10 +159,12 @@ class SistemaControllerIntegrationTest {
         int categoriaId = categoriaJson.get("id").asInt();
         JsonNode unidadeJson = postJson("/v1/unidadeMedida", new UnidadeMedidaRequest("Pacote"));
         int unidadeId = unidadeJson.get("id").asInt();
-        Estoque estoque = estoqueRepository.save(new Estoque());
+        Almoxarifado almoxarifado = new Almoxarifado();
+        almoxarifado.setNumeroSala(3);
+        almoxarifado = almoxarifadoRepository.save(almoxarifado);
         JsonNode materialJson = postJson("/v1/materiais", new MaterialRequest(
                 categoriaId,
-                estoque.getId(),
+                almoxarifado.getId(),
                 "Papel",
                 unidadeId
         ));
@@ -198,7 +204,7 @@ class SistemaControllerIntegrationTest {
     }
 
     @Test
-    void postAlmoxarifeRelacionaAlmoxarifadoEEstoque() throws Exception {
+    void postAlmoxarifeRelacionaAlmoxarifado() throws Exception {
         JsonNode tipoLimiteJson = postJson("/v1/tipos-limite", new TipoLimiteRequest("Unidade"));
         int tipoLimiteId = tipoLimiteJson.get("id").asInt();
 
@@ -208,15 +214,12 @@ class SistemaControllerIntegrationTest {
         JsonNode almoxarifadoJson = postJson("/v1/almoxarifados", new AlmoxarifadoRequest(12, java.util.List.of(limiteId)));
         int almoxarifadoId = almoxarifadoJson.get("id").asInt();
 
-        Estoque estoque = estoqueRepository.save(new Estoque());
-
         AlmoxarifeRequest almoxarifeRequest = new AlmoxarifeRequest(
                 "Carlos",
                 "carlos@example.com",
                 "11933334444",
                 "senha123",
-                almoxarifadoId,
-                estoque.getId()
+                almoxarifadoId
         );
 
         mockMvc.perform(post("/v1/almoxarifes")
@@ -225,7 +228,6 @@ class SistemaControllerIntegrationTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", notNullValue()))
                 .andExpect(jsonPath("$.idAlmoxarifado").value(almoxarifadoId))
-                .andExpect(jsonPath("$.idEstoque").value(estoque.getId()))
                 .andExpect(jsonPath("$.almoxarifado.idsLimites[0]").value(limiteId));
     }
 

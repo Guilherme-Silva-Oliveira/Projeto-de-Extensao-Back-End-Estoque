@@ -14,7 +14,7 @@ import java.util.Optional;
 public class SistemaService {
     private final CategoriaRepository catrepository;
     private final MaterialRepository matrepository;
-    private final EstoqueRepository estrepository;
+    private final AlmoxarifadoRepository estrepository;
     private final UnidadeMedidaRepository unirepository;
 
     private final SistemaMapper mapper;
@@ -30,7 +30,7 @@ public class SistemaService {
     private final FornecedorRepository fornecedorRepository;
     private final PedidoEntradaRepository pedidoEntradaRepository;
 
-    public SistemaService(CategoriaRepository catrepository, MaterialRepository matrepository, EstoqueRepository estrepository, UnidadeMedidaRepository unirepository, SistemaMapper mapper, ProfessorRepository professorRepository, SolicitacaoRepository solicitacaoRepository, PedidoSaidaRepository pedidoSaidaRepository, EscalaRepository escalaRepository, TipoLimiteRepository tipoLimiteRepository, LimiteRepository limiteRepository, AlmoxarifadoRepository almoxarifadoRepository, AlmoxarifeRepository almoxarifeRepository, TipoFornecedorRepository tipoFornecedorRepository, FornecedorRepository fornecedorRepository, PedidoEntradaRepository pedidoEntradaRepository) {
+    public SistemaService(CategoriaRepository catrepository, MaterialRepository matrepository, AlmoxarifadoRepository estrepository, UnidadeMedidaRepository unirepository, SistemaMapper mapper, ProfessorRepository professorRepository, SolicitacaoRepository solicitacaoRepository, PedidoSaidaRepository pedidoSaidaRepository, EscalaRepository escalaRepository, TipoLimiteRepository tipoLimiteRepository, LimiteRepository limiteRepository, AlmoxarifadoRepository almoxarifadoRepository, AlmoxarifeRepository almoxarifeRepository, TipoFornecedorRepository tipoFornecedorRepository, FornecedorRepository fornecedorRepository, PedidoEntradaRepository pedidoEntradaRepository) {
         this.catrepository = catrepository;
         this.matrepository = matrepository;
         this.estrepository = estrepository;
@@ -76,16 +76,16 @@ public class SistemaService {
         // VALIDAÇÕES OPTIONAL -- POSSÍVEL DE OTIMIZAR
         Optional<Categoria> catOpt = catrepository.findById(request.idCategoria());
         if (catOpt.isEmpty()){throw new CategoriaNaoExisteException("Categoria Não Encontrada");}
-        Optional<Estoque> estOpt = estrepository.findById(request.idEstoque());
+        Optional<Almoxarifado> estOpt = estrepository.findById(request.idEstoque());
         if (estOpt.isEmpty()){throw new EstoqueNaoExisteException("Estoque Não Encontrada");}
         Optional<UnidadeMedida> uniOpt = unirepository.findById(request.idUnidadeMedida());
-        if (uniOpt.isEmpty()){throw new UnidadeMedidaNaoExisteException("Categoria Não Encontrada");}
+        if (uniOpt.isEmpty()){throw new UnidadeMedidaNaoExisteException("Unidade de Medida Não Encontrada");}
 
         // CONVERSÃO OPTIONAL - ENTIDADE CATEGORIA, ESTOQUE E UNIDADE DE MEDIDA
         Categoria c = catOpt.get();
-        Estoque e = estOpt.get();
+        Almoxarifado a = estOpt.get();
         UnidadeMedida u = uniOpt.get();
-        Material m = mapper.toMaterialEntity(request,c,e,u); // CONVERSÃO REQUEST - ENTIDADE MATERIAL
+        Material m = mapper.toMaterialEntity(request,c,a,u); // CONVERSÃO REQUEST - ENTIDADE MATERIAL
         matrepository.save(m);
         return mapper.toMaterialResponse(m);
     }
@@ -268,12 +268,7 @@ public class SistemaService {
             throw new InvalidAlmoxarifadoRequestException("Almoxarifado nao encontrado");
         }
 
-        Optional<Estoque> estoqueOptional = estrepository.findById(request.idEstoque());
-        if (estoqueOptional.isEmpty()) {
-            throw new EstoqueNaoExisteException("Estoque nao encontrado");
-        }
-
-        Almoxarife almoxarife = mapper.toAlmoxarifeEntity(request, almoxarifadoOptional.get(), estoqueOptional.get());
+        Almoxarife almoxarife = mapper.toAlmoxarifeEntity(request, almoxarifadoOptional.get());
         Almoxarife salvo = almoxarifeRepository.save(almoxarife);
         return mapper.toAlmoxarifeResponse(salvo);
     }

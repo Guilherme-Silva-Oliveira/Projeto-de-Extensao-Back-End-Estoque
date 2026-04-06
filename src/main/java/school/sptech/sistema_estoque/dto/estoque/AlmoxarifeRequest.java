@@ -5,7 +5,6 @@ public record AlmoxarifeRequest(
         String email,
         String telefone,
         String senha,
-        Integer idAlmoxarifado,
-        Integer idEstoque
+        Integer idAlmoxarifado
 ) {
 }
