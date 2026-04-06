@@ -36,7 +36,7 @@ public class SolicitacaoService {
     public SolicitacaoResponse cadastrarSolicitacao(SolicitacaoIARequest request) {
         if (request == null){throw new InvalidSolicitacaoRequestException("Solicitacao Inválida");}
 
-        Optional<Professor> professorOptional = prorepository.findByName(request.nome_professor());
+        Optional<Professor> professorOptional = prorepository.findByNome(request.nome_professor());
         if (professorOptional.isEmpty()){throw new InvalidProfessorRequestException("Professor não encontrado");}
 
         String data = request.data_solicitacao();

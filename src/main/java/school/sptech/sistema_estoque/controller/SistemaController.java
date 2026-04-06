@@ -6,24 +6,14 @@ import school.sptech.sistema_estoque.dto.classapp.LabelsRequest;
 import school.sptech.sistema_estoque.dto.classapp.TagsRequest;
 import school.sptech.sistema_estoque.dto.codigo.CodigoRequest;
 import school.sptech.sistema_estoque.dto.estoque.*;
-import school.sptech.sistema_estoque.dto.ia.SolicitacaoIARequest;
-import school.sptech.sistema_estoque.dto.mapper.SistemaMapper;
-import school.sptech.sistema_estoque.model.estoque.PedidoEntrada;
-import school.sptech.sistema_estoque.model.estoque.PedidoSaida;
-import school.sptech.sistema_estoque.model.estoque.Solicitacao;
 import school.sptech.sistema_estoque.service.ClassAppService;
-import school.sptech.sistema_estoque.service.SistemaService;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/v1")
 public class SistemaController {
     private final ClassAppService serviceClassApp;
-    private final SistemaService service;
-    public SistemaController(ClassAppService serviceClassApp, SistemaService service) {
+    public SistemaController(ClassAppService serviceClassApp) {
         this.serviceClassApp = serviceClassApp;
-        this.service = service;
     }
 
     // CLASSAPP - INTREGRAÇÃO COM API (PARA EXCLUIR)
@@ -40,4 +30,15 @@ public class SistemaController {
 
     // CRUD - SISTEMA ALMOXARIFADO XINGU
     // DADO QUE O CRUD FOI FEITO NOS SERVICES, PRECISAMOS TESTAR ADEQUADAMENTE NO CONTROLLER
+    @PostMapping("/codigos")
+    public ResponseEntity<CodigoRequest> pegarCodigoBarras(@RequestBody CodigoRequest codigo){
+        System.out.println(">>> Estoque recebeu: " + codigo.codigo());
+        return ResponseEntity.ok(codigo);
+    }
+
+    @PostMapping("/ia")
+    public ResponseEntity<SolicitacaoRequest> receberSolicitacao(@RequestBody SolicitacaoRequest solicitacao){
+        System.out.println(">>> Estoque recebeu: "+ solicitacao);
+        return ResponseEntity.ok(solicitacao);
+    }
 }
