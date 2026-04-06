@@ -352,9 +352,7 @@ public class SistemaService {
     }
     // -------------- FIM PEDIDO_ENTRADA --------------
 
-    // -------------- FORNECEDOR + TIPO_FORNECEDOR --------------
-    // CRUD FORNECEDOR
-    // -------------- FIM FORNECEDOR + TIPO_FORNECEDOR --------------
+
 
     // -------------- PEDIDO_SAIDA + PEDIDO ENTRADA --------------
     // CRUD PEDIDO_SAIDA + PEDIDO_ENTRADA
@@ -391,8 +389,6 @@ public class SistemaService {
         return mapper.toPedidoSaidaResponse(pedidoSaida);
 
     }
-
-
 
 
     // -------------- FIM PEDIDO_SAIDA + PEDIDO_ENTRADA --------------

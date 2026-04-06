@@ -72,6 +72,7 @@ public class SistemaMapper {
     entity.setSolicitacao(solicitacao);
     entity.setEscala(escala);
     entity.setQuantidade(request.quantidade());
+    entity.setDataSolicitacao(request.dataSolicitacao() != null ? request.dataSolicitacao() : java.time.LocalDateTime.now());
     entity.setDataSaida(request.dataSaida());
 
     return entity;
@@ -236,7 +237,6 @@ public class SistemaMapper {
         FornecedorResponse fornecedorResponse = entity.getFornecedor() != null ? toFornecedorResponse(entity.getFornecedor()) : null;
         MaterialResponse materialResponse = entity.getMaterial() != null ? toMaterialResponse(entity.getMaterial()) : null;
         return new PedidoEntradaResponse(
-            entity.getId(),
             fornecedorId,
             materialId,
             entity.getQuantidade(),

@@ -40,19 +40,16 @@ public class SistemaController {
 
     // CRUD - SISTEMA ALMOXARIFADO XINGU
     // GETS
-//    @GetMapping("/fornecedores/tipos")
-//    public ResponseEntity<Void> listarTipoFornecedores(){}
-//
-//    @GetMapping("/fornecedores")
-//    public ResponseEntity<Void> listarFornecedores(){}
-    @GetMapping("/fornecedores/tipos")
-    public ResponseEntity<List<TipoFornecedorResponse>> listarTipoFornecedores() {
-        return ResponseEntity.ok(service.listarTipoFornecedores());
-    }
+
 
     @GetMapping("/fornecedores")
     public ResponseEntity<List<FornecedorResponse>> listarFornecedores() {
         return ResponseEntity.ok(service.listarFornecedores());
+    }
+
+    @GetMapping("/fornecedores/tipos")
+    public ResponseEntity<List<TipoFornecedorResponse>> listarTipoFornecedores() {
+        return ResponseEntity.ok(service.listarTipoFornecedores());
     }
 
     @GetMapping("/materiais/unidades")
@@ -80,13 +77,7 @@ public class SistemaController {
         return ResponseEntity.ok(service.listarAlmoxarifes());
     }
 
-//
-//    @GetMapping("/historicos/entrada")
-//    public ResponseEntity<Void> listarHistoricoEntrada(){}
-//
-//    @GetMapping("/historicos/saida")
-//    public ResponseEntity<Void> listarHistoricoSaida(){}
-//
+
     @GetMapping("/professores")
     public ResponseEntity<List<ProfessorResponse>> listarProfessores(){
         return ResponseEntity.ok(service.listarProfessor());
@@ -122,13 +113,6 @@ public class SistemaController {
         return ResponseEntity.ok(service.listarLimites());
     }
 
-//
-//    // POSTS
-//    @PostMapping
-//    public ResponseEntity<Void> cadastrarTipoFornecedor(){}
-//
-//    @PostMapping
-//    public ResponseEntity<Void> cadastrarFornecedor(){}
     @PostMapping("/fornecedores/tipos")
     public ResponseEntity<TipoFornecedorResponse> cadastrarTipoFornecedor(@RequestBody TipoFornecedorRequest request) {
         return ResponseEntity.status(201).body(service.cadastrarTipoFornecedor(request));
@@ -158,10 +142,7 @@ public class SistemaController {
     public ResponseEntity<SolicitacaoResponse> cadastrarSolicitacao(@RequestBody SolicitacaoRequest request){
         return ResponseEntity.status(201).body(service.cadastrarSolicitacao(request));
     }
-//
-//    @PostMapping
-//    public ResponseEntity<Void> cadastrarAlmoxarife(){}
-//
+
     @PostMapping("/almoxarifados")
     public ResponseEntity<AlmoxarifadoResponse> cadastrarAlmoxarifado(@RequestBody AlmoxarifadoRequest request) {
         return ResponseEntity.status(201).body(service.cadastrarAlmoxarifado(request));
@@ -171,19 +152,7 @@ public class SistemaController {
     public ResponseEntity<AlmoxarifeResponse> cadastrarAlmoxarife(@RequestBody AlmoxarifeRequest request) {
         return ResponseEntity.status(201).body(service.cadastrarAlmoxarife(request));
     }
-//
-//    @PostMapping("/historico")
-//    public ResponseEntity<Void> cadastrarTipoLimite(){}
-//
-//    @PostMapping("/historico")
-//    public ResponseEntity<Void> cadastrarLimite(){}
-//
-//    @PostMapping("/historico")
-//    public ResponseEntity<Void> registroHistoricoSaida(){}
-//
-//    @PostMapping("/historico")
-//    public ResponseEntity<Void> registroHistoricoEntrada(){}
-//
+
     @PostMapping("/professores")
     public ResponseEntity<ProfessorResponse> cadastrarProfessor(@RequestBody ProfessorRequest request){
         return ResponseEntity.status(201).body(service.cadastrarProfessor(request));

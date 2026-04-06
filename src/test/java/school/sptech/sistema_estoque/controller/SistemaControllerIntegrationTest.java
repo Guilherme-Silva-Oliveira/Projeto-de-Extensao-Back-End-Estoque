@@ -143,7 +143,6 @@ class SistemaControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(pedidoEntradaRequest)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id", notNullValue()))
                 .andExpect(jsonPath("$.fornecedorId").value(fornecedorId))
                 .andExpect(jsonPath("$.materialId").value(materialId))
                 .andExpect(jsonPath("$.fornecedor.id").value(fornecedorId))
@@ -184,6 +183,7 @@ class SistemaControllerIntegrationTest {
                 materialId,
                 solicitacaoId,
                 5,
+                LocalDateTime.of(2026, 4, 5, 18, 0),
                 escalaId,
                 LocalDateTime.of(2026, 4, 6, 8, 0)
         );
