@@ -4,8 +4,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import school.sptech.sistema_estoque.dto.classapp.LabelsRequest;
 import school.sptech.sistema_estoque.dto.classapp.TagsRequest;
+import school.sptech.sistema_estoque.dto.codigo.CodigoRequest;
 import school.sptech.sistema_estoque.dto.estoque.*;
+import school.sptech.sistema_estoque.dto.ia.SolicitacaoIARequest;
 import school.sptech.sistema_estoque.dto.mapper.SistemaMapper;
+import school.sptech.sistema_estoque.model.estoque.PedidoEntrada;
 import school.sptech.sistema_estoque.model.estoque.PedidoSaida;
 import school.sptech.sistema_estoque.model.estoque.Solicitacao;
 import school.sptech.sistema_estoque.service.ClassAppService;
@@ -28,20 +31,15 @@ public class SistemaController {
     public ResponseEntity<TagsRequest> pegarTags(){
         return ResponseEntity.ok(serviceClassApp.getTags());
     }
-
     @GetMapping("/students")
     public ResponseEntity<String> pegarEstudantes() {return ResponseEntity.ok(serviceClassApp.getStudents());}
-
     @GetMapping("/staffs")
     public ResponseEntity<String> pegarAdministradores() {return ResponseEntity.ok(serviceClassApp.getStaffs());}
-
     @GetMapping("/labels")
     public ResponseEntity<LabelsRequest> pegarLabels() {return ResponseEntity.ok(serviceClassApp.getLabels());}
 
     // CRUD - SISTEMA ALMOXARIFADO XINGU
     // GETS
-
-
     @GetMapping("/fornecedores")
     public ResponseEntity<List<FornecedorResponse>> listarFornecedores() {
         return ResponseEntity.ok(service.listarFornecedores());
@@ -138,10 +136,10 @@ public class SistemaController {
         return ResponseEntity.status(201).body(service.cadastrarCategoria(request));
     }
 
-    @PostMapping("/solicitacoes")
-    public ResponseEntity<SolicitacaoResponse> cadastrarSolicitacao(@RequestBody SolicitacaoRequest request){
-        return ResponseEntity.status(201).body(service.cadastrarSolicitacao(request));
-    }
+//    @PostMapping("/solicitacoes")
+//    public ResponseEntity<SolicitacaoResponse> cadastrarSolicitacao(@RequestBody SolicitacaoRequest request){
+//        return ResponseEntity.status(201).body(service.cadastrarSolicitacao(request));
+//    }
 
     @PostMapping("/almoxarifados")
     public ResponseEntity<AlmoxarifadoResponse> cadastrarAlmoxarifado(@RequestBody AlmoxarifadoRequest request) {
@@ -170,10 +168,10 @@ public class SistemaController {
         return ResponseEntity.status(201).body(service.cadastrarPedidoSaida(request));
     }
     
-    @PostMapping("/pedido-entrada")
-    public ResponseEntity<PedidoEntradaResponse> cadastrarPedidoEntrada(@RequestBody PedidoEntradaRequest request) {
-        return ResponseEntity.status(201).body(service.cadastrarPedidoEntrada(request));
-    }
+//    @PostMapping("/pedido-entrada")
+//    public ResponseEntity<PedidoEntradaResponse> cadastrarPedidoEntrada(@RequestBody PedidoEntradaRequest request) {
+//        return ResponseEntity.status(201).body(service.cadastrarPedidoEntrada(request));
+//    }
 
     @PostMapping("/escalas")
     public ResponseEntity<EscalaResponse> cadastrarEscala(@RequestBody EscalaRequest request){
@@ -190,5 +188,21 @@ public class SistemaController {
         return ResponseEntity.status(201).body(service.cadastrarLimite(request));
     }
 
+    // ------- CÓDIGO DE BARRAS -------
+    @PostMapping("/codigos")
+    public ResponseEntity<PedidoEntradaResponse> registrarEntrada(@RequestBody CodigoRequest codigo, @RequestBody PedidoEntradaRequest pedidoEntrada){
+        System.out.println(">>> Estoque recebeu: " + codigo.codigo());
+        service.cadastrarPedidoEntrada(pedidoEntrada,codigo);
+        return ResponseEntity.ok(service.cadastrarPedidoEntrada(pedidoEntrada,codigo));
+    }
+    // ------- FIM CÓDIGO DE BARRAS -------
 
+    // ------- SOLICITAÇÃO VIA IA -------
+    @PostMapping("/ia")
+    public ResponseEntity<SolicitacaoResponse> registrarSolicitacao(@RequestBody SolicitacaoIARequest solicitacao){
+        System.out.println(">>> Estoque recebeu: "+ solicitacao);
+        service.cadastrarSolicitacao(solicitacao);
+        return ResponseEntity.ok(service.cadastrarSolicitacao(solicitacao));
+    }
+    // ------- FIM SOLICITAÇÃO VIA IA -------
 }
