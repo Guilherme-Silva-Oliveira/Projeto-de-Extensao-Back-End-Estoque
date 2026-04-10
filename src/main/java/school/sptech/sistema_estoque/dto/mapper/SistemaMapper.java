@@ -2,7 +2,11 @@ package school.sptech.sistema_estoque.dto.mapper;
 
 import org.springframework.stereotype.Component;
 import school.sptech.sistema_estoque.dto.estoque.*;
+import school.sptech.sistema_estoque.dto.ia.SolicitacaoIARequest;
 import school.sptech.sistema_estoque.model.estoque.*;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Component
 public class SistemaMapper {
@@ -23,6 +27,7 @@ public class SistemaMapper {
         m.setEstoque(almoxarifado);
         m.setUnidadeMedida(unidadeMedida);
         m.setNomeMaterial(request.nomeMaterial());
+        m.setCodigoBarras(request.codigoBarras());
         return m;
     }
     public MaterialResponse toMaterialResponse(Material entity){
@@ -53,12 +58,13 @@ public class SistemaMapper {
     }
 
     // SOLICITACAO
-    public Solicitacao toSolicitacaoEntity(SolicitacaoRequest request, Professor professor){
+    public Solicitacao toSolicitacaoEntity(SolicitacaoIARequest request, Professor professor, LocalDateTime data){
         Solicitacao entity = new Solicitacao();
-        entity.setEscala(request.escala());
-        entity.setDescricao(request.descricao());
-        entity.setDataSolicitacao(request.dataSolicitacao());
+        //VALIDAR COM EQUIPE
+//        entity.setEscala(request.escala());
+        entity.setDataSolicitacao(data);
         entity.setProfessor(professor);
+        entity.setDescricao(request.nome_material()+" para "+request.nome_professor());
         return entity;
     }
 
