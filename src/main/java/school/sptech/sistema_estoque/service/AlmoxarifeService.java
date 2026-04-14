@@ -2,8 +2,6 @@ package school.sptech.sistema_estoque.service;
 
 import org.springframework.stereotype.Service;
 import school.sptech.sistema_estoque.dto.estoque.AlmoxarifeRequest;
-import school.sptech.sistema_estoque.dto.estoque.AlmoxarifeResponse;
-import school.sptech.sistema_estoque.dto.mapper.SistemaMapper;
 import school.sptech.sistema_estoque.exception.InvalidAlmoxarifadoRequestException;
 import school.sptech.sistema_estoque.exception.InvalidAlmoxarifeRequestException;
 import school.sptech.sistema_estoque.model.estoque.Almoxarifado;
@@ -18,14 +16,12 @@ import java.util.Optional;
 public class AlmoxarifeService {
     private final AlmoxarifadoRepository almoxarifadoRepository;
     private final AlmoxarifeRepository almoxarifeRepository;
-    private final SistemaMapper mapper;
-    public AlmoxarifeService(AlmoxarifadoRepository almoxarifadoRepository, AlmoxarifeRepository almoxarifeRepository, SistemaMapper mapper) {
+    public AlmoxarifeService(AlmoxarifadoRepository almoxarifadoRepository, AlmoxarifeRepository almoxarifeRepository) {
         this.almoxarifadoRepository = almoxarifadoRepository;
         this.almoxarifeRepository = almoxarifeRepository;
-        this.mapper = mapper;
     }
 
-    public AlmoxarifeResponse cadastrarAlmoxarife(AlmoxarifeRequest request) {
+    public Almoxarife cadastrarAlmoxarife(AlmoxarifeRequest request) {
         if (request == null) {
             throw new InvalidAlmoxarifeRequestException("Almoxarife invalido");
         }
@@ -35,14 +31,11 @@ public class AlmoxarifeService {
             throw new InvalidAlmoxarifadoRequestException("Almoxarifado nao encontrado");
         }
 
-        Almoxarife almoxarife = mapper.toAlmoxarifeEntity(request, almoxarifadoOptional.get());
-        Almoxarife salvo = almoxarifeRepository.save(almoxarife);
-        return mapper.toAlmoxarifeResponse(salvo);
+        Almoxarife almoxarife = new Almoxarife(null, request.nome(), request.email(), request.telefone(), request.senha(), almoxarifadoOptional.get());
+        return almoxarifeRepository.save(almoxarife);
     }
 
-    public List<AlmoxarifeResponse> listarAlmoxarifes() {
-        return almoxarifeRepository.findAll().stream()
-                .map(mapper::toAlmoxarifeResponse)
-                .toList();
+    public List<Almoxarife> listarAlmoxarifes() {
+        return almoxarifeRepository.findAll();
     }
 }

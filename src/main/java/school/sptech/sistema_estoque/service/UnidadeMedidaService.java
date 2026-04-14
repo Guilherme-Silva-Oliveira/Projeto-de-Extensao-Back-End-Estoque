@@ -2,8 +2,6 @@ package school.sptech.sistema_estoque.service;
 
 import org.springframework.stereotype.Service;
 import school.sptech.sistema_estoque.dto.estoque.UnidadeMedidaRequest;
-import school.sptech.sistema_estoque.dto.estoque.UnidadeMedidaResponse;
-import school.sptech.sistema_estoque.dto.mapper.SistemaMapper;
 import school.sptech.sistema_estoque.exception.InvalidUnidadeMedidaException;
 import school.sptech.sistema_estoque.exception.UnidadeMedidaNaoExisteException;
 import school.sptech.sistema_estoque.model.estoque.UnidadeMedida;
@@ -15,22 +13,17 @@ import java.util.Optional;
 @Service
 public class UnidadeMedidaService {
     private final UnidadeMedidaRepository repository;
-    private final SistemaMapper mapper;
-    public UnidadeMedidaService(UnidadeMedidaRepository repository, SistemaMapper mapper) {
+    public UnidadeMedidaService(UnidadeMedidaRepository repository) {
         this.repository = repository;
-        this.mapper = mapper;
     }
 
-    public UnidadeMedidaResponse cadastrarUnidadeMedida(UnidadeMedidaRequest request){
+    public UnidadeMedida cadastrarUnidadeMedida(UnidadeMedidaRequest request){
         if (request==null){throw new InvalidUnidadeMedidaException("Unidade de Medida Inválido");} // VALIDAÇÃO INICIAL
-        UnidadeMedida unidade = mapper.toUnidadeMedidaEntity(request);
-        repository.save(unidade);
-        return mapper.toUnidadeMedidaResponse(unidade);
+        UnidadeMedida unidade = new UnidadeMedida(null, request.nomeUnidade());
+        return repository.save(unidade);
     }
-    public List<UnidadeMedidaResponse> listarUnidadeMedida(){
-        return repository.findAll().stream()
-                .map(mapper::toUnidadeMedidaResponse)
-                .toList();
+    public List<UnidadeMedida> listarUnidadeMedida(){
+        return repository.findAll();
     }
     public void excluirUnidadeMedida(Integer id){
         Optional<UnidadeMedida> opt = repository.findById(id);

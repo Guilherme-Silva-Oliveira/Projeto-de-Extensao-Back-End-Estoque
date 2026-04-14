@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import school.sptech.sistema_estoque.dto.estoque.AlmoxarifadoRequest;
 import school.sptech.sistema_estoque.dto.estoque.AlmoxarifadoResponse;
+import school.sptech.sistema_estoque.dto.mapper.SistemaMapper;
 import school.sptech.sistema_estoque.service.AlmoxarifadoService;
 
 import java.util.List;
@@ -12,17 +13,21 @@ import java.util.List;
 @RequestMapping("/v1/almoxarifados")
 public class AlmoxarifadoController {
     private final AlmoxarifadoService service;
-    public AlmoxarifadoController(AlmoxarifadoService service) {
+    private final SistemaMapper mapper;
+    public AlmoxarifadoController(AlmoxarifadoService service, SistemaMapper mapper) {
         this.service = service;
+        this.mapper = mapper;
     }
 
     @PostMapping
     public ResponseEntity<AlmoxarifadoResponse> cadastrarAlmoxarifado(@RequestBody AlmoxarifadoRequest request){
-        return ResponseEntity.ok(service.cadastrarAlmoxarifado(request));
+        var almoxarifado = service.cadastrarAlmoxarifado(request);
+        return ResponseEntity.ok(mapper.toAlmoxarifadoResponse(almoxarifado));
     }
 
     @GetMapping
     public ResponseEntity<List<AlmoxarifadoResponse>> listarAlmoxarifados(@RequestBody AlmoxarifadoRequest request){
-        return ResponseEntity.ok(service.listarAlmoxarifados());
+        var almoxarifados = service.listarAlmoxarifados();
+        return ResponseEntity.ok(almoxarifados.stream().map(mapper::toAlmoxarifadoResponse).toList());
     }
 }

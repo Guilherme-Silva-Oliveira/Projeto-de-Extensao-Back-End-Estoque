@@ -2,8 +2,6 @@ package school.sptech.sistema_estoque.service;
 
 import org.springframework.stereotype.Service;
 import school.sptech.sistema_estoque.dto.estoque.PedidoSaidaRequest;
-import school.sptech.sistema_estoque.dto.estoque.PedidoSaidaResponse;
-import school.sptech.sistema_estoque.dto.mapper.SistemaMapper;
 import school.sptech.sistema_estoque.exception.InvalidEscalaRequestException;
 import school.sptech.sistema_estoque.exception.InvalidMaterialRequestException;
 import school.sptech.sistema_estoque.exception.InvalidPedidoSaidaRequestException;
@@ -26,22 +24,18 @@ public class SaidaService {
     private final MaterialRepository materialRepository;
     private final SolicitacaoRepository solicitacaoRepository;
     private final EscalaRepository escalaRepository;
-    private final SistemaMapper mapper;
-    public SaidaService(PedidoSaidaRepository pedidoSaidaRepository, MaterialRepository materialRepository, SolicitacaoRepository solicitacaoRepository, EscalaRepository escalaRepository, SistemaMapper mapper) {
+    public SaidaService(PedidoSaidaRepository pedidoSaidaRepository, MaterialRepository materialRepository, SolicitacaoRepository solicitacaoRepository, EscalaRepository escalaRepository) {
         this.pedidoSaidaRepository = pedidoSaidaRepository;
         this.materialRepository = materialRepository;
         this.solicitacaoRepository = solicitacaoRepository;
         this.escalaRepository = escalaRepository;
-        this.mapper = mapper;
     }
 
-    public List<PedidoSaidaResponse> listarPedidoSaida() {
-        return pedidoSaidaRepository.findAll().stream()
-                .map(mapper::toPedidoSaidaResponse)
-                .toList();
+    public List<PedidoSaida> listarPedidoSaida() {
+        return pedidoSaidaRepository.findAll();
     }
 
-    public PedidoSaidaResponse cadastrarPedidoSaida(PedidoSaidaRequest request) {
+    public PedidoSaida cadastrarPedidoSaida(PedidoSaidaRequest request) {
         if (request == null){throw new InvalidPedidoSaidaRequestException("Pedido Saida Inváldo");}
         Optional<Material> materialOptional = materialRepository.findById(request.materialId());
         if (materialOptional.isEmpty()) {throw new InvalidMaterialRequestException("Material não encontrado");}
@@ -55,8 +49,7 @@ public class SaidaService {
         if (escalaOptional.isEmpty()) {throw new InvalidEscalaRequestException("Escala associada não encontrada");}
         Escala escala = escalaOptional.get();
 
-        PedidoSaida pedidoSaida = mapper.toPedidoSaidaEntity(request, material, solicitacao, escala);
-        pedidoSaidaRepository.save(pedidoSaida);
-        return mapper.toPedidoSaidaResponse(pedidoSaida);
+        PedidoSaida pedidoSaida = new PedidoSaida(material, solicitacao, request.quantidade(), request.dataSolicitacao(), escala, request.dataSaida());
+        return pedidoSaidaRepository.save(pedidoSaida);
     }
 }

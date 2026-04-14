@@ -1,9 +1,7 @@
 package school.sptech.sistema_estoque.service;
 
 import org.springframework.stereotype.Service;
-import school.sptech.sistema_estoque.dto.estoque.SolicitacaoResponse;
 import school.sptech.sistema_estoque.dto.ia.SolicitacaoIARequest;
-import school.sptech.sistema_estoque.dto.mapper.SistemaMapper;
 import school.sptech.sistema_estoque.exception.InvalidProfessorRequestException;
 import school.sptech.sistema_estoque.exception.InvalidSolicitacaoRequestException;
 import school.sptech.sistema_estoque.model.estoque.Professor;
@@ -20,20 +18,16 @@ import java.util.Optional;
 public class SolicitacaoService {
     private final ProfessorRepository prorepository;
     private final SolicitacaoRepository solrepository;
-    private final SistemaMapper mapper;
-    public SolicitacaoService(ProfessorRepository prorepository, SolicitacaoRepository solrepository, SistemaMapper mapper) {
+    public SolicitacaoService(ProfessorRepository prorepository, SolicitacaoRepository solrepository) {
         this.prorepository = prorepository;
         this.solrepository = solrepository;
-        this.mapper = mapper;
     }
 
-    public List<SolicitacaoResponse> listarSolicitacao() {
-        return solrepository.findAll().stream()
-                .map(mapper::toSolicitacaoResponse)
-                .toList();
+    public List<Solicitacao> listarSolicitacao() {
+        return solrepository.findAll();
     }
 
-    public SolicitacaoResponse cadastrarSolicitacao(SolicitacaoIARequest request) {
+    public Solicitacao cadastrarSolicitacao(SolicitacaoIARequest request) {
         if (request == null){throw new InvalidSolicitacaoRequestException("Solicitacao Inválida");}
 
         Optional<Professor> professorOptional = prorepository.findByNome(request.nome_professor());
@@ -42,8 +36,7 @@ public class SolicitacaoService {
         String data = request.data_solicitacao();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
         LocalDateTime dataFormatada = LocalDateTime.parse(data,formatter);
-        Solicitacao solicitacao = mapper.toSolicitacaoEntity(request, professorOptional.get(),dataFormatada);
-        solrepository.save(solicitacao);
-        return mapper.toSolicitacaoResponse(solicitacao);
+        Solicitacao solicitacao = new Solicitacao(null, professorOptional.get(), "", request.nome_material(), dataFormatada);
+        return solrepository.save(solicitacao);
     }
 }

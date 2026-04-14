@@ -2,8 +2,6 @@ package school.sptech.sistema_estoque.service;
 
 import org.springframework.stereotype.Service;
 import school.sptech.sistema_estoque.dto.estoque.AlmoxarifadoRequest;
-import school.sptech.sistema_estoque.dto.estoque.AlmoxarifadoResponse;
-import school.sptech.sistema_estoque.dto.mapper.SistemaMapper;
 import school.sptech.sistema_estoque.exception.InvalidAlmoxarifadoRequestException;
 import school.sptech.sistema_estoque.exception.InvalidLimiteRequestException;
 import school.sptech.sistema_estoque.model.estoque.Almoxarifado;
@@ -17,14 +15,12 @@ import java.util.List;
 public class AlmoxarifadoService {
     private final LimiteRepository limrepository;
     private final AlmoxarifadoRepository almrepository;
-    private final SistemaMapper mapper;
-    public AlmoxarifadoService(LimiteRepository limrepository, AlmoxarifadoRepository almrepository, SistemaMapper mapper) {
+    public AlmoxarifadoService(LimiteRepository limrepository, AlmoxarifadoRepository almrepository) {
         this.limrepository = limrepository;
         this.almrepository = almrepository;
-        this.mapper = mapper;
     }
 
-    public AlmoxarifadoResponse cadastrarAlmoxarifado(AlmoxarifadoRequest request) {
+    public Almoxarifado cadastrarAlmoxarifado(AlmoxarifadoRequest request) {
         if (request == null) {
             throw new InvalidAlmoxarifadoRequestException("Almoxarifado invalido");
         }
@@ -38,14 +34,11 @@ public class AlmoxarifadoService {
             throw new InvalidLimiteRequestException("Limite nao encontrado");
         }
 
-        Almoxarifado almoxarifado = mapper.toAlmoxarifadoEntity(request, limites);
-        Almoxarifado salvo = almrepository.save(almoxarifado);
-        return mapper.toAlmoxarifadoResponse(salvo);
+        Almoxarifado almoxarifado = new Almoxarifado(null, request.numeroSala(), limites);
+        return almrepository.save(almoxarifado);
     }
 
-    public List<AlmoxarifadoResponse> listarAlmoxarifados() {
-        return almrepository.findAll().stream()
-                .map(mapper::toAlmoxarifadoResponse)
-                .toList();
+    public List<Almoxarifado> listarAlmoxarifados() {
+        return almrepository.findAll();
     }
 }

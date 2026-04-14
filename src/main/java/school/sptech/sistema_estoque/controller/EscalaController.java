@@ -2,12 +2,9 @@ package school.sptech.sistema_estoque.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import school.sptech.sistema_estoque.dto.codigo.CodigoRequest;
 import school.sptech.sistema_estoque.dto.estoque.EscalaRequest;
 import school.sptech.sistema_estoque.dto.estoque.EscalaResponse;
-import school.sptech.sistema_estoque.dto.estoque.PedidoEntradaRequest;
-import school.sptech.sistema_estoque.dto.estoque.PedidoEntradaResponse;
-import school.sptech.sistema_estoque.service.EntradaService;
+import school.sptech.sistema_estoque.dto.mapper.SistemaMapper;
 import school.sptech.sistema_estoque.service.EscalaService;
 
 import java.util.List;
@@ -16,17 +13,21 @@ import java.util.List;
 @RequestMapping("/v1/escalas")
 public class EscalaController {
     private final EscalaService service;
-    public EscalaController(EscalaService service) {
+    private final SistemaMapper mapper;
+    public EscalaController(EscalaService service, SistemaMapper mapper) {
         this.service = service;
+        this.mapper = mapper;
     }
 
     @PostMapping
     public ResponseEntity<EscalaResponse> cadastrarEscala(@RequestBody EscalaRequest request){
-        return ResponseEntity.ok(service.cadastrarEscala(request));
+        var escala = service.cadastrarEscala(request);
+        return ResponseEntity.ok(mapper.toEscalaResponse(escala));
     }
 
     @GetMapping
     public ResponseEntity<List<EscalaResponse>> listarCategorias(){
-        return ResponseEntity.ok(service.listarEscala());
+        var escalas = service.listarEscala();
+        return ResponseEntity.ok(escalas.stream().map(mapper::toEscalaResponse).toList());
     }
 }

@@ -2,8 +2,6 @@ package school.sptech.sistema_estoque.service;
 
 import org.springframework.stereotype.Service;
 import school.sptech.sistema_estoque.dto.estoque.MaterialRequest;
-import school.sptech.sistema_estoque.dto.estoque.MaterialResponse;
-import school.sptech.sistema_estoque.dto.mapper.SistemaMapper;
 import school.sptech.sistema_estoque.exception.*;
 import school.sptech.sistema_estoque.model.estoque.Almoxarifado;
 import school.sptech.sistema_estoque.model.estoque.Categoria;
@@ -23,16 +21,14 @@ public class MaterialService {
     private final CategoriaRepository catrepository;
     private final AlmoxarifadoRepository almrepository;
     private final UnidadeMedidaRepository unirepository;
-    private final SistemaMapper mapper;
-    public MaterialService(MaterialRepository matrepository, CategoriaRepository catrepository, AlmoxarifadoRepository almrepository, UnidadeMedidaRepository unirepository, SistemaMapper mapper) {
+    public MaterialService(MaterialRepository matrepository, CategoriaRepository catrepository, AlmoxarifadoRepository almrepository, UnidadeMedidaRepository unirepository) {
         this.matrepository = matrepository;
         this.catrepository = catrepository;
         this.almrepository = almrepository;
         this.unirepository = unirepository;
-        this.mapper = mapper;
     }
 
-    public MaterialResponse cadastrarMaterial(MaterialRequest request){
+    public Material cadastrarMaterial(MaterialRequest request){
         if (request==null){throw new InvalidMaterialRequestException("Material Inválido");} // VALIDAÇÃO INICIAL
 
         // VALIDAÇÕES OPTIONAL -- POSSÍVEL DE OTIMIZAR
@@ -47,15 +43,12 @@ public class MaterialService {
         Categoria c = catOpt.get();
         Almoxarifado a = estOpt.get();
         UnidadeMedida u = uniOpt.get();
-        Material m = mapper.toMaterialEntity(request,c,a,u); // CONVERSÃO REQUEST - ENTIDADE MATERIAL
-        matrepository.save(m);
-        return mapper.toMaterialResponse(m);
+        Material m = new Material(null, request.nomeMaterial(), request.codigoBarras(), c, a, u, 0); // CONVERSÃO REQUEST - ENTIDADE MATERIAL
+        return matrepository.save(m);
     }
-    public List<MaterialResponse> listarMateriais(){
-        // CONVERTENDO ENTIDADE - RESPONSE MATERIAL + EXIBIR
-        return matrepository.findAll().stream()
-                .map(mapper::toMaterialResponse)
-                .toList();
+    public List<Material> listarMateriais(){
+        // RETORNANDO ENTIDADES MATERIAL
+        return matrepository.findAll();
     }
     public void excluirMaterial(Integer id){
         Optional<Material> opt = matrepository.findById(id);

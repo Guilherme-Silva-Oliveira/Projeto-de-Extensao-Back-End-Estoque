@@ -2,10 +2,7 @@ package school.sptech.sistema_estoque.service;
 
 import org.springframework.stereotype.Service;
 import school.sptech.sistema_estoque.dto.estoque.FornecedorRequest;
-import school.sptech.sistema_estoque.dto.estoque.FornecedorResponse;
 import school.sptech.sistema_estoque.dto.estoque.TipoFornecedorRequest;
-import school.sptech.sistema_estoque.dto.estoque.TipoFornecedorResponse;
-import school.sptech.sistema_estoque.dto.mapper.SistemaMapper;
 import school.sptech.sistema_estoque.exception.InvalidFornecedorRequestException;
 import school.sptech.sistema_estoque.exception.InvalidTipoFornecedorRequestException;
 import school.sptech.sistema_estoque.model.estoque.Fornecedor;
@@ -20,30 +17,25 @@ import java.util.Optional;
 public class FornecedorService {
     private final FornecedorRepository forrepository;
     private final TipoFornecedorRepository tpfrepository;
-    private final SistemaMapper mapper;
-    public FornecedorService(FornecedorRepository forrepository, TipoFornecedorRepository tpfrepository, SistemaMapper mapper) {
+    public FornecedorService(FornecedorRepository forrepository, TipoFornecedorRepository tpfrepository) {
         this.forrepository = forrepository;
         this.tpfrepository = tpfrepository;
-        this.mapper = mapper;
     }
 
-    public TipoFornecedorResponse cadastrarTipoFornecedor(TipoFornecedorRequest request) {
+    public TipoFornecedor cadastrarTipoFornecedor(TipoFornecedorRequest request) {
         if (request == null) {
             throw new InvalidTipoFornecedorRequestException("Tipo fornecedor invalido");
         }
 
-        TipoFornecedor tipoFornecedor = mapper.toTipoFornecedorEntity(request);
-        TipoFornecedor salvo = tpfrepository.save(tipoFornecedor);
-        return mapper.toTipoFornecedorResponse(salvo);
+        TipoFornecedor tipoFornecedor = new TipoFornecedor(null, request.nomeTipo());
+        return tpfrepository.save(tipoFornecedor);
     }
 
-    public List<TipoFornecedorResponse> listarTipoFornecedores() {
-        return tpfrepository.findAll().stream()
-                .map(mapper::toTipoFornecedorResponse)
-                .toList();
+    public List<TipoFornecedor> listarTipoFornecedores() {
+        return tpfrepository.findAll();
     }
 
-    public FornecedorResponse cadastrarFornecedor(FornecedorRequest request) {
+    public Fornecedor cadastrarFornecedor(FornecedorRequest request) {
         if (request == null) {
             throw new InvalidFornecedorRequestException("Fornecedor invalido");
         }
@@ -53,14 +45,11 @@ public class FornecedorService {
             throw new InvalidTipoFornecedorRequestException("Tipo fornecedor nao encontrado");
         }
 
-        Fornecedor fornecedor = mapper.toFornecedorEntity(request, tipoOptional.get());
-        Fornecedor salvo = forrepository.save(fornecedor);
-        return mapper.toFornecedorResponse(salvo);
+        Fornecedor fornecedor = new Fornecedor(null, request.nome(), request.email(), request.telefone(), request.cnpjCpf(), tipoOptional.get());
+        return forrepository.save(fornecedor);
     }
 
-    public List<FornecedorResponse> listarFornecedores() {
-        return forrepository.findAll().stream()
-                .map(mapper::toFornecedorResponse)
-                .toList();
+    public List<Fornecedor> listarFornecedores() {
+        return forrepository.findAll();
     }
 }
