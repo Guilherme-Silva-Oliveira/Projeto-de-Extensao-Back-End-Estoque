@@ -26,8 +26,9 @@ public class AlmoxarifadoController {
     }
 
     @GetMapping
-    public ResponseEntity<List<AlmoxarifadoResponse>> listarAlmoxarifados(@RequestBody AlmoxarifadoRequest request){
+    public ResponseEntity<List<AlmoxarifadoResponse>> listarAlmoxarifados(){
         var almoxarifados = service.listarAlmoxarifados();
         return ResponseEntity.ok(almoxarifados.stream().map(mapper::toAlmoxarifadoResponse).toList());
     }
 }
+

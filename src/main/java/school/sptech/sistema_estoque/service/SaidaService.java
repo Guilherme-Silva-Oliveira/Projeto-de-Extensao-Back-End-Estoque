@@ -10,6 +10,7 @@ import school.sptech.sistema_estoque.model.estoque.Escala;
 import school.sptech.sistema_estoque.model.estoque.Material;
 import school.sptech.sistema_estoque.model.estoque.PedidoSaida;
 import school.sptech.sistema_estoque.model.estoque.Solicitacao;
+import school.sptech.sistema_estoque.observer.MovimentacaoObserver;
 import school.sptech.sistema_estoque.repository.EscalaRepository;
 import school.sptech.sistema_estoque.repository.MaterialRepository;
 import school.sptech.sistema_estoque.repository.PedidoSaidaRepository;
@@ -24,11 +25,13 @@ public class SaidaService {
     private final MaterialRepository materialRepository;
     private final SolicitacaoRepository solicitacaoRepository;
     private final EscalaRepository escalaRepository;
-    public SaidaService(PedidoSaidaRepository pedidoSaidaRepository, MaterialRepository materialRepository, SolicitacaoRepository solicitacaoRepository, EscalaRepository escalaRepository) {
+    private final List<MovimentacaoObserver> observers;
+    public SaidaService(PedidoSaidaRepository pedidoSaidaRepository, MaterialRepository materialRepository, SolicitacaoRepository solicitacaoRepository, EscalaRepository escalaRepository, List<MovimentacaoObserver> observers) {
         this.pedidoSaidaRepository = pedidoSaidaRepository;
         this.materialRepository = materialRepository;
         this.solicitacaoRepository = solicitacaoRepository;
         this.escalaRepository = escalaRepository;
+        this.observers = observers;
     }
 
     public List<PedidoSaida> listarPedidoSaida() {
@@ -50,6 +53,15 @@ public class SaidaService {
         Escala escala = escalaOptional.get();
 
         PedidoSaida pedidoSaida = new PedidoSaida(material, solicitacao, request.quantidade(), request.dataSolicitacao(), escala, request.dataSaida());
-        return pedidoSaidaRepository.save(pedidoSaida);
+        PedidoSaida saved = pedidoSaidaRepository.save(pedidoSaida);
+
+        // Notificar observers
+        String mensagem = "Material " + material.getNomeMaterial() + " saiu com quantidade " + request.quantidade();
+        observers.forEach(observer -> {
+            observer.gerarLogs(mensagem);
+            observer.atualizar(mensagem);
+        });
+
+        return saved;
     }
 }
