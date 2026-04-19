@@ -1,10 +1,10 @@
 package school.sptech.sistema_estoque.service;
 
 import org.springframework.stereotype.Service;
-import school.sptech.sistema_estoque.dto.estoque.FornecedorRequest;
-import school.sptech.sistema_estoque.dto.estoque.TipoFornecedorRequest;
-import school.sptech.sistema_estoque.exception.InvalidFornecedorRequestException;
-import school.sptech.sistema_estoque.exception.InvalidTipoFornecedorRequestException;
+import school.sptech.sistema_estoque.dto.estoque.fornecedor.FornecedorRequest;
+import school.sptech.sistema_estoque.dto.estoque.tipo_fornecedor.TipoFornecedorRequest;
+import school.sptech.sistema_estoque.exception.*;
+import school.sptech.sistema_estoque.model.estoque.Almoxarifado;
 import school.sptech.sistema_estoque.model.estoque.Fornecedor;
 import school.sptech.sistema_estoque.model.estoque.TipoFornecedor;
 import school.sptech.sistema_estoque.repository.FornecedorRepository;
@@ -23,10 +23,7 @@ public class FornecedorService {
     }
 
     public TipoFornecedor cadastrarTipoFornecedor(TipoFornecedorRequest request) {
-        if (request == null) {
-            throw new InvalidTipoFornecedorRequestException("Tipo fornecedor invalido");
-        }
-
+        if (request == null) {throw new EntidadeInvalidException("Tipo fornecedor invalido");}
         TipoFornecedor tipoFornecedor = new TipoFornecedor(null, request.nomeTipo());
         return tpfrepository.save(tipoFornecedor);
     }
@@ -35,21 +32,27 @@ public class FornecedorService {
         return tpfrepository.findAll();
     }
 
+    public void excluirTipoFornecedor(Integer id){
+        Optional<TipoFornecedor> opt = tpfrepository.findById(id);
+        if (opt.isEmpty()){throw new EntidadeNaoExisteException("Tipo Fornecedor Não Encontrado");}
+        tpfrepository.delete(opt.get());
+    }
+
     public Fornecedor cadastrarFornecedor(FornecedorRequest request) {
-        if (request == null) {
-            throw new InvalidFornecedorRequestException("Fornecedor invalido");
-        }
-
+        if (request == null) {throw new EntidadeInvalidException("Fornecedor invalido");}
         Optional<TipoFornecedor> tipoOptional = tpfrepository.findById(request.idTipoFornecedor());
-        if (tipoOptional.isEmpty()) {
-            throw new InvalidTipoFornecedorRequestException("Tipo fornecedor nao encontrado");
-        }
-
+        if (tipoOptional.isEmpty()) {throw new EntidadeInvalidException("Tipo fornecedor nao encontrado");}
         Fornecedor fornecedor = new Fornecedor(null, request.nome(), request.email(), request.telefone(), request.cnpjCpf(), tipoOptional.get());
         return forrepository.save(fornecedor);
     }
 
     public List<Fornecedor> listarFornecedores() {
         return forrepository.findAll();
+    }
+
+    public void excluirFornecedor(Integer id){
+        Optional<Fornecedor> opt = forrepository.findById(id);
+        if (opt.isEmpty()){throw new EntidadeNaoExisteException("Fornecedor Não Encontrado");}
+        forrepository.delete(opt.get());
     }
 }

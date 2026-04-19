@@ -1,7 +1,7 @@
 package school.sptech.sistema_estoque.service;
 
 import org.springframework.stereotype.Service;
-import school.sptech.sistema_estoque.dto.estoque.MaterialRequest;
+import school.sptech.sistema_estoque.dto.estoque.material.MaterialRequest;
 import school.sptech.sistema_estoque.exception.*;
 import school.sptech.sistema_estoque.model.estoque.Almoxarifado;
 import school.sptech.sistema_estoque.model.estoque.Categoria;
@@ -29,15 +29,15 @@ public class MaterialService {
     }
 
     public Material cadastrarMaterial(MaterialRequest request){
-        if (request==null){throw new InvalidMaterialRequestException("Material Inválido");} // VALIDAÇÃO INICIAL
+        if (request==null){throw new EntidadeInvalidException("Material Inválido");} // VALIDAÇÃO INICIAL
 
         // VALIDAÇÕES OPTIONAL -- POSSÍVEL DE OTIMIZAR
         Optional<Categoria> catOpt = catrepository.findById(request.idCategoria());
-        if (catOpt.isEmpty()){throw new CategoriaNaoExisteException("Categoria Não Encontrada");}
-        Optional<Almoxarifado> estOpt = almrepository.findById(request.idEstoque());
-        if (estOpt.isEmpty()){throw new EstoqueNaoExisteException("Estoque Não Encontrada");}
+        if (catOpt.isEmpty()){throw new EntidadeInvalidException("Categoria Não Encontrada");}
+        Optional<Almoxarifado> estOpt = almrepository.findById(request.idAlmoxarifado());
+        if (estOpt.isEmpty()){throw new EntidadeInvalidException("Estoque Não Encontrada");}
         Optional<UnidadeMedida> uniOpt = unirepository.findById(request.idUnidadeMedida());
-        if (uniOpt.isEmpty()){throw new UnidadeMedidaNaoExisteException("Unidade de Medida Não Encontrada");}
+        if (uniOpt.isEmpty()){throw new EntidadeInvalidException("Unidade de Medida Não Encontrada");}
 
         // CONVERSÃO OPTIONAL - ENTIDADE CATEGORIA, ESTOQUE E UNIDADE DE MEDIDA
         Categoria c = catOpt.get();
@@ -52,7 +52,7 @@ public class MaterialService {
     }
     public void excluirMaterial(Integer id){
         Optional<Material> opt = matrepository.findById(id);
-        if (opt.isEmpty()){throw new MaterialNaoExisteException("Material Não Encontrado");}
+        if (opt.isEmpty()){throw new EntidadeNaoExisteException("Material Não Encontrado");}
         matrepository.delete(opt.get());
     }
 }

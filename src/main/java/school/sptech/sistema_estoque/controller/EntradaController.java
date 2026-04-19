@@ -1,13 +1,14 @@
 package school.sptech.sistema_estoque.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import school.sptech.sistema_estoque.dto.codigo.CodigoRequest;
-import school.sptech.sistema_estoque.dto.estoque.CategoriaRequest;
-import school.sptech.sistema_estoque.dto.estoque.CategoriaResponse;
-import school.sptech.sistema_estoque.dto.estoque.PedidoEntradaRequest;
-import school.sptech.sistema_estoque.dto.estoque.PedidoEntradaResponse;
-import school.sptech.sistema_estoque.service.CategoriaService;
+import school.sptech.sistema_estoque.dto.estoque.pedido_entrada.PedidoEntradaRequest;
+import school.sptech.sistema_estoque.dto.estoque.pedido_entrada.PedidoEntradaResponse;
+import school.sptech.sistema_estoque.dto.mapper.EntradaMapper;
 import school.sptech.sistema_estoque.service.EntradaService;
 
 import java.util.List;
@@ -20,13 +21,36 @@ public class EntradaController {
         this.service = service;
     }
 
+    @Operation(summary = "Cadastrar uma Entrada")
+    @ApiResponses({
+            @ApiResponse(responseCode = "400",description = "Corpo para Cadastro Inválido"),
+            @ApiResponse(responseCode = "400",description = "Fornecedor Não Encontrado"),
+            @ApiResponse(responseCode = "400",description = "Material Não Encontrado"),
+            @ApiResponse(responseCode = "201",description = "Entrada Cadastrada")
+    })
     @PostMapping
     public ResponseEntity<PedidoEntradaResponse> cadastrarEntrada(@RequestBody PedidoEntradaRequest request, @RequestBody CodigoRequest codigo){
-        return ResponseEntity.ok(service.cadastrarPedidoEntrada(request,codigo));
+        return ResponseEntity.status(201).body(EntradaMapper.toResponse(service.cadastrarPedidoEntrada(request,codigo)));
     }
 
+    @Operation(summary = "Listar Todas as Entradas")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204",description = "Nenhuma Entrada Encontrada"),
+            @ApiResponse(responseCode = "200",description = "Entradas Encontradas")
+    })
     @GetMapping
     public ResponseEntity<List<PedidoEntradaResponse>> listarCategorias(){
-        return ResponseEntity.ok(service.listarPedidosEntrada());
+        return ResponseEntity.ok(service.listarPedidosEntrada().stream().map(EntradaMapper::toResponse).toList());
+    }
+
+    @Operation(summary = "Excluir Entrada")
+    @ApiResponses({
+            @ApiResponse(responseCode = "404",description = "Nenhuma Entrada Encontrada"),
+            @ApiResponse(responseCode = "204",description = "Entrada Excluída")
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> excluirEntrada(Integer id){
+        service.excluirEntrada(id);
+        return ResponseEntity.noContent().build();
     }
 }

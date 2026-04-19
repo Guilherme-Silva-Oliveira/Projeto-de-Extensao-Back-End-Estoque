@@ -1,15 +1,9 @@
 package school.sptech.sistema_estoque.service;
 
 import org.springframework.stereotype.Service;
-import school.sptech.sistema_estoque.dto.estoque.PedidoSaidaRequest;
-import school.sptech.sistema_estoque.exception.InvalidEscalaRequestException;
-import school.sptech.sistema_estoque.exception.InvalidMaterialRequestException;
-import school.sptech.sistema_estoque.exception.InvalidPedidoSaidaRequestException;
-import school.sptech.sistema_estoque.exception.InvalidSolicitacaoRequestException;
-import school.sptech.sistema_estoque.model.estoque.Escala;
-import school.sptech.sistema_estoque.model.estoque.Material;
-import school.sptech.sistema_estoque.model.estoque.PedidoSaida;
-import school.sptech.sistema_estoque.model.estoque.Solicitacao;
+import school.sptech.sistema_estoque.dto.estoque.pedido_saida.PedidoSaidaRequest;
+import school.sptech.sistema_estoque.exception.*;
+import school.sptech.sistema_estoque.model.estoque.*;
 import school.sptech.sistema_estoque.observer.MovimentacaoObserver;
 import school.sptech.sistema_estoque.repository.EscalaRepository;
 import school.sptech.sistema_estoque.repository.MaterialRepository;
@@ -39,20 +33,17 @@ public class SaidaService {
     }
 
     public PedidoSaida cadastrarPedidoSaida(PedidoSaidaRequest request) {
-        if (request == null){throw new InvalidPedidoSaidaRequestException("Pedido Saida Inváldo");}
+        if (request == null){throw new EntidadeInvalidException("Pedido Saida Inváldo");}
         Optional<Material> materialOptional = materialRepository.findById(request.materialId());
-        if (materialOptional.isEmpty()) {throw new InvalidMaterialRequestException("Material não encontrado");}
+        if (materialOptional.isEmpty()) {throw new EntidadeInvalidException("Material não encontrado");}
         Material material = materialOptional.get();
-
         Optional<Solicitacao> solicitacaoOptional = solicitacaoRepository.findById(request.solicitacaoId());
-        if (solicitacaoOptional.isEmpty()) {throw new InvalidSolicitacaoRequestException("Solicitação de origem não encontrada");}
+        if (solicitacaoOptional.isEmpty()) {throw new EntidadeInvalidException("Solicitação de origem não encontrada");}
         Solicitacao solicitacao = solicitacaoOptional.get();
-
         Optional<Escala> escalaOptional = escalaRepository.findById(request.escalaId());
-        if (escalaOptional.isEmpty()) {throw new InvalidEscalaRequestException("Escala associada não encontrada");}
+        if (escalaOptional.isEmpty()) {throw new EntidadeInvalidException("Escala associada não encontrada");}
         Escala escala = escalaOptional.get();
-
-        PedidoSaida pedidoSaida = new PedidoSaida(material, solicitacao, request.quantidade(), request.dataSolicitacao(), escala, request.dataSaida());
+        PedidoSaida pedidoSaida = new PedidoSaida(material, solicitacao, request.quantidade(), request.dataSolicitacao(), escala);
         PedidoSaida saved = pedidoSaidaRepository.save(pedidoSaida);
 
         // Notificar observers
@@ -61,7 +52,13 @@ public class SaidaService {
             observer.gerarLogs(mensagem);
             observer.atualizar(mensagem);
         });
-
         return saved;
+    }
+
+    // ARRUMAR
+    public void excluirPedidoSaida(Integer id){
+        Optional<PedidoSaida> opt = pedidoSaidaRepository.findById(id);
+        if (opt.isEmpty()){throw new EntidadeNaoExisteException("Almoxarifado Não Encontrado");}
+        pedidoSaidaRepository.delete(opt.get());
     }
 }
