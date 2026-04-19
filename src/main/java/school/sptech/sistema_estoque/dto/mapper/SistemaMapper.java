@@ -1,11 +1,36 @@
 package school.sptech.sistema_estoque.dto.mapper;
 
 import org.springframework.stereotype.Component;
-import school.sptech.sistema_estoque.dto.estoque.*;
+import school.sptech.sistema_estoque.dto.estoque.almoxarifado.AlmoxarifadoRequest;
+import school.sptech.sistema_estoque.dto.estoque.almoxarifado.AlmoxarifadoResponse;
+import school.sptech.sistema_estoque.dto.estoque.almoxarife.AlmoxarifeRequest;
+import school.sptech.sistema_estoque.dto.estoque.almoxarife.AlmoxarifeResponse;
+import school.sptech.sistema_estoque.dto.estoque.categoria.CategoriaRequest;
+import school.sptech.sistema_estoque.dto.estoque.categoria.CategoriaResponse;
+import school.sptech.sistema_estoque.dto.estoque.escala.EscalaRequest;
+import school.sptech.sistema_estoque.dto.estoque.escala.EscalaResponse;
+import school.sptech.sistema_estoque.dto.estoque.fornecedor.FornecedorRequest;
+import school.sptech.sistema_estoque.dto.estoque.fornecedor.FornecedorResponse;
+import school.sptech.sistema_estoque.dto.estoque.limite.LimiteRequest;
+import school.sptech.sistema_estoque.dto.estoque.limite.LimiteResponse;
+import school.sptech.sistema_estoque.dto.estoque.material.MaterialRequest;
+import school.sptech.sistema_estoque.dto.estoque.material.MaterialResponse;
+import school.sptech.sistema_estoque.dto.estoque.pedido_entrada.PedidoEntradaRequest;
+import school.sptech.sistema_estoque.dto.estoque.pedido_entrada.PedidoEntradaResponse;
+import school.sptech.sistema_estoque.dto.estoque.pedido_saida.PedidoSaidaRequest;
+import school.sptech.sistema_estoque.dto.estoque.pedido_saida.PedidoSaidaResponse;
+import school.sptech.sistema_estoque.dto.estoque.professor.ProfessorRequest;
+import school.sptech.sistema_estoque.dto.estoque.professor.ProfessorResponse;
+import school.sptech.sistema_estoque.dto.estoque.solicitacao.SolicitacaoResponse;
+import school.sptech.sistema_estoque.dto.estoque.tipo_fornecedor.TipoFornecedorRequest;
+import school.sptech.sistema_estoque.dto.estoque.tipo_fornecedor.TipoFornecedorResponse;
+import school.sptech.sistema_estoque.dto.estoque.tipo_limite.TipoLimiteRequest;
+import school.sptech.sistema_estoque.dto.estoque.tipo_limite.TipoLimiteResponse;
+import school.sptech.sistema_estoque.dto.estoque.unidade_medida.UnidadeMedidaRequest;
+import school.sptech.sistema_estoque.dto.estoque.unidade_medida.UnidadeMedidaResponse;
 import school.sptech.sistema_estoque.dto.ia.SolicitacaoIARequest;
 import school.sptech.sistema_estoque.model.estoque.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Component
@@ -21,7 +46,7 @@ public class SistemaMapper {
     }
 
     // MATERIAL
-    public Material toMaterialEntity(MaterialRequest request, Categoria categoria, Almoxarifado almoxarifado,UnidadeMedida unidadeMedida){
+    public Material toMaterialEntity(MaterialRequest request, Categoria categoria, Almoxarifado almoxarifado, UnidadeMedida unidadeMedida){
         Material m = new Material();
         m.setCategoria(categoria);
         m.setEstoque(almoxarifado);

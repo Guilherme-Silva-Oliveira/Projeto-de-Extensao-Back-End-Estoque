@@ -1,9 +1,12 @@
 package school.sptech.sistema_estoque.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import school.sptech.sistema_estoque.dto.estoque.AlmoxarifadoRequest;
-import school.sptech.sistema_estoque.dto.estoque.AlmoxarifadoResponse;
+import school.sptech.sistema_estoque.dto.estoque.almoxarifado.AlmoxarifadoRequest;
+import school.sptech.sistema_estoque.dto.estoque.almoxarifado.AlmoxarifadoResponse;
 import school.sptech.sistema_estoque.dto.mapper.SistemaMapper;
 import school.sptech.sistema_estoque.service.AlmoxarifadoService;
 
@@ -19,12 +22,22 @@ public class AlmoxarifadoController {
         this.mapper = mapper;
     }
 
+    @Operation(summary = "Cadastrar um Almoxarifado")
+    @ApiResponses({
+            @ApiResponse(responseCode = "400",description = "Corpo para Cadastro Inválido"),
+            @ApiResponse(responseCode = "201",description = "Almoxarifado Cadastrado")
+    })
     @PostMapping
     public ResponseEntity<AlmoxarifadoResponse> cadastrarAlmoxarifado(@RequestBody AlmoxarifadoRequest request){
         var almoxarifado = service.cadastrarAlmoxarifado(request);
-        return ResponseEntity.ok(mapper.toAlmoxarifadoResponse(almoxarifado));
+        return ResponseEntity.status(201).body(mapper.toAlmoxarifadoResponse(almoxarifado));
     }
 
+    @Operation(summary = "Listar Todos os Almoxarifados")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204",description = "Nenhum Almoxarifado Encontrado"),
+            @ApiResponse(responseCode = "200",description = "Almoxarifados Encontrados")
+    })
     @GetMapping
     public ResponseEntity<List<AlmoxarifadoResponse>> listarAlmoxarifados(){
         var almoxarifados = service.listarAlmoxarifados();

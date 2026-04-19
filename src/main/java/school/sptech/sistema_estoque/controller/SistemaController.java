@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import school.sptech.sistema_estoque.dto.classapp.LabelsRequest;
 import school.sptech.sistema_estoque.dto.classapp.TagsRequest;
 import school.sptech.sistema_estoque.dto.codigo.CodigoRequest;
-import school.sptech.sistema_estoque.dto.estoque.*;
+import school.sptech.sistema_estoque.dto.estoque.solicitacao.SolicitacaoRequest;
 import school.sptech.sistema_estoque.service.ClassAppService;
 
 @RestController

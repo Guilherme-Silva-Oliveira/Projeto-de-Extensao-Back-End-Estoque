@@ -1,7 +1,7 @@
 package school.sptech.sistema_estoque.service;
 
 import org.springframework.stereotype.Service;
-import school.sptech.sistema_estoque.dto.estoque.ProfessorRequest;
+import school.sptech.sistema_estoque.dto.estoque.professor.ProfessorRequest;
 import school.sptech.sistema_estoque.exception.InvalidProfessorRequestException;
 import school.sptech.sistema_estoque.model.estoque.Professor;
 import school.sptech.sistema_estoque.repository.ProfessorRepository;
@@ -17,9 +17,7 @@ public class ProfessorService {
     }
 
     public Professor cadastrarProfessor(ProfessorRequest request){
-        if (request == null){
-            throw new InvalidProfessorRequestException("Professor Inválido");
-        }
+        if (request == null){throw new InvalidProfessorRequestException("Professor Inválido");}
         Professor professor = new Professor(null, request.nome(), request.email(), request.telefone());
         return repository.save(professor);
     }

@@ -1,8 +1,8 @@
 package school.sptech.sistema_estoque.service;
 
 import org.springframework.stereotype.Service;
-import school.sptech.sistema_estoque.dto.estoque.LimiteRequest;
-import school.sptech.sistema_estoque.dto.estoque.TipoLimiteRequest;
+import school.sptech.sistema_estoque.dto.estoque.limite.LimiteRequest;
+import school.sptech.sistema_estoque.dto.estoque.tipo_limite.TipoLimiteRequest;
 import school.sptech.sistema_estoque.exception.InvalidLimiteRequestException;
 import school.sptech.sistema_estoque.exception.InvalidTipoLimiteRequestException;
 import school.sptech.sistema_estoque.model.estoque.Limite;

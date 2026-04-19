@@ -23,10 +23,6 @@ public class SolicitacaoService {
         this.solrepository = solrepository;
     }
 
-    public List<Solicitacao> listarSolicitacao() {
-        return solrepository.findAll();
-    }
-
     public Solicitacao cadastrarSolicitacao(SolicitacaoIARequest request) {
         if (request == null){throw new InvalidSolicitacaoRequestException("Solicitacao Inválida");}
 
@@ -38,5 +34,9 @@ public class SolicitacaoService {
         LocalDateTime dataFormatada = LocalDateTime.parse(data,formatter);
         Solicitacao solicitacao = new Solicitacao(null, professorOptional.get(), "", request.nome_material(), dataFormatada);
         return solrepository.save(solicitacao);
+    }
+
+    public List<Solicitacao> listarSolicitacoes() {
+        return solrepository.findAll();
     }
 }

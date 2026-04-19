@@ -1,8 +1,8 @@
 package school.sptech.sistema_estoque.service;
 
 import org.springframework.stereotype.Service;
-import school.sptech.sistema_estoque.dto.estoque.FornecedorRequest;
-import school.sptech.sistema_estoque.dto.estoque.TipoFornecedorRequest;
+import school.sptech.sistema_estoque.dto.estoque.fornecedor.FornecedorRequest;
+import school.sptech.sistema_estoque.dto.estoque.tipo_fornecedor.TipoFornecedorRequest;
 import school.sptech.sistema_estoque.exception.InvalidFornecedorRequestException;
 import school.sptech.sistema_estoque.exception.InvalidTipoFornecedorRequestException;
 import school.sptech.sistema_estoque.model.estoque.Fornecedor;

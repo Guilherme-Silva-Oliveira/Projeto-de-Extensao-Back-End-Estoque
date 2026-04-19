@@ -1,7 +1,8 @@
 package school.sptech.sistema_estoque.service;
 
 import org.springframework.stereotype.Service;
-import school.sptech.sistema_estoque.dto.estoque.AlmoxarifadoRequest;
+import school.sptech.sistema_estoque.dto.estoque.almoxarifado.AlmoxarifadoRequest;
+import school.sptech.sistema_estoque.exception.AlmoxarifadoNaoExisteException;
 import school.sptech.sistema_estoque.exception.InvalidAlmoxarifadoRequestException;
 import school.sptech.sistema_estoque.exception.InvalidLimiteRequestException;
 import school.sptech.sistema_estoque.model.estoque.Almoxarifado;
@@ -10,6 +11,7 @@ import school.sptech.sistema_estoque.repository.AlmoxarifadoRepository;
 import school.sptech.sistema_estoque.repository.LimiteRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AlmoxarifadoService {
@@ -21,13 +23,8 @@ public class AlmoxarifadoService {
     }
 
     public Almoxarifado cadastrarAlmoxarifado(AlmoxarifadoRequest request) {
-        if (request == null) {
-            throw new InvalidAlmoxarifadoRequestException("Almoxarifado invalido");
-        }
-
-        if (request.idsLimites() == null || request.idsLimites().isEmpty()) {
-            throw new InvalidLimiteRequestException("Limites nao informados");
-        }
+        if (request == null) {throw new InvalidAlmoxarifadoRequestException("Almoxarifado invalido");}
+        if (request.idsLimites() == null || request.idsLimites().isEmpty()) {throw new InvalidLimiteRequestException("Limites nao informados");}
 
         List<Limite> limites = limrepository.findAllById(request.idsLimites());
         if (limites.size() != request.idsLimites().size()) {
@@ -40,5 +37,11 @@ public class AlmoxarifadoService {
 
     public List<Almoxarifado> listarAlmoxarifados() {
         return almrepository.findAll();
+    }
+
+    public void excluirAlmoxarifado(Integer id){
+        Optional<Almoxarifado> opt = almrepository.findById(id);
+        if (opt.isEmpty()){throw new AlmoxarifadoNaoExisteException("Almoxarifado Não Encontrado");}
+        almrepository.delete(opt.get());
     }
 }

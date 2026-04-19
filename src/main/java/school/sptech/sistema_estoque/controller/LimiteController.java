@@ -1,9 +1,14 @@
 package school.sptech.sistema_estoque.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import school.sptech.sistema_estoque.dto.estoque.*;
-import school.sptech.sistema_estoque.service.FornecedorService;
+import school.sptech.sistema_estoque.dto.estoque.limite.LimiteRequest;
+import school.sptech.sistema_estoque.dto.estoque.limite.LimiteResponse;
+import school.sptech.sistema_estoque.dto.estoque.tipo_limite.TipoLimiteRequest;
+import school.sptech.sistema_estoque.dto.estoque.tipo_limite.TipoLimiteResponse;
 import school.sptech.sistema_estoque.service.LimiteService;
 
 import java.util.List;
@@ -16,21 +21,43 @@ public class LimiteController {
         this.service = service;
     }
 
+    @Operation(summary = "Cadastrar um Limite")
+    @ApiResponses({
+            @ApiResponse(responseCode = "400",description = "Corpo para Cadastro Inválido"),
+            @ApiResponse(responseCode = "400",description = "Tipo Limite Não Encontrado"),
+            @ApiResponse(responseCode = "201",description = "Limite Cadastrado")
+    })
     @PostMapping
     public ResponseEntity<LimiteResponse> cadastrarLimite(@RequestBody LimiteRequest request){
-        return ResponseEntity.ok(service.cadastrarLimite(request));
+        return ResponseEntity.status(201).body(service.cadastrarLimite(request));
     }
 
+    @Operation(summary = "Listar Todos os Limites")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204",description = "Nenhum Limite Encontrado"),
+            @ApiResponse(responseCode = "200",description = "Limites Encontrados")
+    })
     @GetMapping
     public ResponseEntity<List<LimiteResponse>> listarLimites(){
         return ResponseEntity.ok(service.listarLimites());
     }
 
+    // ---------- TIPO LIMITE ----------
+    @Operation(summary = "Cadastrar um Tipo Limite")
+    @ApiResponses({
+            @ApiResponse(responseCode = "400",description = "Corpo para Cadastro Inválido"),
+            @ApiResponse(responseCode = "201",description = "Tipo Limite Cadastrado")
+    })
     @PostMapping("/tipos")
     public ResponseEntity<TipoLimiteResponse> cadastrarTipoLimite(@RequestBody TipoLimiteRequest request){
-        return ResponseEntity.ok(service.cadastrarTipoLimite(request));
+        return ResponseEntity.status(201).body(service.cadastrarTipoLimite(request));
     }
 
+    @Operation(summary = "Listar Todos os Tipo Limites")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204",description = "Nenhum Tipo Limite Encontrado"),
+            @ApiResponse(responseCode = "200",description = "Tipo Limites Encontrados")
+    })
     @GetMapping("/tipos")
     public ResponseEntity<List<TipoLimiteResponse>> listarTiposLimite(){
         return ResponseEntity.ok(service.listarTiposLimite());

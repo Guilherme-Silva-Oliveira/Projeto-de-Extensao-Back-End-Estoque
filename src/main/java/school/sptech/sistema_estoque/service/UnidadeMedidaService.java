@@ -1,7 +1,7 @@
 package school.sptech.sistema_estoque.service;
 
 import org.springframework.stereotype.Service;
-import school.sptech.sistema_estoque.dto.estoque.UnidadeMedidaRequest;
+import school.sptech.sistema_estoque.dto.estoque.unidade_medida.UnidadeMedidaRequest;
 import school.sptech.sistema_estoque.exception.InvalidUnidadeMedidaException;
 import school.sptech.sistema_estoque.exception.UnidadeMedidaNaoExisteException;
 import school.sptech.sistema_estoque.model.estoque.UnidadeMedida;

@@ -1,9 +1,12 @@
 package school.sptech.sistema_estoque.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import school.sptech.sistema_estoque.dto.estoque.ProfessorRequest;
-import school.sptech.sistema_estoque.dto.estoque.ProfessorResponse;
+import school.sptech.sistema_estoque.dto.estoque.professor.ProfessorRequest;
+import school.sptech.sistema_estoque.dto.estoque.professor.ProfessorResponse;
 import school.sptech.sistema_estoque.dto.mapper.SistemaMapper;
 import school.sptech.sistema_estoque.service.ProfessorService;
 
@@ -19,12 +22,22 @@ public class ProfessorController {
         this.mapper = mapper;
     }
 
+    @Operation(summary = "Cadastrar um Professor")
+    @ApiResponses({
+            @ApiResponse(responseCode = "400",description = "Corpo para Cadastro Inválido"),
+            @ApiResponse(responseCode = "201",description = "Professor Cadastrado")
+    })
     @PostMapping
     public ResponseEntity<ProfessorResponse> cadastrarProfessor(@RequestBody ProfessorRequest request){
         var professor = service.cadastrarProfessor(request);
-        return ResponseEntity.ok(mapper.toProfessorResponse(professor));
+        return ResponseEntity.status(201).body(mapper.toProfessorResponse(professor));
     }
 
+    @Operation(summary = "Listar Todos os Professores")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204",description = "Nenhum Professor Encontrado"),
+            @ApiResponse(responseCode = "200",description = "Professores Encontrados")
+    })
     @GetMapping
     public ResponseEntity<List<ProfessorResponse>> listarProfessores(){
         var professores = service.listarProfessor();

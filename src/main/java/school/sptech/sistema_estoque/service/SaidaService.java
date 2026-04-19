@@ -1,7 +1,7 @@
 package school.sptech.sistema_estoque.service;
 
 import org.springframework.stereotype.Service;
-import school.sptech.sistema_estoque.dto.estoque.PedidoSaidaRequest;
+import school.sptech.sistema_estoque.dto.estoque.pedido_saida.PedidoSaidaRequest;
 import school.sptech.sistema_estoque.exception.InvalidEscalaRequestException;
 import school.sptech.sistema_estoque.exception.InvalidMaterialRequestException;
 import school.sptech.sistema_estoque.exception.InvalidPedidoSaidaRequestException;

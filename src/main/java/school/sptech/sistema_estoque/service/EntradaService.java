@@ -2,7 +2,7 @@ package school.sptech.sistema_estoque.service;
 
 import org.springframework.stereotype.Service;
 import school.sptech.sistema_estoque.dto.codigo.CodigoRequest;
-import school.sptech.sistema_estoque.dto.estoque.PedidoEntradaRequest;
+import school.sptech.sistema_estoque.dto.estoque.pedido_entrada.PedidoEntradaRequest;
 import school.sptech.sistema_estoque.exception.InvalidFornecedorRequestException;
 import school.sptech.sistema_estoque.exception.InvalidMaterialRequestException;
 import school.sptech.sistema_estoque.exception.InvalidPedidoEntradaRequestException;
