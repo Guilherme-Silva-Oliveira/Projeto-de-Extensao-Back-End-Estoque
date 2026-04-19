@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import school.sptech.sistema_estoque.dto.estoque.pedido_saida.PedidoSaidaRequest;
 import school.sptech.sistema_estoque.dto.estoque.pedido_saida.PedidoSaidaResponse;
+import school.sptech.sistema_estoque.dto.mapper.SaidaMapper;
 import school.sptech.sistema_estoque.service.SaidaService;
 
 import java.util.List;
@@ -29,7 +30,7 @@ public class SaidaController {
     })
     @PostMapping
     public ResponseEntity<PedidoSaidaResponse> cadastrarSaida(@RequestBody PedidoSaidaRequest request){
-        return ResponseEntity.status(201).body(service.cadastrarPedidoSaida(request));
+        return ResponseEntity.status(201).body(SaidaMapper.toResponse(service.cadastrarPedidoSaida(request)));
     }
 
     @Operation(summary = "Listar Todas as Saídas")
@@ -39,7 +40,7 @@ public class SaidaController {
     })
     @GetMapping
     public ResponseEntity<List<PedidoSaidaResponse>> listarSaidas(){
-        return ResponseEntity.ok(service.listarPedidoSaida());
+        return ResponseEntity.ok(service.listarPedidoSaida().stream().map(SaidaMapper::toResponse).toList());
     }
 
     @Operation(summary = "Excluir Saida")

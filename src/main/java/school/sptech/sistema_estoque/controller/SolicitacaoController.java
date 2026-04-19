@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import school.sptech.sistema_estoque.dto.estoque.solicitacao.SolicitacaoResponse;
 import school.sptech.sistema_estoque.dto.ia.SolicitacaoIARequest;
+import school.sptech.sistema_estoque.dto.mapper.SolicitacaoMapper;
 import school.sptech.sistema_estoque.service.SolicitacaoService;
 
 import java.util.List;
@@ -27,7 +28,7 @@ public class SolicitacaoController {
     })
     @PostMapping
     public ResponseEntity<SolicitacaoResponse> cadastrarSolicitacao(@RequestBody SolicitacaoIARequest request){
-        return ResponseEntity.status(201).body(service.cadastrarSolicitacao(request));
+        return ResponseEntity.status(201).body(SolicitacaoMapper.toResponse(service.cadastrarSolicitacao(request)));
     }
 
     @Operation(summary = "Listar Todas as Solicitações")
@@ -37,7 +38,7 @@ public class SolicitacaoController {
     })
     @GetMapping
     public ResponseEntity<List<SolicitacaoResponse>> listarSolicitacoes(){
-        return ResponseEntity.ok(service.listarSolicitacoes());
+        return ResponseEntity.ok(service.listarSolicitacoes().stream().map(SolicitacaoMapper::toResponse).toList());
     }
 
     @Operation(summary = "Excluir Solicitação")

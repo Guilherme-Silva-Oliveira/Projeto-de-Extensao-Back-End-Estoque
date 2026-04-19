@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import school.sptech.sistema_estoque.dto.codigo.CodigoRequest;
 import school.sptech.sistema_estoque.dto.estoque.pedido_entrada.PedidoEntradaRequest;
 import school.sptech.sistema_estoque.dto.estoque.pedido_entrada.PedidoEntradaResponse;
+import school.sptech.sistema_estoque.dto.mapper.EntradaMapper;
 import school.sptech.sistema_estoque.service.EntradaService;
 
 import java.util.List;
@@ -29,7 +30,7 @@ public class EntradaController {
     })
     @PostMapping
     public ResponseEntity<PedidoEntradaResponse> cadastrarEntrada(@RequestBody PedidoEntradaRequest request, @RequestBody CodigoRequest codigo){
-        return ResponseEntity.status(201).body(service.cadastrarPedidoEntrada(request,codigo));
+        return ResponseEntity.status(201).body(EntradaMapper.toResponse(service.cadastrarPedidoEntrada(request,codigo)));
     }
 
     @Operation(summary = "Listar Todas as Entradas")
@@ -39,6 +40,17 @@ public class EntradaController {
     })
     @GetMapping
     public ResponseEntity<List<PedidoEntradaResponse>> listarCategorias(){
-        return ResponseEntity.ok(service.listarPedidosEntrada());
+        return ResponseEntity.ok(service.listarPedidosEntrada().stream().map(EntradaMapper::toResponse).toList());
+    }
+
+    @Operation(summary = "Excluir Entrada")
+    @ApiResponses({
+            @ApiResponse(responseCode = "404",description = "Nenhuma Entrada Encontrada"),
+            @ApiResponse(responseCode = "204",description = "Entrada Excluída")
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> excluirEntrada(Integer id){
+        service.excluirEntrada(id);
+        return ResponseEntity.noContent().build();
     }
 }

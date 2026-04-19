@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import school.sptech.sistema_estoque.dto.estoque.almoxarife.AlmoxarifeRequest;
 import school.sptech.sistema_estoque.dto.estoque.almoxarife.AlmoxarifeResponse;
+import school.sptech.sistema_estoque.dto.mapper.AlmoxarifeMapper;
 import school.sptech.sistema_estoque.service.AlmoxarifeService;
 
 import java.util.List;
@@ -27,7 +28,7 @@ public class AlmoxarifeController {
     })
     @PostMapping
     public ResponseEntity<AlmoxarifeResponse> cadastrarAlmoxarife(@RequestBody AlmoxarifeRequest request){
-        return ResponseEntity.status(201).body(service.cadastrarAlmoxarife(request));
+        return ResponseEntity.status(201).body(AlmoxarifeMapper.toResponse(service.cadastrarAlmoxarife(request)));
     }
 
     @Operation(summary = "Listar Todos os Almoxarifes")
@@ -37,7 +38,7 @@ public class AlmoxarifeController {
     })
     @GetMapping
     public ResponseEntity<List<AlmoxarifeResponse>> listarAlmoxarifes(){
-        return ResponseEntity.ok(service.listarAlmoxarifes());
+        return ResponseEntity.ok(service.listarAlmoxarifes().stream().map(AlmoxarifeMapper::toResponse).toList());
     }
 
     @Operation(summary = "Excluir Almoxarife")

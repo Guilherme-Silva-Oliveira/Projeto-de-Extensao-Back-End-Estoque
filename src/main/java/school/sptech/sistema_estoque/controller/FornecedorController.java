@@ -9,6 +9,7 @@ import school.sptech.sistema_estoque.dto.estoque.fornecedor.FornecedorRequest;
 import school.sptech.sistema_estoque.dto.estoque.fornecedor.FornecedorResponse;
 import school.sptech.sistema_estoque.dto.estoque.tipo_fornecedor.TipoFornecedorRequest;
 import school.sptech.sistema_estoque.dto.estoque.tipo_fornecedor.TipoFornecedorResponse;
+import school.sptech.sistema_estoque.dto.mapper.FornecedorMapper;
 import school.sptech.sistema_estoque.service.FornecedorService;
 
 import java.util.List;
@@ -29,7 +30,7 @@ public class FornecedorController {
     })
     @PostMapping
     public ResponseEntity<FornecedorResponse> cadastrarFornecedor(@RequestBody FornecedorRequest request){
-        return ResponseEntity.status(201).body(service.cadastrarFornecedor(request));
+        return ResponseEntity.status(201).body(FornecedorMapper.toFornecedorResponse(service.cadastrarFornecedor(request)));
     }
 
     @Operation(summary = "Listar Todos os Fornecedores")
@@ -39,7 +40,7 @@ public class FornecedorController {
     })
     @GetMapping
     public ResponseEntity<List<FornecedorResponse>> listarFornecedores(){
-        return ResponseEntity.ok(service.listarFornecedores());
+        return ResponseEntity.ok(service.listarFornecedores().stream().map(FornecedorMapper::toFornecedorResponse).toList());
     }
 
     @Operation(summary = "Excluir Fornecedor")
@@ -61,7 +62,7 @@ public class FornecedorController {
     })
     @PostMapping
     public ResponseEntity<TipoFornecedorResponse> cadastrarTipoFornecedor(@RequestBody TipoFornecedorRequest request){
-        return ResponseEntity.status(201).body(service.cadastrarTipoFornecedor(request));
+        return ResponseEntity.status(201).body(FornecedorMapper.toTipoFornecedorResponse(service.cadastrarTipoFornecedor(request)));
     }
 
     @Operation(summary = "Listar Todos os Tipo Fornecedores")
@@ -71,7 +72,7 @@ public class FornecedorController {
     })
     @GetMapping
     public ResponseEntity<List<TipoFornecedorResponse>> listarTipoFornecedores(){
-        return ResponseEntity.ok(service.listarTipoFornecedores());
+        return ResponseEntity.ok(service.listarTipoFornecedores().stream().map(FornecedorMapper::toTipoFornecedorResponse).toList());
     }
 
     @Operation(summary = "Excluir Tipo Fornecedor")

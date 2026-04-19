@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import school.sptech.sistema_estoque.dto.estoque.unidade_medida.UnidadeMedidaRequest;
 import school.sptech.sistema_estoque.dto.estoque.unidade_medida.UnidadeMedidaResponse;
-import school.sptech.sistema_estoque.dto.mapper.SistemaMapper;
+import school.sptech.sistema_estoque.dto.mapper.UnidadeMedidaMapper;
 import school.sptech.sistema_estoque.service.UnidadeMedidaService;
 
 import java.util.List;
@@ -16,10 +16,8 @@ import java.util.List;
 @RequestMapping("/v1/unidademedida")
 public class UnidadeMedidaController {
     private final UnidadeMedidaService service;
-    private final SistemaMapper mapper;
-    public UnidadeMedidaController(UnidadeMedidaService service, SistemaMapper mapper) {
+    public UnidadeMedidaController(UnidadeMedidaService service) {
         this.service = service;
-        this.mapper = mapper;
     }
 
     @Operation(summary = "Cadastrar um Unidade de Medida")
@@ -30,7 +28,7 @@ public class UnidadeMedidaController {
     @PostMapping
     public ResponseEntity<UnidadeMedidaResponse> cadastrarUnidadeMedida(@RequestBody UnidadeMedidaRequest request){
         var unidade = service.cadastrarUnidadeMedida(request);
-        return ResponseEntity.status(201).body(mapper.toUnidadeMedidaResponse(unidade));
+        return ResponseEntity.status(201).body(UnidadeMedidaMapper.toResponse(unidade));
     }
 
     @Operation(summary = "Listar Todas as Unidades de Medida")
@@ -41,7 +39,7 @@ public class UnidadeMedidaController {
     @GetMapping
     public ResponseEntity<List<UnidadeMedidaResponse>> listarSaidas(){
         var unidades = service.listarUnidadeMedida();
-        return ResponseEntity.ok(unidades.stream().map(mapper::toUnidadeMedidaResponse).toList());
+        return ResponseEntity.ok(unidades.stream().map(UnidadeMedidaMapper::toResponse).toList());
     }
 
     @Operation(summary = "Excluir Unidade de Medida")

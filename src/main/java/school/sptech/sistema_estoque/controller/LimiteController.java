@@ -9,6 +9,7 @@ import school.sptech.sistema_estoque.dto.estoque.limite.LimiteRequest;
 import school.sptech.sistema_estoque.dto.estoque.limite.LimiteResponse;
 import school.sptech.sistema_estoque.dto.estoque.tipo_limite.TipoLimiteRequest;
 import school.sptech.sistema_estoque.dto.estoque.tipo_limite.TipoLimiteResponse;
+import school.sptech.sistema_estoque.dto.mapper.LimiteMapper;
 import school.sptech.sistema_estoque.service.LimiteService;
 
 import java.util.List;
@@ -29,7 +30,7 @@ public class LimiteController {
     })
     @PostMapping
     public ResponseEntity<LimiteResponse> cadastrarLimite(@RequestBody LimiteRequest request){
-        return ResponseEntity.status(201).body(service.cadastrarLimite(request));
+        return ResponseEntity.status(201).body(LimiteMapper.toLimiteResponse(service.cadastrarLimite(request)));
     }
 
     @Operation(summary = "Listar Todos os Limites")
@@ -39,7 +40,7 @@ public class LimiteController {
     })
     @GetMapping
     public ResponseEntity<List<LimiteResponse>> listarLimites(){
-        return ResponseEntity.ok(service.listarLimites());
+        return ResponseEntity.ok(service.listarLimites().stream().map(LimiteMapper::toLimiteResponse).toList());
     }
 
     @Operation(summary = "Excluir Limite")
@@ -61,7 +62,7 @@ public class LimiteController {
     })
     @PostMapping("/tipos")
     public ResponseEntity<TipoLimiteResponse> cadastrarTipoLimite(@RequestBody TipoLimiteRequest request){
-        return ResponseEntity.status(201).body(service.cadastrarTipoLimite(request));
+        return ResponseEntity.status(201).body(LimiteMapper.toTipoLimiteResponse(service.cadastrarTipoLimite(request)));
     }
 
     @Operation(summary = "Listar Todos os Tipo Limites")
@@ -71,7 +72,7 @@ public class LimiteController {
     })
     @GetMapping("/tipos")
     public ResponseEntity<List<TipoLimiteResponse>> listarTiposLimite(){
-        return ResponseEntity.ok(service.listarTiposLimite());
+        return ResponseEntity.ok(service.listarTiposLimite().stream().map(LimiteMapper::toTipoLimiteResponse).toList());
     }
 
     @Operation(summary = "Excluir Tipo Limite")

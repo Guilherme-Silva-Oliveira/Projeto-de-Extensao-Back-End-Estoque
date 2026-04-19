@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import school.sptech.sistema_estoque.dto.estoque.almoxarifado.AlmoxarifadoRequest;
 import school.sptech.sistema_estoque.dto.estoque.almoxarifado.AlmoxarifadoResponse;
-import school.sptech.sistema_estoque.dto.mapper.SistemaMapper;
+import school.sptech.sistema_estoque.dto.mapper.AlmoxarifadoMapper;
 import school.sptech.sistema_estoque.service.AlmoxarifadoService;
 
 import java.util.List;
@@ -16,10 +16,8 @@ import java.util.List;
 @RequestMapping("/v1/almoxarifados")
 public class AlmoxarifadoController {
     private final AlmoxarifadoService service;
-    private final SistemaMapper mapper;
-    public AlmoxarifadoController(AlmoxarifadoService service, SistemaMapper mapper) {
+    public AlmoxarifadoController(AlmoxarifadoService service) {
         this.service = service;
-        this.mapper = mapper;
     }
 
     @Operation(summary = "Cadastrar um Almoxarifado")
@@ -30,7 +28,7 @@ public class AlmoxarifadoController {
     @PostMapping
     public ResponseEntity<AlmoxarifadoResponse> cadastrarAlmoxarifado(@RequestBody AlmoxarifadoRequest request){
         var almoxarifado = service.cadastrarAlmoxarifado(request);
-        return ResponseEntity.status(201).body(mapper.toAlmoxarifadoResponse(almoxarifado));
+        return ResponseEntity.status(201).body(AlmoxarifadoMapper.toResponse(almoxarifado));
     }
 
     @Operation(summary = "Listar Todos os Almoxarifados")
@@ -41,7 +39,7 @@ public class AlmoxarifadoController {
     @GetMapping
     public ResponseEntity<List<AlmoxarifadoResponse>> listarAlmoxarifados(){
         var almoxarifados = service.listarAlmoxarifados();
-        return ResponseEntity.ok(almoxarifados.stream().map(mapper::toAlmoxarifadoResponse).toList());
+        return ResponseEntity.ok(almoxarifados.stream().map(AlmoxarifadoMapper::toResponse).toList());
     }
 
     @Operation(summary = "Excluir Almoxarifado")

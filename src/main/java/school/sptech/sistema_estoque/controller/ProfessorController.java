@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import school.sptech.sistema_estoque.dto.estoque.professor.ProfessorRequest;
 import school.sptech.sistema_estoque.dto.estoque.professor.ProfessorResponse;
-import school.sptech.sistema_estoque.dto.mapper.SistemaMapper;
+import school.sptech.sistema_estoque.dto.mapper.ProfessorMapper;
 import school.sptech.sistema_estoque.service.ProfessorService;
 
 import java.util.List;
@@ -16,10 +16,8 @@ import java.util.List;
 @RequestMapping("/v1/professores")
 public class ProfessorController {
     private final ProfessorService service;
-    private final SistemaMapper mapper;
-    public ProfessorController(ProfessorService service, SistemaMapper mapper) {
+    public ProfessorController(ProfessorService service) {
         this.service = service;
-        this.mapper = mapper;
     }
 
     @Operation(summary = "Cadastrar um Professor")
@@ -30,7 +28,7 @@ public class ProfessorController {
     @PostMapping
     public ResponseEntity<ProfessorResponse> cadastrarProfessor(@RequestBody ProfessorRequest request){
         var professor = service.cadastrarProfessor(request);
-        return ResponseEntity.status(201).body(mapper.toProfessorResponse(professor));
+        return ResponseEntity.status(201).body(ProfessorMapper.toResponse(professor));
     }
 
     @Operation(summary = "Listar Todos os Professores")
@@ -41,7 +39,7 @@ public class ProfessorController {
     @GetMapping
     public ResponseEntity<List<ProfessorResponse>> listarProfessores(){
         var professores = service.listarProfessor();
-        return ResponseEntity.ok(professores.stream().map(mapper::toProfessorResponse).toList());
+        return ResponseEntity.ok(professores.stream().map(ProfessorMapper::toResponse).toList());
     }
 
     @Operation(summary = "Excluir Professor")

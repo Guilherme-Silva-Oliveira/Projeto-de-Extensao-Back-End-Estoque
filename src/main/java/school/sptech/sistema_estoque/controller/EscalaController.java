@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import school.sptech.sistema_estoque.dto.estoque.escala.EscalaRequest;
 import school.sptech.sistema_estoque.dto.estoque.escala.EscalaResponse;
-import school.sptech.sistema_estoque.dto.mapper.SistemaMapper;
+import school.sptech.sistema_estoque.dto.mapper.EscalaMapper;
 import school.sptech.sistema_estoque.service.EscalaService;
 
 import java.util.List;
@@ -16,10 +16,8 @@ import java.util.List;
 @RequestMapping("/v1/escalas")
 public class EscalaController {
     private final EscalaService service;
-    private final SistemaMapper mapper;
-    public EscalaController(EscalaService service, SistemaMapper mapper) {
+    public EscalaController(EscalaService service) {
         this.service = service;
-        this.mapper = mapper;
     }
 
     @Operation(summary = "Cadastrar uma Escala")
@@ -30,7 +28,7 @@ public class EscalaController {
     @PostMapping
     public ResponseEntity<EscalaResponse> cadastrarEscala(@RequestBody EscalaRequest request){
         var escala = service.cadastrarEscala(request);
-        return ResponseEntity.status(201).body(mapper.toEscalaResponse(escala));
+        return ResponseEntity.status(201).body(EscalaMapper.toResponse(escala));
     }
 
     @Operation(summary = "Listar Todas as Escalas")
@@ -41,7 +39,7 @@ public class EscalaController {
     @GetMapping
     public ResponseEntity<List<EscalaResponse>> listarEscalas(){
         var escalas = service.listarEscala();
-        return ResponseEntity.ok(escalas.stream().map(mapper::toEscalaResponse).toList());
+        return ResponseEntity.ok(escalas.stream().map(EscalaMapper::toResponse).toList());
     }
 
     @Operation(summary = "Excluir Escala")
