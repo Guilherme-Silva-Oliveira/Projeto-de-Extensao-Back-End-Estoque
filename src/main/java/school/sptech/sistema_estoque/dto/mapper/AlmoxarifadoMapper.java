@@ -20,12 +20,10 @@ public class AlmoxarifadoMapper {
                 : entity.getLimites().stream().map(Limite::getId).toList();
         java.util.List<LimiteResponse> limiteResponses = entity.getLimites() == null
                 ? java.util.List.of()
-                : entity.getLimites().stream().map(this::toLimiteResponse).toList();
+                : entity.getLimites().stream().map(LimiteMapper::toLimiteResponse).toList();
         return new AlmoxarifadoResponse(
                 entity.getId(),
-                entity.getNumeroSala(),
-                limiteIds,
-                limiteResponses
+                entity.getNumeroSala()
         );
     }
 }

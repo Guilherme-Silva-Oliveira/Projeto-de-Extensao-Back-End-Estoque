@@ -37,7 +37,6 @@ public class FornecedorMapper {
                 entity.getEmail(),
                 entity.getTelefone(),
                 entity.getCnpjCpf(),
-                tipoFornecedorId,
                 tipoFornecedorResponse
         );
     }
