@@ -43,4 +43,15 @@ public class ProfessorController {
         var professores = service.listarProfessor();
         return ResponseEntity.ok(professores.stream().map(mapper::toProfessorResponse).toList());
     }
+
+    @Operation(summary = "Excluir Professor")
+    @ApiResponses({
+            @ApiResponse(responseCode = "404",description = "Nenhum Professor Encontrado"),
+            @ApiResponse(responseCode = "204",description = "Professor Excluído")
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> excluirProfessor(Integer id){
+        service.excluirProfessor(id);
+        return ResponseEntity.noContent().build();
+    }
 }

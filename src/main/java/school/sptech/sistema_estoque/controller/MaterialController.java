@@ -46,4 +46,15 @@ public class MaterialController {
         var materiais = service.listarMateriais();
         return ResponseEntity.ok(materiais.stream().map(mapper::toMaterialResponse).toList());
     }
+
+    @Operation(summary = "Excluir Material")
+    @ApiResponses({
+            @ApiResponse(responseCode = "404",description = "Nenhum Material Encontrado"),
+            @ApiResponse(responseCode = "204",description = "Material Excluído")
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> excluirMaterial(Integer id){
+        service.excluirMaterial(id);
+        return ResponseEntity.noContent().build();
+    }
 }

@@ -39,4 +39,15 @@ public class AlmoxarifeController {
     public ResponseEntity<List<AlmoxarifeResponse>> listarAlmoxarifes(){
         return ResponseEntity.ok(service.listarAlmoxarifes());
     }
+
+    @Operation(summary = "Excluir Almoxarife")
+    @ApiResponses({
+            @ApiResponse(responseCode = "404",description = "Nenhum Almoxarife Encontrado"),
+            @ApiResponse(responseCode = "204",description = "Almoxarife Excluído")
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> excluirAlmoxarife(Integer id){
+        service.excluirAlmoxarife(id);
+        return ResponseEntity.noContent().build();
+    }
 }

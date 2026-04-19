@@ -43,5 +43,16 @@ public class AlmoxarifadoController {
         var almoxarifados = service.listarAlmoxarifados();
         return ResponseEntity.ok(almoxarifados.stream().map(mapper::toAlmoxarifadoResponse).toList());
     }
+
+    @Operation(summary = "Excluir Almoxarifado")
+    @ApiResponses({
+            @ApiResponse(responseCode = "404",description = "Nenhum Almoxarifado Encontrado"),
+            @ApiResponse(responseCode = "204",description = "Almoxarifado Excluído")
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> excluirAlmoxarifado(Integer id){
+        service.excluirAlmoxarifado(id);
+        return ResponseEntity.noContent().build();
+    }
 }
 

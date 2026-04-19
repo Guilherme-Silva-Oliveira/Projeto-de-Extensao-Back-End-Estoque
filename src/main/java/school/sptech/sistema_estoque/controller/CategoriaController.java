@@ -43,4 +43,15 @@ public class CategoriaController {
         var categorias = service.listarCategorias();
         return ResponseEntity.ok(categorias.stream().map(mapper::toCategoriaResponse).toList());
     }
+
+    @Operation(summary = "Excluir Categoria")
+    @ApiResponses({
+            @ApiResponse(responseCode = "404",description = "Nenhuma Categoria Encontrada"),
+            @ApiResponse(responseCode = "204",description = "Categoria Excluída")
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> excluirCategoria(Integer id){
+        service.excluirCategoria(id);
+        return ResponseEntity.noContent().build();
+    }
 }

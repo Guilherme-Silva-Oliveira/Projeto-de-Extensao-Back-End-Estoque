@@ -23,7 +23,6 @@ public class PedidoSaida {
     @ManyToOne
     @JoinColumn(name = "escala_id")
     private Escala escala;
-    private LocalDateTime dataSaida;
 
     public PedidoSaida(Material material, Solicitacao solicitacao, Integer quantidade, LocalDateTime dataSolicitacao, Escala escala, LocalDateTime dataSaida) {
         this.material = material;
@@ -31,7 +30,6 @@ public class PedidoSaida {
         this.quantidade = quantidade;
         this.dataSolicitacao = dataSolicitacao;
         this.escala = escala;
-        this.dataSaida = dataSaida;
     }
 
     public PedidoSaida() {
@@ -75,13 +73,5 @@ public class PedidoSaida {
 
     public void setEscala(Escala escala) {
         this.escala = escala;
-    }
-
-    public LocalDateTime getDataSaida() {
-        return dataSaida;
-    }
-
-    public void setDataSaida(LocalDateTime dataSaida) {
-        this.dataSaida = dataSaida;
     }
 }

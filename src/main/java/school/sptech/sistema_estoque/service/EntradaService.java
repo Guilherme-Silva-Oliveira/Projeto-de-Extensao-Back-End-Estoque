@@ -3,9 +3,13 @@ package school.sptech.sistema_estoque.service;
 import org.springframework.stereotype.Service;
 import school.sptech.sistema_estoque.dto.codigo.CodigoRequest;
 import school.sptech.sistema_estoque.dto.estoque.pedido_entrada.PedidoEntradaRequest;
+import school.sptech.sistema_estoque.exception.AlmoxarifadoNaoExisteException;
+import school.sptech.sistema_estoque.exception.EntidadeInvalidException;
+import school.sptech.sistema_estoque.exception.EntidadeNaoExisteException;
 import school.sptech.sistema_estoque.exception.InvalidFornecedorRequestException;
 import school.sptech.sistema_estoque.exception.InvalidMaterialRequestException;
 import school.sptech.sistema_estoque.exception.InvalidPedidoEntradaRequestException;
+import school.sptech.sistema_estoque.model.estoque.Almoxarifado;
 import school.sptech.sistema_estoque.model.estoque.Fornecedor;
 import school.sptech.sistema_estoque.model.estoque.Material;
 import school.sptech.sistema_estoque.model.estoque.PedidoEntrada;
@@ -31,12 +35,12 @@ public class EntradaService {
     }
 
     public PedidoEntrada cadastrarPedidoEntrada(PedidoEntradaRequest request, CodigoRequest codigo) {
-        if (request == null) {throw new InvalidPedidoEntradaRequestException("Pedido entrada invalido");}
+        if (request == null) {throw new EntidadeInvalidException("Pedido entrada invalido");}
 
         Optional<Fornecedor> fornecedorOptional = fornecedorRepository.findById(request.fornecedorId());
-        if (fornecedorOptional.isEmpty()) {throw new InvalidFornecedorRequestException("Fornecedor nao encontrado");}
+        if (fornecedorOptional.isEmpty()) {throw new EntidadeInvalidException("Fornecedor nao encontrado");}
         Optional<Material> materialOptional = materialRepository.findByCodigoBarras(codigo.codigo());
-        if (materialOptional.isEmpty()) {throw new InvalidMaterialRequestException("Material nao encontrado");}
+        if (materialOptional.isEmpty()) {throw new EntidadeInvalidException("Material nao encontrado");}
         PedidoEntrada pedidoEntrada = new PedidoEntrada(fornecedorOptional.get(), materialOptional.get(), request.quantidade(), request.dataEntrada());
         PedidoEntrada saved = pedidoEntradaRepository.save(pedidoEntrada);
 
@@ -52,5 +56,12 @@ public class EntradaService {
 
     public List<PedidoEntrada> listarPedidosEntrada() {
         return pedidoEntradaRepository.findAll();
+    }
+
+    // ESSE PRECISA REFAZER POR CONTA DO ID
+    public void excluirEntrada(Integer id){
+        Optional<PedidoEntrada> opt = pedidoEntradaRepository.findById(id);
+        if (opt.isEmpty()){throw new EntidadeNaoExisteException("Almoxarifado Não Encontrado");}
+        almrepository.delete(opt.get());
     }
 }

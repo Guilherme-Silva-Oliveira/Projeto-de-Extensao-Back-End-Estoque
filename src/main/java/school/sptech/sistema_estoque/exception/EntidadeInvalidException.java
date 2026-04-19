@@ -4,8 +4,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.BAD_REQUEST)
-public class InvalidMaterialRequestException extends RuntimeException {
-    public InvalidMaterialRequestException(String message) {
+public class EntidadeInvalidException extends RuntimeException {
+    public EntidadeInvalidException(String message) {
         super(message);
     }
 }

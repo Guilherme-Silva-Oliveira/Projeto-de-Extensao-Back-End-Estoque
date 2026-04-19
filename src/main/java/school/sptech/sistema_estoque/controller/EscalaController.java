@@ -43,4 +43,15 @@ public class EscalaController {
         var escalas = service.listarEscala();
         return ResponseEntity.ok(escalas.stream().map(mapper::toEscalaResponse).toList());
     }
+
+    @Operation(summary = "Excluir Escala")
+    @ApiResponses({
+            @ApiResponse(responseCode = "404",description = "Nenhuma Escala Encontrada"),
+            @ApiResponse(responseCode = "204",description = "Escala Excluída")
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> excluirEscala(Integer id){
+        service.excluirEscala(id);
+        return ResponseEntity.noContent().build();
+    }
 }

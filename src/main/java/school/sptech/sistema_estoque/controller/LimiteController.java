@@ -42,6 +42,17 @@ public class LimiteController {
         return ResponseEntity.ok(service.listarLimites());
     }
 
+    @Operation(summary = "Excluir Limite")
+    @ApiResponses({
+            @ApiResponse(responseCode = "404",description = "Nenhum Limite Encontrado"),
+            @ApiResponse(responseCode = "204",description = "Limite Excluído")
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> excluirLimite(Integer id){
+        service.excluirLimite(id);
+        return ResponseEntity.noContent().build();
+    }
+
     // ---------- TIPO LIMITE ----------
     @Operation(summary = "Cadastrar um Tipo Limite")
     @ApiResponses({
@@ -61,5 +72,16 @@ public class LimiteController {
     @GetMapping("/tipos")
     public ResponseEntity<List<TipoLimiteResponse>> listarTiposLimite(){
         return ResponseEntity.ok(service.listarTiposLimite());
+    }
+
+    @Operation(summary = "Excluir Tipo Limite")
+    @ApiResponses({
+            @ApiResponse(responseCode = "404",description = "Nenhum Tipo Limite Encontrado"),
+            @ApiResponse(responseCode = "204",description = "Tipo Limite Excluído")
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> excluirTipoLimite(Integer id){
+        service.excluirTipoLimite(id);
+        return ResponseEntity.noContent().build();
     }
 }

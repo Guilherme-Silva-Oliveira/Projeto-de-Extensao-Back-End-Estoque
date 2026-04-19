@@ -41,4 +41,15 @@ public class SaidaController {
     public ResponseEntity<List<PedidoSaidaResponse>> listarSaidas(){
         return ResponseEntity.ok(service.listarPedidoSaida());
     }
+
+    @Operation(summary = "Excluir Saida")
+    @ApiResponses({
+            @ApiResponse(responseCode = "404",description = "Nenhuma Saída Encontrada"),
+            @ApiResponse(responseCode = "204",description = "Saída Excluída")
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> excluirSaida(Integer id){
+        service.excluirPedidoSaida(id);
+        return ResponseEntity.noContent().build();
+    }
 }

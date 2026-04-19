@@ -39,4 +39,15 @@ public class SolicitacaoController {
     public ResponseEntity<List<SolicitacaoResponse>> listarSolicitacoes(){
         return ResponseEntity.ok(service.listarSolicitacoes());
     }
+
+    @Operation(summary = "Excluir Solicitação")
+    @ApiResponses({
+            @ApiResponse(responseCode = "404",description = "Nenhuma Solicitação Encontrada"),
+            @ApiResponse(responseCode = "204",description = "Solicitação Excluída")
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> excluirSolicitacao(Integer id){
+        service.excluirSolicitacao(id);
+        return ResponseEntity.noContent().build();
+    }
 }

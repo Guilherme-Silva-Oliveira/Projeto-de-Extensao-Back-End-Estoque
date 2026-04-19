@@ -43,4 +43,15 @@ public class UnidadeMedidaController {
         var unidades = service.listarUnidadeMedida();
         return ResponseEntity.ok(unidades.stream().map(mapper::toUnidadeMedidaResponse).toList());
     }
+
+    @Operation(summary = "Excluir Unidade de Medida")
+    @ApiResponses({
+            @ApiResponse(responseCode = "404",description = "Nenhuma Unidade de Medida Encontrada"),
+            @ApiResponse(responseCode = "204",description = "Unidade de Medida Excluído")
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> excluirUnidadeMedida(Integer id){
+        service.excluirUnidadeMedida(id);
+        return ResponseEntity.noContent().build();
+    }
 }

@@ -2,8 +2,9 @@ package school.sptech.sistema_estoque.service;
 
 import org.springframework.stereotype.Service;
 import school.sptech.sistema_estoque.dto.ia.SolicitacaoIARequest;
-import school.sptech.sistema_estoque.exception.InvalidProfessorRequestException;
-import school.sptech.sistema_estoque.exception.InvalidSolicitacaoRequestException;
+import school.sptech.sistema_estoque.exception.EntidadeInvalidException;
+import school.sptech.sistema_estoque.exception.EntidadeNaoExisteException;
+import school.sptech.sistema_estoque.model.estoque.Almoxarifado;
 import school.sptech.sistema_estoque.model.estoque.Professor;
 import school.sptech.sistema_estoque.model.estoque.Solicitacao;
 import school.sptech.sistema_estoque.repository.ProfessorRepository;
@@ -24,11 +25,9 @@ public class SolicitacaoService {
     }
 
     public Solicitacao cadastrarSolicitacao(SolicitacaoIARequest request) {
-        if (request == null){throw new InvalidSolicitacaoRequestException("Solicitacao Inválida");}
-
+        if (request == null){throw new EntidadeInvalidException("Solicitacao Inválida");}
         Optional<Professor> professorOptional = prorepository.findByNome(request.nome_professor());
-        if (professorOptional.isEmpty()){throw new InvalidProfessorRequestException("Professor não encontrado");}
-
+        if (professorOptional.isEmpty()){throw new EntidadeInvalidException("Professor não encontrado");}
         String data = request.data_solicitacao();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
         LocalDateTime dataFormatada = LocalDateTime.parse(data,formatter);
@@ -38,5 +37,11 @@ public class SolicitacaoService {
 
     public List<Solicitacao> listarSolicitacoes() {
         return solrepository.findAll();
+    }
+
+    public void excluirSolicitacao(Integer id){
+        Optional<Solicitacao> opt = solrepository.findById(id);
+        if (opt.isEmpty()){throw new EntidadeNaoExisteException("Solicitacao Não Encontrado");}
+        solrepository.delete(opt.get());
     }
 }
