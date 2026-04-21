@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import school.sptech.sistema_estoque.dto.codigo.CodigoRequest;
 import school.sptech.sistema_estoque.dto.estoque.pedido_entrada.PedidoEntradaRequest;
 import school.sptech.sistema_estoque.dto.estoque.pedido_entrada.PedidoEntradaResponse;
 import school.sptech.sistema_estoque.dto.mapper.EntradaMapper;
@@ -17,6 +16,7 @@ import java.util.List;
 @RequestMapping("/v1/entradas")
 public class EntradaController {
     private final EntradaService service;
+
     public EntradaController(EntradaService service) {
         this.service = service;
     }
@@ -29,8 +29,8 @@ public class EntradaController {
             @ApiResponse(responseCode = "201",description = "Entrada Cadastrada")
     })
     @PostMapping
-    public ResponseEntity<PedidoEntradaResponse> cadastrarEntrada(@RequestBody PedidoEntradaRequest request, @RequestBody CodigoRequest codigo){
-        return ResponseEntity.status(201).body(EntradaMapper.toResponse(service.cadastrarPedidoEntrada(request,codigo)));
+    public ResponseEntity<PedidoEntradaResponse> cadastrarEntrada(@RequestBody PedidoEntradaRequest request){
+        return ResponseEntity.status(201).body(EntradaMapper.toResponse(service.cadastrarPedidoEntrada(request)));
     }
 
     @Operation(summary = "Listar Todas as Entradas")
@@ -39,7 +39,7 @@ public class EntradaController {
             @ApiResponse(responseCode = "200",description = "Entradas Encontradas")
     })
     @GetMapping
-    public ResponseEntity<List<PedidoEntradaResponse>> listarCategorias(){
+    public ResponseEntity<List<PedidoEntradaResponse>> listarEntradas(){
         return ResponseEntity.ok(service.listarPedidosEntrada().stream().map(EntradaMapper::toResponse).toList());
     }
 
@@ -48,9 +48,9 @@ public class EntradaController {
             @ApiResponse(responseCode = "404",description = "Nenhuma Entrada Encontrada"),
             @ApiResponse(responseCode = "204",description = "Entrada Excluída")
     })
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> excluirEntrada(Integer id){
-        service.excluirEntrada(id);
+    @DeleteMapping("/fornecedor/{fornecedorId}/material/{materialId}")
+    public ResponseEntity<Void> excluirEntrada(@PathVariable Integer fornecedorId, @PathVariable Integer materialId){
+        service.excluirEntrada(fornecedorId, materialId);
         return ResponseEntity.noContent().build();
     }
 }

@@ -10,6 +10,5 @@ public record MaterialResponse(
         @Schema(description = "Categoria Associada") CategoriaResponse categoria,
         @Schema(description = "Unidade de Medida Associada") UnidadeMedidaResponse unidadeMedida,
         @Schema(description = "Almoxarifado Associado") AlmoxarifadoResponse almoxarifado,
-        @Schema(description = "Nome do Material") String nomeMaterial,
-        @Schema(description = "Código de Barras") String codigoBarras
+        @Schema(description = "Nome do Material") String nomeMaterial
 ) {}

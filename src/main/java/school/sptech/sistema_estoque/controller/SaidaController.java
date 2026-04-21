@@ -16,6 +16,7 @@ import java.util.List;
 @RequestMapping("/v1/saidas")
 public class SaidaController {
     private final SaidaService service;
+
     public SaidaController(SaidaService service) {
         this.service = service;
     }
@@ -26,7 +27,7 @@ public class SaidaController {
             @ApiResponse(responseCode = "400",description = "Material Não Encontrado"),
             @ApiResponse(responseCode = "400",description = "Solicitação Não Encontrada"),
             @ApiResponse(responseCode = "400",description = "Escala Não Encontrada"),
-            @ApiResponse(responseCode = "201",description = "Almoxarife Cadastrado")
+            @ApiResponse(responseCode = "201",description = "Saída Cadastrada")
     })
     @PostMapping
     public ResponseEntity<PedidoSaidaResponse> cadastrarSaida(@RequestBody PedidoSaidaRequest request){
@@ -43,14 +44,14 @@ public class SaidaController {
         return ResponseEntity.ok(service.listarPedidoSaida().stream().map(SaidaMapper::toResponse).toList());
     }
 
-    @Operation(summary = "Excluir Saida")
+    @Operation(summary = "Excluir Saída")
     @ApiResponses({
             @ApiResponse(responseCode = "404",description = "Nenhuma Saída Encontrada"),
             @ApiResponse(responseCode = "204",description = "Saída Excluída")
     })
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> excluirSaida(Integer id){
-        service.excluirPedidoSaida(id);
+    @DeleteMapping("/material/{materialId}/solicitacao/{solicitacaoId}")
+    public ResponseEntity<Void> excluirSaida(@PathVariable Integer materialId, @PathVariable Integer solicitacaoId){
+        service.excluirPedidoSaida(materialId, solicitacaoId);
         return ResponseEntity.noContent().build();
     }
 }

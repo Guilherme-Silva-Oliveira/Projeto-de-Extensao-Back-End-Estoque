@@ -48,7 +48,7 @@ public class CategoriaController {
             @ApiResponse(responseCode = "204",description = "Categoria Excluída")
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> excluirCategoria(Integer id){
+    public ResponseEntity<Void> excluirCategoria(@PathVariable Integer id){
         service.excluirCategoria(id);
         return ResponseEntity.noContent().build();
     }

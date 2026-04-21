@@ -18,7 +18,9 @@ public class AlmoxarifeMapper {
     }
 
     public static AlmoxarifeResponse toResponse(Almoxarife entity) {
-        AlmoxarifadoResponse almoxarifadoResponse = entity.getAlmoxarifado() != null ? toAlmoxarifadoResponse(entity.getAlmoxarifado()) : null;
+        AlmoxarifadoResponse almoxarifadoResponse = entity.getAlmoxarifado() != null
+                ? AlmoxarifadoMapper.toResponse(entity.getAlmoxarifado())
+                : null;
         return new AlmoxarifeResponse(
                 entity.getId(),
                 entity.getNome(),

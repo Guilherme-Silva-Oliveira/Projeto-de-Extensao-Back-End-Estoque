@@ -2,10 +2,8 @@ package school.sptech.sistema_estoque.service;
 
 import org.springframework.stereotype.Service;
 import school.sptech.sistema_estoque.dto.estoque.categoria.CategoriaRequest;
-import school.sptech.sistema_estoque.exception.CategoriaNaoExisteException;
 import school.sptech.sistema_estoque.exception.EntidadeInvalidException;
 import school.sptech.sistema_estoque.exception.EntidadeNaoExisteException;
-import school.sptech.sistema_estoque.exception.InvalidCategoriaRequestException;
 import school.sptech.sistema_estoque.model.estoque.Categoria;
 import school.sptech.sistema_estoque.repository.CategoriaRepository;
 
@@ -15,6 +13,7 @@ import java.util.Optional;
 @Service
 public class CategoriaService {
     private final CategoriaRepository repository;
+
     public CategoriaService(CategoriaRepository repository) {
         this.repository = repository;
     }
@@ -24,6 +23,7 @@ public class CategoriaService {
         Categoria c = new Categoria(null, request.nomeCategoria());
         return repository.save(c);
     }
+
     public List<Categoria> listarCategorias(){
         return repository.findAll();
     }

@@ -18,6 +18,7 @@ import java.util.List;
 @RequestMapping("/v1/limites")
 public class LimiteController {
     private final LimiteService service;
+
     public LimiteController(LimiteService service) {
         this.service = service;
     }
@@ -49,12 +50,11 @@ public class LimiteController {
             @ApiResponse(responseCode = "204",description = "Limite Excluído")
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> excluirLimite(Integer id){
+    public ResponseEntity<Void> excluirLimite(@PathVariable Integer id){
         service.excluirLimite(id);
         return ResponseEntity.noContent().build();
     }
 
-    // ---------- TIPO LIMITE ----------
     @Operation(summary = "Cadastrar um Tipo Limite")
     @ApiResponses({
             @ApiResponse(responseCode = "400",description = "Corpo para Cadastro Inválido"),
@@ -80,8 +80,8 @@ public class LimiteController {
             @ApiResponse(responseCode = "404",description = "Nenhum Tipo Limite Encontrado"),
             @ApiResponse(responseCode = "204",description = "Tipo Limite Excluído")
     })
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> excluirTipoLimite(Integer id){
+    @DeleteMapping("/tipos/{id}")
+    public ResponseEntity<Void> excluirTipoLimite(@PathVariable Integer id){
         service.excluirTipoLimite(id);
         return ResponseEntity.noContent().build();
     }

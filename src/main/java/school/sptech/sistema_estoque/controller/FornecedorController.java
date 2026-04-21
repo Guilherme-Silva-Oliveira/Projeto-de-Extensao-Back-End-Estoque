@@ -18,6 +18,7 @@ import java.util.List;
 @RequestMapping("/v1/fornecedores")
 public class FornecedorController {
     private final FornecedorService service;
+
     public FornecedorController(FornecedorService service) {
         this.service = service;
     }
@@ -49,18 +50,17 @@ public class FornecedorController {
             @ApiResponse(responseCode = "204",description = "Fornecedor Excluído")
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> excluirFornecedor(Integer id){
+    public ResponseEntity<Void> excluirFornecedor(@PathVariable Integer id){
         service.excluirFornecedor(id);
         return ResponseEntity.noContent().build();
     }
 
-    // TIPO FORNECEDOR
     @Operation(summary = "Cadastrar um Tipo Fornecedor")
     @ApiResponses({
             @ApiResponse(responseCode = "400",description = "Corpo para Cadastro Inválido"),
             @ApiResponse(responseCode = "201",description = "Tipo Fornecedor Cadastrado")
     })
-    @PostMapping
+    @PostMapping("/tipos")
     public ResponseEntity<TipoFornecedorResponse> cadastrarTipoFornecedor(@RequestBody TipoFornecedorRequest request){
         return ResponseEntity.status(201).body(FornecedorMapper.toTipoFornecedorResponse(service.cadastrarTipoFornecedor(request)));
     }
@@ -70,7 +70,7 @@ public class FornecedorController {
             @ApiResponse(responseCode = "204",description = "Nenhum Tipo Fornecedor Encontrado"),
             @ApiResponse(responseCode = "200",description = "Tipo Fornecedores Encontrados")
     })
-    @GetMapping
+    @GetMapping("/tipos")
     public ResponseEntity<List<TipoFornecedorResponse>> listarTipoFornecedores(){
         return ResponseEntity.ok(service.listarTipoFornecedores().stream().map(FornecedorMapper::toTipoFornecedorResponse).toList());
     }
@@ -80,8 +80,8 @@ public class FornecedorController {
             @ApiResponse(responseCode = "404",description = "Nenhum Tipo Fornecedor Encontrado"),
             @ApiResponse(responseCode = "204",description = "Tipo Fornecedor Excluído")
     })
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> excluirTipoFornecedor(Integer id){
+    @DeleteMapping("/tipos/{id}")
+    public ResponseEntity<Void> excluirTipoFornecedor(@PathVariable Integer id){
         service.excluirTipoFornecedor(id);
         return ResponseEntity.noContent().build();
     }

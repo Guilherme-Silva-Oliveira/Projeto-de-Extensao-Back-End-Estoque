@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 public record SolicitacaoResponse(
         @Schema(description = "ID da Solicitação") Integer id,
         @Schema(description = "Professor Associado") Professor professor,
-        @Schema(description = "Motivo da Solicitação")String motivo,
+        @Schema(description = "Descrição da Solicitação")String descricao,
         @Schema(description = "Data da Solicitação") LocalDateTime dataSolicitacao
 ) {
 }

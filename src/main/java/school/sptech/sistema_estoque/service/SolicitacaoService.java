@@ -2,9 +2,9 @@ package school.sptech.sistema_estoque.service;
 
 import org.springframework.stereotype.Service;
 import school.sptech.sistema_estoque.dto.ia.SolicitacaoIARequest;
+import school.sptech.sistema_estoque.dto.mapper.SolicitacaoMapper;
 import school.sptech.sistema_estoque.exception.EntidadeInvalidException;
 import school.sptech.sistema_estoque.exception.EntidadeNaoExisteException;
-import school.sptech.sistema_estoque.model.estoque.Almoxarifado;
 import school.sptech.sistema_estoque.model.estoque.Professor;
 import school.sptech.sistema_estoque.model.estoque.Solicitacao;
 import school.sptech.sistema_estoque.repository.ProfessorRepository;
@@ -19,6 +19,7 @@ import java.util.Optional;
 public class SolicitacaoService {
     private final ProfessorRepository prorepository;
     private final SolicitacaoRepository solrepository;
+
     public SolicitacaoService(ProfessorRepository prorepository, SolicitacaoRepository solrepository) {
         this.prorepository = prorepository;
         this.solrepository = solrepository;
@@ -31,7 +32,7 @@ public class SolicitacaoService {
         String data = request.data_solicitacao();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
         LocalDateTime dataFormatada = LocalDateTime.parse(data,formatter);
-        Solicitacao solicitacao = new Solicitacao(null, professorOptional.get(), "", request.nome_material(), dataFormatada);
+        Solicitacao solicitacao = SolicitacaoMapper.toEntity(request, professorOptional.get(), dataFormatada);
         return solrepository.save(solicitacao);
     }
 
@@ -41,7 +42,7 @@ public class SolicitacaoService {
 
     public void excluirSolicitacao(Integer id){
         Optional<Solicitacao> opt = solrepository.findById(id);
-        if (opt.isEmpty()){throw new EntidadeNaoExisteException("Solicitacao Não Encontrado");}
+        if (opt.isEmpty()){throw new EntidadeNaoExisteException("Solicitacao Não Encontrada");}
         solrepository.delete(opt.get());
     }
 }

@@ -33,7 +33,7 @@ public class SistemaController {
     @PostMapping("/codigos")
     public ResponseEntity<CodigoRequest> pegarCodigoBarras(@RequestBody CodigoRequest codigo){
         System.out.println(">>> Estoque recebeu: " + codigo.codigo());
-        return ResponseEntity.ok(codigo);
+        return ResponseEntity.status(201).body(codigo);
     }
 
     @PostMapping("/ia")

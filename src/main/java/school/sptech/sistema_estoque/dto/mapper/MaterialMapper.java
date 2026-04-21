@@ -11,13 +11,20 @@ public class MaterialMapper {
     public static Material toEntity(MaterialRequest request, Categoria categoria, Almoxarifado almoxarifado, UnidadeMedida unidadeMedida){
         Material m = new Material();
         m.setCategoria(categoria);
-        m.setEstoque(almoxarifado);
+        m.setAlmoxarifado(almoxarifado);
         m.setUnidadeMedida(unidadeMedida);
         m.setNomeMaterial(request.nomeMaterial());
-        m.setCodigoBarras(request.codigoBarras());
+        m.setQuantidade(0);
         return m;
     }
+
     public static MaterialResponse toResponse(Material entity){
-        return new MaterialResponse(entity.getId(),entity.getCategoria());
+        return new MaterialResponse(
+                entity.getId(),
+                CategoriaMapper.toResponse(entity.getCategoria()),
+                UnidadeMedidaMapper.toResponse(entity.getUnidadeMedida()),
+                AlmoxarifadoMapper.toResponse(entity.getAlmoxarifado()),
+                entity.getNomeMaterial()
+        );
     }
 }

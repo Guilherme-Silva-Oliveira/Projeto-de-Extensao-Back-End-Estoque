@@ -2,7 +2,6 @@ package school.sptech.sistema_estoque.model.estoque;
 
 import jakarta.persistence.*;
 import school.sptech.sistema_estoque.model.estoque.compound_id.PedidoSaidaId;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -24,7 +23,7 @@ public class PedidoSaida {
     @JoinColumn(name = "escala_id")
     private Escala escala;
 
-    public PedidoSaida(Material material, Solicitacao solicitacao, Integer quantidade, LocalDateTime dataSolicitacao, Escala escala, LocalDateTime dataSaida) {
+    public PedidoSaida(Material material, Solicitacao solicitacao, Integer quantidade, LocalDateTime dataSolicitacao, Escala escala) {
         this.material = material;
         this.solicitacao = solicitacao;
         this.quantidade = quantidade;

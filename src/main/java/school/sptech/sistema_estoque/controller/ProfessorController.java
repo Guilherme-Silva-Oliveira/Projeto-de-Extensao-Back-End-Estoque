@@ -48,7 +48,7 @@ public class ProfessorController {
             @ApiResponse(responseCode = "204",description = "Professor Excluído")
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> excluirProfessor(Integer id){
+    public ResponseEntity<Void> excluirProfessor(@PathVariable Integer id){
         service.excluirProfessor(id);
         return ResponseEntity.noContent().build();
     }

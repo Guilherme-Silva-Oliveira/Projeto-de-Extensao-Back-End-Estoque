@@ -10,8 +10,6 @@ import java.time.LocalDateTime;
 public class SolicitacaoMapper {
     public static Solicitacao toEntity(SolicitacaoIARequest request, Professor professor, LocalDateTime data){
         Solicitacao entity = new Solicitacao();
-        //VALIDAR COM EQUIPE
-//        entity.setEscala(request.escala());
         entity.setDataSolicitacao(data);
         entity.setProfessor(professor);
         entity.setDescricao(request.nome_material()+" para "+request.nome_professor());
@@ -19,6 +17,6 @@ public class SolicitacaoMapper {
     }
 
     public static SolicitacaoResponse toResponse(Solicitacao entity){
-        return new SolicitacaoResponse(entity.getId(), entity.getProfessor(), entity.getEscala(), entity.getDescricao(), entity.getDataSolicitacao());
+        return new SolicitacaoResponse(entity.getId(), entity.getProfessor(), entity.getDescricao(), entity.getDataSolicitacao());
     }
 }

@@ -2,12 +2,8 @@ package school.sptech.sistema_estoque.service;
 
 import org.springframework.stereotype.Service;
 import school.sptech.sistema_estoque.dto.estoque.escala.EscalaRequest;
-import school.sptech.sistema_estoque.exception.AlmoxarifadoNaoExisteException;
 import school.sptech.sistema_estoque.exception.EntidadeInvalidException;
 import school.sptech.sistema_estoque.exception.EntidadeNaoExisteException;
-import school.sptech.sistema_estoque.exception.EscalaNaoExisteException;
-import school.sptech.sistema_estoque.exception.InvalidEscalaRequestException;
-import school.sptech.sistema_estoque.model.estoque.Almoxarifado;
 import school.sptech.sistema_estoque.model.estoque.Escala;
 import school.sptech.sistema_estoque.repository.EscalaRepository;
 
@@ -17,6 +13,7 @@ import java.util.Optional;
 @Service
 public class EscalaService {
     private final EscalaRepository repository;
+
     public EscalaService(EscalaRepository repository) {
         this.repository = repository;
     }

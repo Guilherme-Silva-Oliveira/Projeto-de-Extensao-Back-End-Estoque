@@ -48,7 +48,7 @@ public class EscalaController {
             @ApiResponse(responseCode = "204",description = "Escala Excluída")
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> excluirEscala(Integer id){
+    public ResponseEntity<Void> excluirEscala(@PathVariable Integer id){
         service.excluirEscala(id);
         return ResponseEntity.noContent().build();
     }

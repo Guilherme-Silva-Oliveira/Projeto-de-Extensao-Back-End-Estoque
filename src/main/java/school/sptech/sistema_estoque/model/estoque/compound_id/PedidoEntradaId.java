@@ -10,6 +10,22 @@ public class PedidoEntradaId implements Serializable {
     public PedidoEntradaId() {
     }
 
+    public Integer getFornecedor() {
+        return fornecedor;
+    }
+
+    public void setFornecedor(Integer fornecedor) {
+        this.fornecedor = fornecedor;
+    }
+
+    public Integer getMaterial() {
+        return material;
+    }
+
+    public void setMaterial(Integer material) {
+        this.material = material;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

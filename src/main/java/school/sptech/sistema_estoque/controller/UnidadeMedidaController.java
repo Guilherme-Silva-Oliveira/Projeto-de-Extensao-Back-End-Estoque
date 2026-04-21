@@ -48,7 +48,7 @@ public class UnidadeMedidaController {
             @ApiResponse(responseCode = "204",description = "Unidade de Medida Excluído")
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> excluirUnidadeMedida(Integer id){
+    public ResponseEntity<Void> excluirUnidadeMedida(@PathVariable Integer id){
         service.excluirUnidadeMedida(id);
         return ResponseEntity.noContent().build();
     }

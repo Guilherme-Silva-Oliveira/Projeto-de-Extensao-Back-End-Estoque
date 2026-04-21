@@ -48,7 +48,7 @@ public class AlmoxarifadoController {
             @ApiResponse(responseCode = "204",description = "Almoxarifado Excluído")
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> excluirAlmoxarifado(Integer id){
+    public ResponseEntity<Void> excluirAlmoxarifado(@PathVariable Integer id){
         service.excluirAlmoxarifado(id);
         return ResponseEntity.noContent().build();
     }

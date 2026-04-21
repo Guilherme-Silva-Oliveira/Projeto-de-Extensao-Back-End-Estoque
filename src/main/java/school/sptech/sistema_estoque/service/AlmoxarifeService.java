@@ -2,12 +2,8 @@ package school.sptech.sistema_estoque.service;
 
 import org.springframework.stereotype.Service;
 import school.sptech.sistema_estoque.dto.estoque.almoxarife.AlmoxarifeRequest;
-import school.sptech.sistema_estoque.exception.AlmoxarifadoNaoExisteException;
-import school.sptech.sistema_estoque.exception.AlmoxarifeNaoExisteException;
 import school.sptech.sistema_estoque.exception.EntidadeInvalidException;
 import school.sptech.sistema_estoque.exception.EntidadeNaoExisteException;
-import school.sptech.sistema_estoque.exception.InvalidAlmoxarifadoRequestException;
-import school.sptech.sistema_estoque.exception.InvalidAlmoxarifeRequestException;
 import school.sptech.sistema_estoque.model.estoque.Almoxarifado;
 import school.sptech.sistema_estoque.model.estoque.Almoxarife;
 import school.sptech.sistema_estoque.repository.AlmoxarifadoRepository;
@@ -20,6 +16,7 @@ import java.util.Optional;
 public class AlmoxarifeService {
     private final AlmoxarifadoRepository almoxarifadoRepository;
     private final AlmoxarifeRepository almoxarifeRepository;
+
     public AlmoxarifeService(AlmoxarifadoRepository almoxarifadoRepository, AlmoxarifeRepository almoxarifeRepository) {
         this.almoxarifadoRepository = almoxarifadoRepository;
         this.almoxarifeRepository = almoxarifeRepository;

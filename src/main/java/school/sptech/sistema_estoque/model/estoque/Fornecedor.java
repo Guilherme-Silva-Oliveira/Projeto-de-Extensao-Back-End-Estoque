@@ -20,8 +20,6 @@ public class Fornecedor {
 
     private String telefone;
 
-    private String cnpjCpf;
-
     @ManyToOne
     @JoinColumn(name = "tipo_fornecedor_id")
     private TipoFornecedor tipoFornecedor;
@@ -29,12 +27,11 @@ public class Fornecedor {
     public Fornecedor() {
     }
 
-    public Fornecedor(Integer id, String nome, String email, String telefone, String cnpjCpf, TipoFornecedor tipoFornecedor) {
+    public Fornecedor(Integer id, String nome, String email, String telefone, TipoFornecedor tipoFornecedor) {
         this.id = id;
         this.nome = nome;
         this.email = email;
         this.telefone = telefone;
-        this.cnpjCpf = cnpjCpf;
         this.tipoFornecedor = tipoFornecedor;
     }
 
@@ -68,14 +65,6 @@ public class Fornecedor {
 
     public void setTelefone(String telefone) {
         this.telefone = telefone;
-    }
-
-    public String getCnpjCpf() {
-        return cnpjCpf;
-    }
-
-    public void setCnpjCpf(String cnpjCpf) {
-        this.cnpjCpf = cnpjCpf;
     }
 
     public TipoFornecedor getTipoFornecedor() {

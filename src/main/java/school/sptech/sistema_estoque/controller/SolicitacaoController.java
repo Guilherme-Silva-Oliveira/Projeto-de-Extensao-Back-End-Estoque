@@ -47,7 +47,7 @@ public class SolicitacaoController {
             @ApiResponse(responseCode = "204",description = "Solicitação Excluída")
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> excluirSolicitacao(Integer id){
+    public ResponseEntity<Void> excluirSolicitacao(@PathVariable Integer id){
         service.excluirSolicitacao(id);
         return ResponseEntity.noContent().build();
     }

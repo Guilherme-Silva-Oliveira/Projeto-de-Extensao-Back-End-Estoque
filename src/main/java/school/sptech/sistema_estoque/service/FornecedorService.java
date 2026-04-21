@@ -42,7 +42,7 @@ public class FornecedorService {
         if (request == null) {throw new EntidadeInvalidException("Fornecedor invalido");}
         Optional<TipoFornecedor> tipoOptional = tpfrepository.findById(request.idTipoFornecedor());
         if (tipoOptional.isEmpty()) {throw new EntidadeInvalidException("Tipo fornecedor nao encontrado");}
-        Fornecedor fornecedor = new Fornecedor(null, request.nome(), request.email(), request.telefone(), request.cnpjCpf(), tipoOptional.get());
+        Fornecedor fornecedor = new Fornecedor(null, request.nome(), request.email(), request.telefone(), tipoOptional.get());
         return forrepository.save(fornecedor);
     }
 

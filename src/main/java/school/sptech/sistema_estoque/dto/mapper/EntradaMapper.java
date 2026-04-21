@@ -19,13 +19,13 @@ public class EntradaMapper {
     }
 
     public static PedidoEntradaResponse toResponse(PedidoEntrada entity) {
-        Integer fornecedorId = entity.getFornecedor() != null ? entity.getFornecedor().getId() : null;
-        Integer materialId = entity.getMaterial() != null ? entity.getMaterial().getId() : null;
-        FornecedorResponse fornecedorResponse = entity.getFornecedor() != null ? toFornecedorResponse(entity.getFornecedor()) : null;
-        MaterialResponse materialResponse = entity.getMaterial() != null ? toMaterialResponse(entity.getMaterial()) : null;
+        FornecedorResponse fornecedorResponse = entity.getFornecedor() != null
+                ? FornecedorMapper.toFornecedorResponse(entity.getFornecedor())
+                : null;
+        MaterialResponse materialResponse = entity.getMaterial() != null
+                ? MaterialMapper.toResponse(entity.getMaterial())
+                : null;
         return new PedidoEntradaResponse(
-                fornecedorId,
-                materialId,
                 entity.getQuantidade(),
                 entity.getDataEntrada(),
                 fornecedorResponse,

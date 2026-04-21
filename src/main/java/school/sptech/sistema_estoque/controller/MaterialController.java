@@ -51,7 +51,7 @@ public class MaterialController {
             @ApiResponse(responseCode = "204",description = "Material Excluído")
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> excluirMaterial(Integer id){
+    public ResponseEntity<Void> excluirMaterial(@PathVariable Integer id){
         service.excluirMaterial(id);
         return ResponseEntity.noContent().build();
     }

@@ -6,5 +6,6 @@ import jakarta.validation.constraints.NotNull;
 
 public record LimiteRequest(
         @NotBlank @Schema(description = "Valor do Limite",example = "500") String limite,
-        @NotNull @Schema(description = "Fk do Tipo do Limite") Integer idTipoLimite
+        @NotNull @Schema(description = "Fk do Tipo do Limite") Integer idTipoLimite,
+        @NotNull @Schema(description = "Fk do Material") Integer idMaterial
 ) {}

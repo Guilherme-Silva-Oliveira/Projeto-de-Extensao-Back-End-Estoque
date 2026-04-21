@@ -8,7 +8,6 @@ public record FornecedorResponse(
         @Schema(description = "Nome do Fornecedor") String nome,
         @Schema(description = "Email do Fornecedor") String email,
         @Schema(description = "Telefone do Fornecedor") String telefone,
-        @Schema(description = "CNPJ ou CPF do Fornecedor") String cnpjCpf,
         @Schema(description = "Tipo do Fornecedor") TipoFornecedorResponse tipoFornecedor
 ) {
 }

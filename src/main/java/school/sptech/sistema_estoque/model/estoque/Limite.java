@@ -3,7 +3,7 @@ package school.sptech.sistema_estoque.model.estoque;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "limites")
+@Table(name = "limite")
 public class Limite {
 
     @Id
@@ -16,13 +16,25 @@ public class Limite {
     @JoinColumn(name = "tipo_limite_id")
     private TipoLimite tipoLimite;
 
+    @ManyToOne
+    private Material material;
+
     public Limite() {
     }
 
-    public Limite(Integer id, String limite, TipoLimite tipoLimite) {
+    public Limite(Integer id, String limite, TipoLimite tipoLimite, Material material) {
         this.id = id;
         this.limite = limite;
         this.tipoLimite = tipoLimite;
+        this.material = material;
+    }
+
+    public Material getMaterial() {
+        return material;
+    }
+
+    public void setMaterial(Material material) {
+        this.material = material;
     }
 
     public Integer getId() {

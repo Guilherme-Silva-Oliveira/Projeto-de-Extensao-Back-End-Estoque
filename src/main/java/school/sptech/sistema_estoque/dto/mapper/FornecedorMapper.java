@@ -23,21 +23,20 @@ public class FornecedorMapper {
         f.setNome(request.nome());
         f.setEmail(request.email());
         f.setTelefone(request.telefone());
-        f.setCnpjCpf(request.cnpjCpf());
         f.setTipoFornecedor(tipoFornecedor);
         return f;
     }
 
     public static FornecedorResponse toFornecedorResponse(Fornecedor entity) {
-        Integer tipoFornecedorId = entity.getTipoFornecedor() != null ? entity.getTipoFornecedor().getId() : null;
-        TipoFornecedorResponse tipoFornecedorResponse = entity.getTipoFornecedor() != null ? toTipoFornecedorResponse(entity.getTipoFornecedor()) : null;
+        if (entity == null){
+            return null;
+        }
         return new FornecedorResponse(
                 entity.getId(),
                 entity.getNome(),
                 entity.getEmail(),
                 entity.getTelefone(),
-                entity.getCnpjCpf(),
-                tipoFornecedorResponse
+                TipoFornecedorMapper.toTipoFornecedorResponse(entity.getTipoFornecedor())
         );
     }
 }
