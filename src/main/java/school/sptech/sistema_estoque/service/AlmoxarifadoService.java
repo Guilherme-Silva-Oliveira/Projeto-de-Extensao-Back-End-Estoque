@@ -6,7 +6,7 @@ import school.sptech.sistema_estoque.exception.InvalidAlmoxarifadoRequestExcepti
 import school.sptech.sistema_estoque.exception.InvalidLimiteRequestException;
 import school.sptech.sistema_estoque.model.estoque.Almoxarifado;
 import school.sptech.sistema_estoque.model.estoque.Limite;
-import school.sptech.sistema_estoque.repository.AlmoxarifadoRepository;
+import school.sptech.sistema_estoque.port.AlmoxarifadoPort;
 import school.sptech.sistema_estoque.repository.LimiteRepository;
 
 import java.util.List;
@@ -14,10 +14,10 @@ import java.util.List;
 @Service
 public class AlmoxarifadoService {
     private final LimiteRepository limrepository;
-    private final AlmoxarifadoRepository almrepository;
-    public AlmoxarifadoService(LimiteRepository limrepository, AlmoxarifadoRepository almrepository) {
+    private final AlmoxarifadoPort almoxarifadoPort;
+    public AlmoxarifadoService(LimiteRepository limrepository, AlmoxarifadoPort almoxarifadoPort) {
         this.limrepository = limrepository;
-        this.almrepository = almrepository;
+        this.almoxarifadoPort = almoxarifadoPort;
     }
 
     public Almoxarifado cadastrarAlmoxarifado(AlmoxarifadoRequest request) {
@@ -35,10 +35,10 @@ public class AlmoxarifadoService {
         }
 
         Almoxarifado almoxarifado = new Almoxarifado(null, request.numeroSala(), limites);
-        return almrepository.save(almoxarifado);
+        return almoxarifadoPort.save(almoxarifado);
     }
 
     public List<Almoxarifado> listarAlmoxarifados() {
-        return almrepository.findAll();
+        return almoxarifadoPort.findAll();
     }
 }
