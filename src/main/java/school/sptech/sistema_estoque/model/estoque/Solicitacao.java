@@ -10,11 +10,13 @@ public class Solicitacao {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @ManyToOne private Professor professor;
-    private String escala;
+    @ManyToOne
+    @JoinColumn(name = "escala_id")
+    private Escala escala;
     private String descricao;
     private LocalDateTime dataSolicitacao;
 
-    public Solicitacao(Integer id, Professor professor, String escala, String descricao, LocalDateTime dataSolicitacao) {
+    public Solicitacao(Integer id, Professor professor, Escala escala, String descricao, LocalDateTime dataSolicitacao) {
         this.id = id;
         this.professor = professor;
         this.escala = escala;
@@ -40,11 +42,11 @@ public class Solicitacao {
         this.professor = professor;
     }
 
-    public String getEscala() {
+    public Escala getEscala() {
         return escala;
     }
 
-    public void setEscala(String escala) {
+    public void setEscala(Escala escala) {
         this.escala = escala;
     }
 

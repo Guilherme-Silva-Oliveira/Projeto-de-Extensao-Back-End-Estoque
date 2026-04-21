@@ -1,8 +1,9 @@
 package school.sptech.sistema_estoque.service;
 
 import org.springframework.stereotype.Service;
-import school.sptech.sistema_estoque.dto.estoque.ProfessorRequest;
-import school.sptech.sistema_estoque.exception.InvalidProfessorRequestException;
+import school.sptech.sistema_estoque.dto.estoque.professor.ProfessorRequest;
+import school.sptech.sistema_estoque.exception.EntidadeInvalidException;
+import school.sptech.sistema_estoque.exception.EntidadeNaoExisteException;
 import school.sptech.sistema_estoque.model.estoque.Professor;
 import school.sptech.sistema_estoque.repository.ProfessorRepository;
 
@@ -17,9 +18,7 @@ public class ProfessorService {
     }
 
     public Professor cadastrarProfessor(ProfessorRequest request){
-        if (request == null){
-            throw new InvalidProfessorRequestException("Professor Inválido");
-        }
+        if (request == null){throw new EntidadeInvalidException("Professor Inválido");}
         Professor professor = new Professor(null, request.nome(), request.email(), request.telefone());
         return repository.save(professor);
     }
@@ -30,9 +29,7 @@ public class ProfessorService {
 
     public void excluirProfessor(Integer id){
         Optional<Professor> opt = repository.findById(id);
-        if (opt.isEmpty()){
-            throw new InvalidProfessorRequestException("Professor Não Encontrada");
-        }
+        if (opt.isEmpty()){throw new EntidadeNaoExisteException("Professor Não Encontrada");}
         repository.delete(opt.get());
     }
 }

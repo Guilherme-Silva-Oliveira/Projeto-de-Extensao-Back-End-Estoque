@@ -10,6 +10,22 @@ public class PedidoSaidaId implements Serializable {
     public PedidoSaidaId() {
     }
 
+    public Integer getMaterial() {
+        return material;
+    }
+
+    public void setMaterial(Integer material) {
+        this.material = material;
+    }
+
+    public Integer getSolicitacao() {
+        return solicitacao;
+    }
+
+    public void setSolicitacao(Integer solicitacao) {
+        this.solicitacao = solicitacao;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

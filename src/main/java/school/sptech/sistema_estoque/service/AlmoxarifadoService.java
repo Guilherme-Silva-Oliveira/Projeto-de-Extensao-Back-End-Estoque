@@ -1,15 +1,16 @@
 package school.sptech.sistema_estoque.service;
 
 import org.springframework.stereotype.Service;
-import school.sptech.sistema_estoque.dto.estoque.AlmoxarifadoRequest;
-import school.sptech.sistema_estoque.exception.InvalidAlmoxarifadoRequestException;
-import school.sptech.sistema_estoque.exception.InvalidLimiteRequestException;
+import school.sptech.sistema_estoque.dto.estoque.almoxarifado.AlmoxarifadoRequest;
+import school.sptech.sistema_estoque.exception.EntidadeInvalidException;
+import school.sptech.sistema_estoque.exception.EntidadeNaoExisteException;
 import school.sptech.sistema_estoque.model.estoque.Almoxarifado;
 import school.sptech.sistema_estoque.model.estoque.Limite;
 import school.sptech.sistema_estoque.port.AlmoxarifadoPort;
 import school.sptech.sistema_estoque.repository.LimiteRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AlmoxarifadoService {
@@ -40,5 +41,11 @@ public class AlmoxarifadoService {
 
     public List<Almoxarifado> listarAlmoxarifados() {
         return almoxarifadoPort.findAll();
+    }
+
+    public void excluirAlmoxarifado(Integer id){
+        Optional<Almoxarifado> opt = almrepository.findById(id);
+        if (opt.isEmpty()){throw new EntidadeNaoExisteException("Almoxarifado Não Encontrado");}
+        almrepository.delete(opt.get());
     }
 }

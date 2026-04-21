@@ -15,17 +15,12 @@ public class Almoxarifado {
     @Column(name = "numero_sala")
     private Integer numeroSala;
 
-    @OneToMany
-    @JoinColumn(name = "almoxarifado_id")
-    private List<Limite> limites;
-
     public Almoxarifado() {
     }
 
-    public Almoxarifado(Integer id, Integer numeroSala, List<Limite> limites) {
+    public Almoxarifado(Integer id, Integer numeroSala) {
         this.id = id;
         this.numeroSala = numeroSala;
-        this.limites = limites;
     }
 
     public Integer getId() {
@@ -44,11 +39,4 @@ public class Almoxarifado {
         this.numeroSala = numeroSala;
     }
 
-    public List<Limite> getLimites() {
-        return limites;
-    }
-
-    public void setLimites(List<Limite> limites) {
-        this.limites = limites;
-    }
 }
