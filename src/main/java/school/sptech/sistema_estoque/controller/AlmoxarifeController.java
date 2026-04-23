@@ -15,6 +15,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/v1/almoxarifes")
 public class AlmoxarifeController {
+
+    public static final String COOKIE_NOME = "authToken";
+
     private final AlmoxarifeService service;
     public AlmoxarifeController(AlmoxarifeService service) {
         this.service = service;
@@ -51,4 +54,6 @@ public class AlmoxarifeController {
         service.excluirAlmoxarife(id);
         return ResponseEntity.noContent().build();
     }
+
+    // TODO fazer /login e /logout
 }
