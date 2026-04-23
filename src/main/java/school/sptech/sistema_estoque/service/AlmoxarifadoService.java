@@ -1,6 +1,8 @@
 package school.sptech.sistema_estoque.service;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import school.sptech.sistema_estoque.dto.estoque.almoxarifado.AlmoxarifadoRequest;
 import school.sptech.sistema_estoque.exception.EntidadeInvalidException;
 import school.sptech.sistema_estoque.exception.EntidadeNaoExisteException;
@@ -22,21 +24,12 @@ public class AlmoxarifadoService {
     }
 
     public Almoxarifado cadastrarAlmoxarifado(AlmoxarifadoRequest request) {
-        if (request == null) {
-            throw new InvalidAlmoxarifadoRequestException("Almoxarifado invalido");
+        if (request == null) {throw new EntidadeInvalidException("Almoxarifado invalido");}
+        if (!almrepository.findByNumeroSala(request.numeroSala()).isEmpty()){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Almoxarifado com esse numero de sala já existe");
         }
-
-        if (request.idsLimites() == null || request.idsLimites().isEmpty()) {
-            throw new InvalidLimiteRequestException("Limites nao informados");
-        }
-
-        List<Limite> limites = limrepository.findAllById(request.idsLimites());
-        if (limites.size() != request.idsLimites().size()) {
-            throw new InvalidLimiteRequestException("Limite nao encontrado");
-        }
-
-        Almoxarifado almoxarifado = new Almoxarifado(null, request.numeroSala(), limites);
-        return almoxarifadoPort.save(almoxarifado);
+        Almoxarifado almoxarifado = new Almoxarifado(null, request.numeroSala());
+        return almrepository.save(almoxarifado);
     }
 
     public List<Almoxarifado> listarAlmoxarifados() {

@@ -1,6 +1,8 @@
 package school.sptech.sistema_estoque.service;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import school.sptech.sistema_estoque.dto.estoque.almoxarife.AlmoxarifeRequest;
 import school.sptech.sistema_estoque.exception.EntidadeInvalidException;
 import school.sptech.sistema_estoque.exception.EntidadeNaoExisteException;
@@ -24,6 +26,9 @@ public class AlmoxarifeService {
 
     public Almoxarife cadastrarAlmoxarife(AlmoxarifeRequest request) {
         if (request == null) {throw new EntidadeInvalidException("Almoxarife invalido");}
+        if (almoxarifeRepository.existsByEmailAndAlmoxarifadoId(request.email(), request.idAlmoxarifado())){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe um almoxarife cadastrado com esse email e id de almoxarifado");
+        }
         Optional<Almoxarifado> almoxarifadoOptional = almoxarifadoRepository.findById(request.idAlmoxarifado());
         if (almoxarifadoOptional.isEmpty()) {throw new EntidadeInvalidException("Almoxarifado nao encontrado");}
 

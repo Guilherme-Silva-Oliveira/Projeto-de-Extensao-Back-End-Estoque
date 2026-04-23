@@ -1,6 +1,8 @@
 package school.sptech.sistema_estoque.service;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import school.sptech.sistema_estoque.dto.estoque.material.MaterialRequest;
 import school.sptech.sistema_estoque.exception.EntidadeInvalidException;
 import school.sptech.sistema_estoque.exception.EntidadeNaoExisteException;
@@ -38,7 +40,9 @@ public class MaterialService {
 
     public Material cadastrarMaterial(MaterialRequest request){
         if (request==null){throw new EntidadeInvalidException("Material Inválido");}
-
+        if (matrepository.existsByNomeMaterialAndAlmoxarifadoId(request.nomeMaterial(), request.idAlmoxarifado())){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe um almoxarife cadastrado com esse email e id de almoxarifado");
+        }
         Optional<CodigoBarras> codigoExistente = codigoBarrasRepository.findById(request.codigoBarras());
         if (codigoExistente.isPresent()) {
             return codigoExistente.get().getMaterial();

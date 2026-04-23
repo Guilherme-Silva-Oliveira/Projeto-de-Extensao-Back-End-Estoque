@@ -8,5 +8,14 @@ import java.util.Optional;
 
 @Repository
 public interface ProfessorRepository extends JpaRepository<Professor, Integer> {
-    public Optional<Professor> findByNome(String nome);
+    // Buscas gerais
+    Optional<Professor> findByNome(String nome);
+    Optional<Professor> findByEmail(String email);
+    Optional<Professor> findByTelefone(String telefone);
+    Optional<Professor> findByNomeAndEmail(String nome, String email);
+
+    // Verificação de duplicata antes de cadastrar
+    Boolean existsByEmail(String email);
+    Boolean existsByTelefone(String telefone);
+    Boolean existsByEmailAndTelefone(String email, String telefone);
 }
