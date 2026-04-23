@@ -7,17 +7,20 @@ import school.sptech.sistema_estoque.dto.estoque.almoxarifado.AlmoxarifadoReques
 import school.sptech.sistema_estoque.exception.EntidadeInvalidException;
 import school.sptech.sistema_estoque.exception.EntidadeNaoExisteException;
 import school.sptech.sistema_estoque.model.estoque.Almoxarifado;
-import school.sptech.sistema_estoque.repository.AlmoxarifadoRepository;
+import school.sptech.sistema_estoque.model.estoque.Limite;
+import school.sptech.sistema_estoque.port.AlmoxarifadoPort;
+import school.sptech.sistema_estoque.repository.LimiteRepository;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class AlmoxarifadoService {
-    private final AlmoxarifadoRepository almrepository;
-
-    public AlmoxarifadoService(AlmoxarifadoRepository almrepository) {
-        this.almrepository = almrepository;
+    private final LimiteRepository limrepository;
+    private final AlmoxarifadoPort almoxarifadoPort;
+    public AlmoxarifadoService(LimiteRepository limrepository, AlmoxarifadoPort almoxarifadoPort) {
+        this.limrepository = limrepository;
+        this.almoxarifadoPort = almoxarifadoPort;
     }
 
     public Almoxarifado cadastrarAlmoxarifado(AlmoxarifadoRequest request) {
@@ -30,7 +33,7 @@ public class AlmoxarifadoService {
     }
 
     public List<Almoxarifado> listarAlmoxarifados() {
-        return almrepository.findAll();
+        return almoxarifadoPort.findAll();
     }
 
     public void excluirAlmoxarifado(Integer id){
