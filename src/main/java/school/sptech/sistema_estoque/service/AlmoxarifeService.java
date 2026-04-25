@@ -4,10 +4,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import school.sptech.sistema_estoque.config.GerenciadorTokenJwt;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
-import school.sptech.sistema_estoque.config.GerenciadorTokenJwt;
+import org.springframework.http.HttpStatus;
 import school.sptech.sistema_estoque.dto.estoque.almoxarife.AlmoxarifeRequest;
 import school.sptech.sistema_estoque.dto.estoque.almoxarife.AlmoxarifeToken;
 import school.sptech.sistema_estoque.dto.mapper.AlmoxarifeMapper;
@@ -39,6 +40,9 @@ public class AlmoxarifeService {
 
     public Almoxarife cadastrarAlmoxarife(AlmoxarifeRequest request) {
         if (request == null) {throw new EntidadeInvalidException("Almoxarife invalido");}
+        if (almoxarifeRepository.existsByEmailAndAlmoxarifadoId(request.email(), request.idAlmoxarifado())){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe um almoxarife cadastrado com esse email e id de almoxarifado");
+        }
         Optional<Almoxarifado> almoxarifadoOptional = almoxarifadoRepository.findById(request.idAlmoxarifado());
         if (almoxarifadoOptional.isEmpty()) {throw new EntidadeInvalidException("Almoxarifado nao encontrado");}
 
