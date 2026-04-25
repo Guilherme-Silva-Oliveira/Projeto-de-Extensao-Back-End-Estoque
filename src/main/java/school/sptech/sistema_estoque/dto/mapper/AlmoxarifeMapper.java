@@ -31,6 +31,7 @@ public class AlmoxarifeMapper {
         a.setId(almoxarife.getId());
         a.setNome(almoxarife.getNome());
         a.setEmail(almoxarife.getEmail());
+        a.setTelefone(almoxarife.getTelefone());
         a.setToken(token);
         a.setAlmoxarifado(AlmoxarifadoMapper.toResponse(
                     almoxarife.getAlmoxarifado()));
