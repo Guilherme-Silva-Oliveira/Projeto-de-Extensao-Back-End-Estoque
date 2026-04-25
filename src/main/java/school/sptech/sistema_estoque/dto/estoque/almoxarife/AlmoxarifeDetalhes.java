@@ -5,16 +5,13 @@ import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-public class AlmoxarifeDetalhesDto implements UserDetails {
+public class AlmoxarifeDetalhes implements UserDetails {
 
   private final String nome;
-
   private final String email;
-
   private final String senha;
 
-
-  public AlmoxarifeDetalhesDto(String nome, String email, String senha) {
+  public AlmoxarifeDetalhes(String nome, String email, String senha) {
     this.nome = nome;
     this.email = email;
     this.senha = senha;

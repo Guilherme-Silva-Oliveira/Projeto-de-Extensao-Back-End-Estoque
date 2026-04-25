@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import school.sptech.sistema_estoque.dto.estoque.almoxarife.AlmoxarifeDetalhesDto;
+import school.sptech.sistema_estoque.dto.estoque.almoxarife.AlmoxarifeDetalhes;
 import school.sptech.sistema_estoque.model.estoque.Almoxarife;
 import school.sptech.sistema_estoque.repository.AlmoxarifeRepository;
 
@@ -22,7 +22,7 @@ public class AutenticacaoService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Almoxarife almoxarife = almoxarifeRepository.findByEmail(username)
             .orElseThrow(() -> new UsernameNotFoundException(String.format("Usuário: %s não encontrado", username)));
-        return new AlmoxarifeDetalhesDto(
+        return new AlmoxarifeDetalhes(
                 almoxarife.getNome(),
                 almoxarife.getEmail(), 
                 almoxarife.getSenha());

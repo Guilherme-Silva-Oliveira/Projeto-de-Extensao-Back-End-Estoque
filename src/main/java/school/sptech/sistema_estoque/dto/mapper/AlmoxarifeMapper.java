@@ -1,8 +1,10 @@
 package school.sptech.sistema_estoque.dto.mapper;
 
 import school.sptech.sistema_estoque.dto.estoque.almoxarifado.AlmoxarifadoResponse;
+import school.sptech.sistema_estoque.dto.estoque.almoxarife.AlmoxarifeLogin;
 import school.sptech.sistema_estoque.dto.estoque.almoxarife.AlmoxarifeRequest;
 import school.sptech.sistema_estoque.dto.estoque.almoxarife.AlmoxarifeResponse;
+import school.sptech.sistema_estoque.dto.estoque.almoxarife.AlmoxarifeToken;
 import school.sptech.sistema_estoque.model.estoque.Almoxarifado;
 import school.sptech.sistema_estoque.model.estoque.Almoxarife;
 
@@ -17,6 +19,25 @@ public class AlmoxarifeMapper {
         return a;
     }
 
+    public static Almoxarife toEntity(AlmoxarifeLogin request) {
+        Almoxarife a = new Almoxarife();
+        a.setEmail(request.email());
+        a.setSenha(request.senha());
+        return a;
+    }
+
+    public static AlmoxarifeToken toEntity(Almoxarife almoxarife, final String token) {
+        AlmoxarifeToken a = new AlmoxarifeToken();
+        a.setId(almoxarife.getId());
+        a.setNome(almoxarife.getNome());
+        a.setEmail(almoxarife.getEmail());
+        a.setToken(token);
+        a.setAlmoxarifado(AlmoxarifadoMapper.toResponse(
+                    almoxarife.getAlmoxarifado()));
+        return a;
+    }
+
+
     public static AlmoxarifeResponse toResponse(Almoxarife entity) {
         AlmoxarifadoResponse almoxarifadoResponse = entity.getAlmoxarifado() != null
                 ? AlmoxarifadoMapper.toResponse(entity.getAlmoxarifado())
@@ -27,6 +48,16 @@ public class AlmoxarifeMapper {
                 entity.getEmail(),
                 entity.getTelefone(),
                 almoxarifadoResponse
+        );
+    }
+
+    public static AlmoxarifeResponse toResponse(AlmoxarifeToken entity) {
+        return new AlmoxarifeResponse(
+                entity.getId(),
+                entity.getNome(),
+                entity.getEmail(),
+                entity.getTelefone(),
+                entity.getAlmoxarifado()
         );
     }
 }

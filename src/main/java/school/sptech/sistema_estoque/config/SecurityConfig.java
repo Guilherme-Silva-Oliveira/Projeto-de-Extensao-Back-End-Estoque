@@ -43,6 +43,10 @@ public class SecurityConfig {
 
 
     private static final String[] URLS_PERMITIDAS = {
+        "/swagger-ui/**",
+        "/swagger-ui.html",
+        "/swagger-resources",
+        "/swagger-resources/**",
         "/v1/almoxarifes/login",
         "/v1/almoxarifes/logout",
         "/h2-console/**",
@@ -122,7 +126,7 @@ public class SecurityConfig {
         // Em produção: List.of("https://meuapp.com.br")
         configuracao.setAllowedOrigins(List.of(
                 "http://localhost:5173",  // Vite dev server
-                "http://localhost:3000",   // Create React App (alternativa)
+                "http://localhost:3000"   // Create React App (alternativa)
         ));
 
         // Necessário para que o browser envie/receba cookies nas requisições cross-origin
