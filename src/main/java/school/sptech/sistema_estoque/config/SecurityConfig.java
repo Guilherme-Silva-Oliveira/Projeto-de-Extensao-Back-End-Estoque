@@ -49,6 +49,7 @@ public class SecurityConfig {
             "/swagger-resources/**",
             "/v1/almoxarifes/login",
             "/v1/almoxarifes",
+            "/v1/codigos",
             "/v1/almoxarifes/logout",
             "/h2-console/**",
             "/h2-console/*/**",
