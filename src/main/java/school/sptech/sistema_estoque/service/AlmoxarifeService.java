@@ -1,9 +1,17 @@
 package school.sptech.sistema_estoque.service;
 
-import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import school.sptech.sistema_estoque.config.GerenciadorTokenJwt;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
 import school.sptech.sistema_estoque.dto.estoque.almoxarife.AlmoxarifeRequest;
+import school.sptech.sistema_estoque.dto.estoque.almoxarife.AlmoxarifeToken;
+import school.sptech.sistema_estoque.dto.mapper.AlmoxarifeMapper;
 import school.sptech.sistema_estoque.exception.EntidadeInvalidException;
 import school.sptech.sistema_estoque.exception.EntidadeNaoExisteException;
 import school.sptech.sistema_estoque.model.estoque.Almoxarifado;
@@ -19,9 +27,15 @@ public class AlmoxarifeService {
     private final AlmoxarifadoRepository almoxarifadoRepository;
     private final AlmoxarifeRepository almoxarifeRepository;
 
-    public AlmoxarifeService(AlmoxarifadoRepository almoxarifadoRepository, AlmoxarifeRepository almoxarifeRepository) {
+    private final AuthenticationManager authenticationManager;
+    private final GerenciadorTokenJwt gerenciadorTokenJwt;
+
+    public AlmoxarifeService(AlmoxarifadoRepository almoxarifadoRepository, AlmoxarifeRepository almoxarifeRepository,
+            AuthenticationManager authenticationManager, GerenciadorTokenJwt gerenciadorTokenJwt) {
         this.almoxarifadoRepository = almoxarifadoRepository;
         this.almoxarifeRepository = almoxarifeRepository;
+        this.authenticationManager = authenticationManager;
+        this.gerenciadorTokenJwt = gerenciadorTokenJwt;
     }
 
     public Almoxarife cadastrarAlmoxarife(AlmoxarifeRequest request) {
@@ -44,5 +58,24 @@ public class AlmoxarifeService {
         Optional<Almoxarife> opt = almoxarifeRepository.findById(id);
         if (opt.isEmpty()){throw new EntidadeNaoExisteException("Almoxarife Não Encontrado");}
         almoxarifeRepository.delete(opt.get());
+    }
+
+
+    public AlmoxarifeToken autenticar(Almoxarife almoxarife) {
+        final UsernamePasswordAuthenticationToken credentials = new UsernamePasswordAuthenticationToken(
+                almoxarife.getEmail(), almoxarife.getSenha());
+
+        final Authentication authentication = this.authenticationManager.authenticate(credentials);
+
+        Almoxarife almoxarifeAutenticado =
+            almoxarifeRepository.findByEmail(almoxarife.getEmail())
+                    .orElseThrow(
+                            () -> new ResponseStatusException(404, "Email do Almoxarife não cadastrado", null));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        final String token = gerenciadorTokenJwt.generateToken(authentication);
+
+        return AlmoxarifeMapper.toEntity(almoxarifeAutenticado, token);
     }
 }

@@ -1,5 +1,7 @@
 package school.sptech.sistema_estoque.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import school.sptech.sistema_estoque.model.estoque.Almoxarife;
 
@@ -17,5 +19,4 @@ public interface AlmoxarifeRepository extends JpaRepository<Almoxarife, Integer>
     Boolean existsByEmail(String email);
     Boolean existsByAlmoxarifadoId(Integer almoxarifadoId);
     Boolean existsByEmailAndAlmoxarifadoId(String email, Integer almoxarifadoId);
-
 }
