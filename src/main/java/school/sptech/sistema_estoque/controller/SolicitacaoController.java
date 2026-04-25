@@ -3,6 +3,7 @@ package school.sptech.sistema_estoque.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import school.sptech.sistema_estoque.dto.estoque.solicitacao.SolicitacaoResponse;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/v1/solicitacoes")
+@Tag(name = "Solicitações",description = "Operações Relacionadas à Solicitações")
 public class SolicitacaoController {
     private final SolicitacaoService service;
     public SolicitacaoController(SolicitacaoService service) {
@@ -38,7 +40,9 @@ public class SolicitacaoController {
     })
     @GetMapping
     public ResponseEntity<List<SolicitacaoResponse>> listarSolicitacoes(){
-        return ResponseEntity.ok(service.listarSolicitacoes().stream().map(SolicitacaoMapper::toResponse).toList());
+        var solicitacoes = service.listarSolicitacoes();
+        if (solicitacoes.isEmpty()){return ResponseEntity.noContent().build();}
+        return ResponseEntity.ok(solicitacoes.stream().map(SolicitacaoMapper::toResponse).toList());
     }
 
     @Operation(summary = "Excluir Solicitação")

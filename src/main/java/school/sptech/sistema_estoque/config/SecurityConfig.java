@@ -43,14 +43,16 @@ public class SecurityConfig {
 
 
     private static final String[] URLS_PERMITIDAS = {
-        "/swagger-ui/**",
-        "/swagger-ui.html",
-        "/swagger-resources",
-        "/swagger-resources/**",
-        "/v1/almoxarifes/login",
-        "/v1/almoxarifes/logout",
-        "/h2-console/**",
-        "/h2-console/*/**"
+            "/swagger-ui/**",
+            "/swagger-ui.html",
+            "/swagger-resources",
+            "/swagger-resources/**",
+            "/v1/almoxarifes/login",
+            "/v1/almoxarifes",
+            "/v1/almoxarifes/logout",
+            "/h2-console/**",
+            "/h2-console/*/**",
+            "/v3/api-docs/**"
     };
 
     @Bean

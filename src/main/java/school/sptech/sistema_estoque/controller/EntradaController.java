@@ -3,6 +3,7 @@ package school.sptech.sistema_estoque.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import school.sptech.sistema_estoque.dto.estoque.pedido_entrada.PedidoEntradaRequest;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/v1/entradas")
+@Tag(name = "Entradas",description = "Operações Relacionadas à Entradas")
 public class EntradaController {
     private final EntradaService service;
 
@@ -40,7 +42,9 @@ public class EntradaController {
     })
     @GetMapping
     public ResponseEntity<List<PedidoEntradaResponse>> listarEntradas(){
-        return ResponseEntity.ok(service.listarPedidosEntrada().stream().map(EntradaMapper::toResponse).toList());
+        var entradas = service.listarPedidosEntrada();
+        if (entradas.isEmpty()){return ResponseEntity.noContent().build();}
+        return ResponseEntity.ok(entradas.stream().map(EntradaMapper::toResponse).toList());
     }
 
     @Operation(summary = "Excluir Entrada")

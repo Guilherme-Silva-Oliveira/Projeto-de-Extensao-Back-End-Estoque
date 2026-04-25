@@ -4,6 +4,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import school.sptech.sistema_estoque.config.GerenciadorTokenJwt;
 
 import org.springframework.stereotype.Service;
@@ -30,23 +31,23 @@ public class AlmoxarifeService {
     private final AuthenticationManager authenticationManager;
     private final GerenciadorTokenJwt gerenciadorTokenJwt;
 
-    public AlmoxarifeService(AlmoxarifadoRepository almoxarifadoRepository, AlmoxarifeRepository almoxarifeRepository,
-            AuthenticationManager authenticationManager, GerenciadorTokenJwt gerenciadorTokenJwt) {
+    private final PasswordEncoder encoder;
+
+    public AlmoxarifeService(AlmoxarifadoRepository almoxarifadoRepository, AlmoxarifeRepository almoxarifeRepository, AuthenticationManager authenticationManager, GerenciadorTokenJwt gerenciadorTokenJwt, PasswordEncoder encoder) {
         this.almoxarifadoRepository = almoxarifadoRepository;
         this.almoxarifeRepository = almoxarifeRepository;
         this.authenticationManager = authenticationManager;
         this.gerenciadorTokenJwt = gerenciadorTokenJwt;
+        this.encoder = encoder;
     }
 
     public Almoxarife cadastrarAlmoxarife(AlmoxarifeRequest request) {
         if (request == null) {throw new EntidadeInvalidException("Almoxarife invalido");}
-        if (almoxarifeRepository.existsByEmailAndAlmoxarifadoId(request.email(), request.idAlmoxarifado())){
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe um almoxarife cadastrado com esse email e id de almoxarifado");
-        }
+        if (almoxarifeRepository.existsByEmailAndAlmoxarifadoId(request.email(), request.idAlmoxarifado())){throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe um almoxarife cadastrado com esse email e id de almoxarifado");}
         Optional<Almoxarifado> almoxarifadoOptional = almoxarifadoRepository.findById(request.idAlmoxarifado());
         if (almoxarifadoOptional.isEmpty()) {throw new EntidadeInvalidException("Almoxarifado nao encontrado");}
-
-        Almoxarife almoxarife = new Almoxarife(null, request.nome(), request.email(), request.telefone(), request.senha(), almoxarifadoOptional.get());
+        String novaSenha = encoder.encode(request.senha());
+        Almoxarife almoxarife = new Almoxarife(null, request.nome(), request.email(), request.telefone(), novaSenha, almoxarifadoOptional.get());
         return almoxarifeRepository.save(almoxarife);
     }
 
