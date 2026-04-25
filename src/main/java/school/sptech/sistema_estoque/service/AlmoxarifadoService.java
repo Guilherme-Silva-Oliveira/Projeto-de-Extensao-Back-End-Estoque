@@ -1,6 +1,8 @@
 package school.sptech.sistema_estoque.service;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import school.sptech.sistema_estoque.dto.estoque.almoxarifado.AlmoxarifadoRequest;
 import school.sptech.sistema_estoque.exception.EntidadeInvalidException;
 import school.sptech.sistema_estoque.exception.EntidadeNaoExisteException;
@@ -14,28 +16,20 @@ import java.util.Optional;
 
 @Service
 public class AlmoxarifadoService {
-    private final LimiteRepository limrepository;
+    //    private final LimiteRepository limrepository;
     private final AlmoxarifadoPort almoxarifadoPort;
-    public AlmoxarifadoService(LimiteRepository limrepository, AlmoxarifadoPort almoxarifadoPort) {
-        this.limrepository = limrepository;
+    public AlmoxarifadoService(AlmoxarifadoPort almoxarifadoPort) {
         this.almoxarifadoPort = almoxarifadoPort;
     }
 
     public Almoxarifado cadastrarAlmoxarifado(AlmoxarifadoRequest request) {
         if (request == null) {
-            throw new InvalidAlmoxarifadoRequestException("Almoxarifado invalido");
+            throw new EntidadeInvalidException("Almoxarifado invalido");
         }
-
-        if (request.idsLimites() == null || request.idsLimites().isEmpty()) {
-            throw new InvalidLimiteRequestException("Limites nao informados");
+        if (almoxarifadoPort.findByNumeroSala(request.numeroSala()).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Almoxarifado com esse numero de sala já existe");
         }
-
-        List<Limite> limites = limrepository.findAllById(request.idsLimites());
-        if (limites.size() != request.idsLimites().size()) {
-            throw new InvalidLimiteRequestException("Limite nao encontrado");
-        }
-
-        Almoxarifado almoxarifado = new Almoxarifado(null, request.numeroSala(), limites);
+        Almoxarifado almoxarifado = new Almoxarifado(null, request.numeroSala());
         return almoxarifadoPort.save(almoxarifado);
     }
 
@@ -44,8 +38,10 @@ public class AlmoxarifadoService {
     }
 
     public void excluirAlmoxarifado(Integer id){
-        Optional<Almoxarifado> opt = almrepository.findById(id);
-        if (opt.isEmpty()){throw new EntidadeNaoExisteException("Almoxarifado Não Encontrado");}
-        almrepository.delete(opt.get());
+        Optional<Almoxarifado> opt = almoxarifadoPort.findById(id);
+        if (opt.isEmpty()){
+            throw new EntidadeNaoExisteException("Almoxarifado Não Encontrado");
+        }
+        almoxarifadoPort.delete(opt.get());
     }
 }

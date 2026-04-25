@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+
+        <!-- Console padrão -->
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+
+        <!-- Arquivo exclusivo para logs de movimentação de estoque -->
+        <RollingFile name="MovimentacaoFile"
+                     fileName="logs/movimentacoes.log"
+                     filePattern="logs/movimentacoes-%d{yyyy-MM-dd}.log">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5level - %msg%n"/>
+            <Policies>
+                <!-- Gera um novo arquivo a cada dia -->
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+            <!-- Mantém os últimos 30 dias de log -->
+            <DefaultRolloverStrategy max="30"/>
+        </RollingFile>
+
+    </Appenders>
+
+    <Loggers>
+        <!-- Logger específico para os observers — vai APENAS para o arquivo -->
+        <Logger name="school.sptech.sistema_estoque.observer" level="debug" additivity="false">
+            <AppenderRef ref="MovimentacaoFile"/>
+        </Logger>
+
+        <!-- Root — todo o resto vai para o console -->
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+        </Root>
+    </Loggers>
+</Configuration>
