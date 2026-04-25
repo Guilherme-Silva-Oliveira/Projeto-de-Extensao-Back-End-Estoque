@@ -9,6 +9,5 @@ public interface MovimentacaoObserver {
 
     void atualizar(String mensagem);
 
-    //       void gerarLogs(String tipoMovimentacao, String material, Integer quantidade);
 
 }
