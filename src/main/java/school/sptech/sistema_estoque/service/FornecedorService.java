@@ -1,6 +1,8 @@
 package school.sptech.sistema_estoque.service;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import school.sptech.sistema_estoque.dto.estoque.fornecedor.FornecedorRequest;
 import school.sptech.sistema_estoque.dto.estoque.tipo_fornecedor.TipoFornecedorRequest;
 import school.sptech.sistema_estoque.exception.*;
@@ -40,6 +42,9 @@ public class FornecedorService {
 
     public Fornecedor cadastrarFornecedor(FornecedorRequest request) {
         if (request == null) {throw new EntidadeInvalidException("Fornecedor invalido");}
+        if (forrepository.existsByEmailAndTelefone(request.email(), request.telefone())){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe um almoxarife cadastrado com esse email e id de almoxarifado");
+        }
         Optional<TipoFornecedor> tipoOptional = tpfrepository.findById(request.idTipoFornecedor());
         if (tipoOptional.isEmpty()) {throw new EntidadeInvalidException("Tipo fornecedor nao encontrado");}
         Fornecedor fornecedor = new Fornecedor(null, request.nome(), request.email(), request.telefone(), tipoOptional.get());
