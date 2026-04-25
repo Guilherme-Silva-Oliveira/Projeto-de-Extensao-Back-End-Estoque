@@ -3,6 +3,7 @@ package school.sptech.sistema_estoque.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +25,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/v1/almoxarifes")
+@Tag(name = "Almoxarife",description = "Operações Relacionadas à Almoxarife")
 public class AlmoxarifeController {
 
     public static final String COOKIE_NOME = "authToken";
@@ -54,7 +56,9 @@ public class AlmoxarifeController {
     })
     @GetMapping
     public ResponseEntity<List<AlmoxarifeResponse>> listarAlmoxarifes(){
-        return ResponseEntity.ok(service.listarAlmoxarifes().stream().map(AlmoxarifeMapper::toResponse).toList());
+        var almoxarifes = service.listarAlmoxarifes();
+        if (almoxarifes.isEmpty()){return ResponseEntity.noContent().build();}
+        return ResponseEntity.ok(almoxarifes.stream().map(AlmoxarifeMapper::toResponse).toList());
     }
 
     @Operation(summary = "Excluir Almoxarife")
@@ -82,7 +86,7 @@ public class AlmoxarifeController {
         ResponseCookie cookie = ResponseCookie.from(COOKIE_NOME, autenticado.getToken())
                 .httpOnly(true)                          // inacessível ao JavaScript
                 .secure(false)                           // true em produção (exige HTTPS)
-                .sameSite("Strict")                      // bloqueia envio cross-site (mitiga CSRF)
+                .sameSite("Lax")                      // bloqueia envio cross-site (mitiga CSRF)
                 .path("/")                               // valido para toda a aplicacao
                 .maxAge(Duration.ofSeconds(jwtValidity)) // expira junto com o token JWT
                 .build();
@@ -101,7 +105,7 @@ public class AlmoxarifeController {
         ResponseCookie cookie = ResponseCookie.from(COOKIE_NOME, "")
                 .httpOnly(true)
                 .secure(false)
-                .sameSite("Strict")
+                .sameSite("Lax")
                 .path("/")
                 .maxAge(0)  
                 .build();

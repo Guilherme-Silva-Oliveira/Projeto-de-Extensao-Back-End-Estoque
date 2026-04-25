@@ -3,6 +3,7 @@ package school.sptech.sistema_estoque.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import school.sptech.sistema_estoque.dto.estoque.categoria.CategoriaRequest;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/v1/categorias")
+@Tag(name = "Categorias",description = "Operações Relacionadas à Categoria")
 public class CategoriaController {
     private final CategoriaService service;
     public CategoriaController(CategoriaService service) {
@@ -38,8 +40,8 @@ public class CategoriaController {
     })
     @GetMapping
     public ResponseEntity<List<CategoriaResponse>> listarCategorias(){
-        var categorias = service.listarCategorias();
-        return ResponseEntity.ok(categorias.stream().map(CategoriaMapper::toResponse).toList());
+        if (service.listarCategorias().isEmpty()){return ResponseEntity.noContent().build();}
+        return ResponseEntity.ok(service.listarCategorias().stream().map(CategoriaMapper::toResponse).toList());
     }
 
     @Operation(summary = "Excluir Categoria")

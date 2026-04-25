@@ -63,7 +63,6 @@ public class EntradaService {
         String mensagem = "Material '" + material.getNomeMaterial() + "' entrou com quantidade " + request.quantidade();
         observer.gerarLogs(mensagem);
         observer.atualizar(mensagem);
-
         return saved;
     }
 

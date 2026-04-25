@@ -3,6 +3,7 @@ package school.sptech.sistema_estoque.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import school.sptech.sistema_estoque.dto.estoque.professor.ProfessorRequest;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/v1/professores")
+@Tag(name = "Professores",description = "Operações Relacionadas à Professores")
 public class ProfessorController {
     private final ProfessorService service;
     public ProfessorController(ProfessorService service) {
@@ -39,6 +41,7 @@ public class ProfessorController {
     @GetMapping
     public ResponseEntity<List<ProfessorResponse>> listarProfessores(){
         var professores = service.listarProfessor();
+        if (professores.isEmpty()){return ResponseEntity.noContent().build();}
         return ResponseEntity.ok(professores.stream().map(ProfessorMapper::toResponse).toList());
     }
 

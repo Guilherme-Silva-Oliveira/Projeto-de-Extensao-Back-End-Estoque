@@ -16,19 +16,14 @@ import java.util.Optional;
 
 @Service
 public class AlmoxarifadoService {
-    //    private final LimiteRepository limrepository;
     private final AlmoxarifadoPort almoxarifadoPort;
     public AlmoxarifadoService(AlmoxarifadoPort almoxarifadoPort) {
         this.almoxarifadoPort = almoxarifadoPort;
     }
 
     public Almoxarifado cadastrarAlmoxarifado(AlmoxarifadoRequest request) {
-        if (request == null) {
-            throw new EntidadeInvalidException("Almoxarifado invalido");
-        }
-        if (almoxarifadoPort.findByNumeroSala(request.numeroSala()).isPresent()) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Almoxarifado com esse numero de sala já existe");
-        }
+        if (request == null) {throw new EntidadeInvalidException("Almoxarifado invalido");}
+        if (almoxarifadoPort.findByNumeroSala(request.numeroSala()).isPresent()) {throw new ResponseStatusException(HttpStatus.CONFLICT, "Almoxarifado com esse numero de sala já existe");}
         Almoxarifado almoxarifado = new Almoxarifado(null, request.numeroSala());
         return almoxarifadoPort.save(almoxarifado);
     }
@@ -39,9 +34,7 @@ public class AlmoxarifadoService {
 
     public void excluirAlmoxarifado(Integer id){
         Optional<Almoxarifado> opt = almoxarifadoPort.findById(id);
-        if (opt.isEmpty()){
-            throw new EntidadeNaoExisteException("Almoxarifado Não Encontrado");
-        }
+        if (opt.isEmpty()){throw new EntidadeNaoExisteException("Almoxarifado Não Encontrado");}
         almoxarifadoPort.delete(opt.get());
     }
 }

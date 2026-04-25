@@ -3,6 +3,7 @@ package school.sptech.sistema_estoque.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import school.sptech.sistema_estoque.dto.estoque.limite.LimiteRequest;
@@ -16,6 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/v1/limites")
+@Tag(name = "Limites",description = "Operações Relacionadas à Limites")
 public class LimiteController {
     private final LimiteService service;
 
@@ -41,7 +43,9 @@ public class LimiteController {
     })
     @GetMapping
     public ResponseEntity<List<LimiteResponse>> listarLimites(){
-        return ResponseEntity.ok(service.listarLimites().stream().map(LimiteMapper::toLimiteResponse).toList());
+        var limites = service.listarLimites();
+        if (limites.isEmpty()){return ResponseEntity.noContent().build();}
+        return ResponseEntity.ok(limites.stream().map(LimiteMapper::toLimiteResponse).toList());
     }
 
     @Operation(summary = "Excluir Limite")
