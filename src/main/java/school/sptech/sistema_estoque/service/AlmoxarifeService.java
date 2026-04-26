@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import school.sptech.sistema_estoque.dto.estoque.almoxarife.AlmoxarifeRequest;
 import school.sptech.sistema_estoque.dto.estoque.almoxarife.AlmoxarifeToken;
 import school.sptech.sistema_estoque.dto.mapper.AlmoxarifeMapper;
+import school.sptech.sistema_estoque.exception.EntidadeConflictException;
 import school.sptech.sistema_estoque.exception.EntidadeInvalidException;
 import school.sptech.sistema_estoque.exception.EntidadeNaoExisteException;
 import school.sptech.sistema_estoque.model.estoque.Almoxarifado;
@@ -43,7 +44,7 @@ public class AlmoxarifeService {
 
     public Almoxarife cadastrarAlmoxarife(AlmoxarifeRequest request) {
         if (request == null) {throw new EntidadeInvalidException("Almoxarife invalido");}
-        if (almoxarifeRepository.existsByEmailAndAlmoxarifadoId(request.email(), request.idAlmoxarifado())){throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe um almoxarife cadastrado com esse email e id de almoxarifado");}
+        if (almoxarifeRepository.existsByEmailAndAlmoxarifadoId(request.email(), request.idAlmoxarifado())){throw new EntidadeConflictException("Já existe um almoxarife cadastrado com esse email e id de almoxarifado");}
         Optional<Almoxarifado> almoxarifadoOptional = almoxarifadoRepository.findById(request.idAlmoxarifado());
         if (almoxarifadoOptional.isEmpty()) {throw new EntidadeInvalidException("Almoxarifado nao encontrado");}
         String novaSenha = encoder.encode(request.senha());

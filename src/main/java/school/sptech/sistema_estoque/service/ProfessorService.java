@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import school.sptech.sistema_estoque.dto.estoque.professor.ProfessorRequest;
+import school.sptech.sistema_estoque.exception.EntidadeConflictException;
 import school.sptech.sistema_estoque.exception.EntidadeInvalidException;
 import school.sptech.sistema_estoque.exception.EntidadeNaoExisteException;
 import school.sptech.sistema_estoque.model.estoque.Professor;
@@ -22,7 +23,7 @@ public class ProfessorService {
     public Professor cadastrarProfessor(ProfessorRequest request){
         if (request == null){throw new EntidadeInvalidException("Professor Inválido");}
         if (repository.existsByEmailAndTelefone(request.email(), request.telefone())){
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe um almoxarife cadastrado com esse email e id de almoxarifado");
+            throw new EntidadeConflictException("Já existe um almoxarife cadastrado com esse email e id de almoxarifado");
         }
         Professor professor = new Professor(null, request.nome(), request.email(), request.telefone());
         return repository.save(professor);

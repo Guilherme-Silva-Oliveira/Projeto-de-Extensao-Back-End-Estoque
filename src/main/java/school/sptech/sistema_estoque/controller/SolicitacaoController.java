@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import school.sptech.sistema_estoque.dto.estoque.solicitacao.SolicitacaoRequest;
 import school.sptech.sistema_estoque.dto.estoque.solicitacao.SolicitacaoResponse;
 import school.sptech.sistema_estoque.dto.ia.SolicitacaoIARequest;
 import school.sptech.sistema_estoque.dto.mapper.SolicitacaoMapper;
@@ -29,7 +30,7 @@ public class SolicitacaoController {
             @ApiResponse(responseCode = "201",description = "Solicitação Cadastrada")
     })
     @PostMapping
-    public ResponseEntity<SolicitacaoResponse> cadastrarSolicitacao(@RequestBody SolicitacaoIARequest request){
+    public ResponseEntity<SolicitacaoResponse> cadastrarSolicitacao(@RequestBody SolicitacaoRequest request){
         return ResponseEntity.status(201).body(SolicitacaoMapper.toResponse(service.cadastrarSolicitacao(request)));
     }
 

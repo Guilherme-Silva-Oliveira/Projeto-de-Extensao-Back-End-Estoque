@@ -15,6 +15,12 @@ public class Almoxarifado {
     @Column(name = "numero_sala")
     private Integer numeroSala;
 
+    @OneToMany(mappedBy = "almoxarifado",cascade = CascadeType.REMOVE,orphanRemoval = true)
+    private List<Material> materiais;
+
+    @OneToMany(mappedBy = "almoxarifado", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Almoxarife> almoxarifes;
+
     public Almoxarifado() {
     }
 
@@ -39,4 +45,19 @@ public class Almoxarifado {
         this.numeroSala = numeroSala;
     }
 
+    public List<Material> getMateriais() {
+        return materiais;
+    }
+
+    public void setMateriais(List<Material> materiais) {
+        this.materiais = materiais;
+    }
+
+    public List<Almoxarife> getAlmoxarifes() {
+        return almoxarifes;
+    }
+
+    public void setAlmoxarifes(List<Almoxarife> almoxarifes) {
+        this.almoxarifes = almoxarifes;
+    }
 }

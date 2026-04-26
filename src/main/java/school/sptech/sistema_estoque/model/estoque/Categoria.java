@@ -1,9 +1,8 @@
 package school.sptech.sistema_estoque.model.estoque;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 public class Categoria {
@@ -11,6 +10,9 @@ public class Categoria {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String nomeCategoria;
+
+    @OneToMany(mappedBy = "categoria",cascade = CascadeType.REMOVE,orphanRemoval = true)
+    private List<Material> materiais;
 
     public Categoria(Integer id, String nomeCategoria) {
         this.id = id;
@@ -22,4 +24,12 @@ public class Categoria {
     public void setId(Integer id) {this.id = id;}
     public String getNomeCategoria() {return nomeCategoria;}
     public void setNomeCategoria(String nomeCategoria) {this.nomeCategoria = nomeCategoria;}
+
+    public List<Material> getMateriais() {
+        return materiais;
+    }
+
+    public void setMateriais(List<Material> materiais) {
+        this.materiais = materiais;
+    }
 }
