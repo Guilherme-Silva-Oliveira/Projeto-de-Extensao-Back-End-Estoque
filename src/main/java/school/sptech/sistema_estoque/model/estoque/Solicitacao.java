@@ -3,6 +3,7 @@ package school.sptech.sistema_estoque.model.estoque;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 public class Solicitacao {
@@ -10,18 +11,18 @@ public class Solicitacao {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @ManyToOne private Professor professor;
-    @ManyToOne
-    @JoinColumn(name = "escala_id")
-    private Escala escala;
     private String descricao;
     private LocalDateTime dataSolicitacao;
 
-    public Solicitacao(Integer id, Professor professor, Escala escala, String descricao, LocalDateTime dataSolicitacao) {
+    @OneToMany(mappedBy = "solicitacao", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<PedidoSaida> pedidosSaida;
+
+    public Solicitacao(Integer id, Professor professor, String descricao, LocalDateTime dataSolicitacao, List<PedidoSaida> pedidosSaida) {
         this.id = id;
         this.professor = professor;
-        this.escala = escala;
         this.descricao = descricao;
         this.dataSolicitacao = dataSolicitacao;
+        this.pedidosSaida = pedidosSaida;
     }
 
     public Solicitacao() {}
@@ -42,14 +43,6 @@ public class Solicitacao {
         this.professor = professor;
     }
 
-    public Escala getEscala() {
-        return escala;
-    }
-
-    public void setEscala(Escala escala) {
-        this.escala = escala;
-    }
-
     public String getDescricao() {
         return descricao;
     }
@@ -64,5 +57,13 @@ public class Solicitacao {
 
     public void setDataSolicitacao(LocalDateTime dataSolicitacao) {
         this.dataSolicitacao = dataSolicitacao;
+    }
+
+    public List<PedidoSaida> getPedidosSaida() {
+        return pedidosSaida;
+    }
+
+    public void setPedidosSaida(List<PedidoSaida> pedidosSaida) {
+        this.pedidosSaida = pedidosSaida;
     }
 }
