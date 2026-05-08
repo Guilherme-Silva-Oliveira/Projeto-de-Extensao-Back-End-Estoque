@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import school.sptech.sistema_estoque.dto.estoque.material.MaterialUpdateRequest;
 import school.sptech.sistema_estoque.dto.estoque.material.MaterialRequest;
 import school.sptech.sistema_estoque.dto.estoque.material.MaterialResponse;
 import school.sptech.sistema_estoque.dto.mapper.MaterialMapper;
@@ -58,4 +59,12 @@ public class MaterialController {
         service.excluirMaterial(id);
         return ResponseEntity.noContent().build();
     }
+    @PatchMapping("/{id}")
+        public ResponseEntity<MaterialResponse> atualizarParcial(
+            @PathVariable Integer id,
+            @RequestBody MaterialUpdateRequest request) {
+
+        return ResponseEntity.ok(service.atualizarParcial(id, request));
+    }
+
 }
