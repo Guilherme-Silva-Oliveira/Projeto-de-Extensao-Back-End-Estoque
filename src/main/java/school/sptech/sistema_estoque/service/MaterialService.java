@@ -1,9 +1,10 @@
 package school.sptech.sistema_estoque.service;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
+import school.sptech.sistema_estoque.dto.estoque.material.MaterialUpdateRequest;
 import school.sptech.sistema_estoque.dto.estoque.material.MaterialRequest;
+import school.sptech.sistema_estoque.dto.estoque.material.MaterialResponse;
+import school.sptech.sistema_estoque.dto.mapper.MaterialMapper;
 import school.sptech.sistema_estoque.exception.EntidadeConflictException;
 import school.sptech.sistema_estoque.exception.EntidadeInvalidException;
 import school.sptech.sistema_estoque.exception.EntidadeNaoExisteException;
@@ -42,7 +43,7 @@ public class MaterialService {
     public Material cadastrarMaterial(MaterialRequest request){
         if (request==null){throw new EntidadeInvalidException("Material Inválido");}
         if (matrepository.existsByNomeMaterialAndAlmoxarifadoId(request.nomeMaterial(), request.idAlmoxarifado())){
-            throw new EntidadeConflictException("Já existe um almoxarife cadastrado com esse email e id de almoxarifado");
+            throw new EntidadeConflictException("Já existe um Material cadastrado com esse email e id de material");
         }
         Optional<CodigoBarras> codigoExistente = codigoBarrasRepository.findById(request.codigoBarras());
         if (codigoExistente.isPresent()) {
@@ -74,4 +75,22 @@ public class MaterialService {
         if (opt.isEmpty()){throw new EntidadeNaoExisteException("Material Não Encontrado");}
         matrepository.delete(opt.get());
     }
+
+    public MaterialResponse atualizarParcial(Integer id, MaterialUpdateRequest request) {
+
+    Material material = matrepository.findById(id)
+            .orElseThrow(() -> new EntidadeInvalidException("Material não encontrado"));
+
+    if (request.nomeMaterial() != null) {
+        material.setNomeMaterial(request.nomeMaterial());
+    }
+
+    if (request.quantidade() != null) {
+        material.setQuantidade(request.quantidade());
+    }
+
+    Material salvo = matrepository.save(material);
+    return MaterialMapper.toResponse(salvo);
+}
+
 }

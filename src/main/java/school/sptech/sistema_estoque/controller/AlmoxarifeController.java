@@ -12,10 +12,7 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import school.sptech.sistema_estoque.dto.estoque.almoxarife.AlmoxarifeLogin;
-import school.sptech.sistema_estoque.dto.estoque.almoxarife.AlmoxarifeRequest;
-import school.sptech.sistema_estoque.dto.estoque.almoxarife.AlmoxarifeResponse;
-import school.sptech.sistema_estoque.dto.estoque.almoxarife.AlmoxarifeToken;
+import school.sptech.sistema_estoque.dto.estoque.almoxarife.*;
 import school.sptech.sistema_estoque.dto.mapper.AlmoxarifeMapper;
 import school.sptech.sistema_estoque.model.estoque.Almoxarife;
 import school.sptech.sistema_estoque.service.AlmoxarifeService;
@@ -114,4 +111,13 @@ public class AlmoxarifeController {
 
         return ResponseEntity.noContent().build();
     }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<AlmoxarifeResponse> atualizarParcial(
+            @PathVariable Integer id,
+            @RequestBody AlmoxarifeUpdateRequest request) {
+
+        return ResponseEntity.ok(service.atualizarParcial(id, request));
+    }
+
 }

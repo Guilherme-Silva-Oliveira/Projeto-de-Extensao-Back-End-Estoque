@@ -24,7 +24,8 @@ public class MaterialMapper {
                 CategoriaMapper.toResponse(entity.getCategoria()),
                 UnidadeMedidaMapper.toResponse(entity.getUnidadeMedida()),
                 AlmoxarifadoMapper.toResponse(entity.getAlmoxarifado()),
-                entity.getNomeMaterial()
+                entity.getNomeMaterial(),
+                entity.getQuantidade()
         );
     }
 }
