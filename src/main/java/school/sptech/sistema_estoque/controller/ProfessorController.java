@@ -6,9 +6,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import school.sptech.sistema_estoque.dto.estoque.professor.ProfessorPatchDto;
 import school.sptech.sistema_estoque.dto.estoque.professor.ProfessorRequest;
 import school.sptech.sistema_estoque.dto.estoque.professor.ProfessorResponse;
 import school.sptech.sistema_estoque.dto.mapper.ProfessorMapper;
+import school.sptech.sistema_estoque.model.estoque.Professor;
 import school.sptech.sistema_estoque.service.ProfessorService;
 
 import java.util.List;
@@ -54,5 +56,20 @@ public class ProfessorController {
     public ResponseEntity<Void> excluirProfessor(@PathVariable Integer id){
         service.excluirProfessor(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Atualiza Professor")
+    @ApiResponses({
+            @ApiResponse(responseCode = "404", description = "Professor não encontrado"),
+            @ApiResponse(responseCode = "200", description = "Professor atualizado")
+    })
+    @PatchMapping("/{id}")
+    public ResponseEntity<ProfessorResponse> atualizarProfessor(
+            @PathVariable Integer id,
+            @RequestBody ProfessorPatchDto request
+    ){
+        Professor professorAtualizado = service.atualizarProfessor(id, request);
+
+        return ResponseEntity.ok(ProfessorMapper.toResponse(professorAtualizado));
     }
 }
