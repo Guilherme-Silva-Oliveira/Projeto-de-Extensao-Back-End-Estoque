@@ -1,6 +1,7 @@
 package school.sptech.sistema_estoque.service;
 
 import org.springframework.stereotype.Service;
+import school.sptech.sistema_estoque.dto.estoque.limite.LimitePatchDto;
 import school.sptech.sistema_estoque.dto.estoque.limite.LimiteRequest;
 import school.sptech.sistema_estoque.dto.estoque.tipo_limite.TipoLimiteRequest;
 import school.sptech.sistema_estoque.exception.EntidadeInvalidException;
@@ -61,5 +62,22 @@ public class LimiteService {
         Optional<Limite> opt = limrepository.findById(id);
         if (opt.isEmpty()){throw new EntidadeNaoExisteException("Limite Não Encontrado");}
         limrepository.delete(opt.get());
+    }
+
+    public Limite atualizarLimite(Integer id, LimitePatchDto dto){
+
+        Optional<Limite> opt = limrepository.findById(id);
+
+        if(opt.isEmpty()){
+            throw new EntidadeNaoExisteException("Limite Não Encontrado");
+        }
+
+        Limite limite = opt.get();
+
+        if(dto.valorLimite() != null){
+            limite.setLimite(dto.valorLimite());
+        }
+
+        return limrepository.save(limite);
     }
 }

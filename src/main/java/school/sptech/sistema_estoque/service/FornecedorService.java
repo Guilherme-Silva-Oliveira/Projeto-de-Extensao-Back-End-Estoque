@@ -3,6 +3,7 @@ package school.sptech.sistema_estoque.service;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import school.sptech.sistema_estoque.dto.estoque.fornecedor.FornecedorPatchDto;
 import school.sptech.sistema_estoque.dto.estoque.fornecedor.FornecedorRequest;
 import school.sptech.sistema_estoque.dto.estoque.tipo_fornecedor.TipoFornecedorRequest;
 import school.sptech.sistema_estoque.exception.*;
@@ -59,5 +60,46 @@ public class FornecedorService {
         Optional<Fornecedor> opt = forrepository.findById(id);
         if (opt.isEmpty()){throw new EntidadeNaoExisteException("Fornecedor Não Encontrado");}
         forrepository.delete(opt.get());
+    }
+
+    public Fornecedor atualizarFornecedor(Integer id, FornecedorPatchDto dto){
+
+        Optional<Fornecedor> fornecedorOptional = forrepository.findById(id);
+
+        if (fornecedorOptional.isEmpty()){
+            throw new EntidadeNaoExisteException("Fornecedor Não Encontrado");
+        }
+
+        if (dto == null){
+            throw new EntidadeInvalidException("Dados inválidos");
+        }
+
+        Fornecedor fornecedor = fornecedorOptional.get();
+
+        if (dto.nome() != null){
+            fornecedor.setNome(dto.nome());
+        }
+
+        if (dto.email() != null){
+            fornecedor.setEmail(dto.email());
+        }
+
+        if (dto.telefone() != null){
+            fornecedor.setTelefone(dto.telefone());
+        }
+
+        if (dto.tipoFornecedor() != null && dto.tipoFornecedor().id() != null){
+
+            Optional<TipoFornecedor> tipoOptional =
+                    tpfrepository.findById(dto.tipoFornecedor().id());
+
+            if (tipoOptional.isEmpty()){
+                throw new EntidadeInvalidException("Tipo fornecedor nao encontrado");
+            }
+
+            fornecedor.setTipoFornecedor(tipoOptional.get());
+        }
+
+        return forrepository.save(fornecedor);
     }
 }
