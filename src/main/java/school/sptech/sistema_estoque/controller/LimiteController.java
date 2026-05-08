@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import school.sptech.sistema_estoque.dto.estoque.limite.LimitePatchDto;
 import school.sptech.sistema_estoque.dto.estoque.limite.LimiteRequest;
 import school.sptech.sistema_estoque.dto.estoque.limite.LimiteResponse;
 import school.sptech.sistema_estoque.dto.estoque.tipo_limite.TipoLimiteRequest;
@@ -88,5 +89,18 @@ public class LimiteController {
     public ResponseEntity<Void> excluirTipoLimite(@PathVariable Integer id){
         service.excluirTipoLimite(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Atualizar Limite")
+    @ApiResponses({
+            @ApiResponse(responseCode = "404", description = "Limite não encontrado"),
+            @ApiResponse(responseCode = "200", description = "Limite atualizado")
+    })
+    @PatchMapping("/{id}")
+    public ResponseEntity<LimiteResponse> atualizarLimite(
+            @PathVariable Integer id,
+            @RequestBody LimitePatchDto dto
+    ){
+        return ResponseEntity.ok(LimiteMapper.toLimiteResponse(service.atualizarLimite(id, dto)));
     }
 }

@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import school.sptech.sistema_estoque.dto.estoque.fornecedor.FornecedorPatchDto;
 import school.sptech.sistema_estoque.dto.estoque.fornecedor.FornecedorRequest;
 import school.sptech.sistema_estoque.dto.estoque.fornecedor.FornecedorResponse;
 import school.sptech.sistema_estoque.dto.estoque.tipo_fornecedor.TipoFornecedorRequest;
@@ -88,5 +89,22 @@ public class FornecedorController {
     public ResponseEntity<Void> excluirTipoFornecedor(@PathVariable Integer id){
         service.excluirTipoFornecedor(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Atualizar um Fornecedor")
+    @ApiResponses({
+            @ApiResponse(responseCode = "404", description = "Fornecedor não encontrado"),
+            @ApiResponse(responseCode = "200", description = "Fornecedor atualizado")
+    })
+    @PatchMapping("/{id}")
+    public ResponseEntity<FornecedorResponse> atualizarFornecedor(
+            @PathVariable Integer id,
+            @RequestBody FornecedorPatchDto dto
+    ) {
+        var fornecedorAtualizado = service.atualizarFornecedor(id, dto);
+
+        return ResponseEntity.ok(
+                FornecedorMapper.toFornecedorResponse(fornecedorAtualizado)
+        );
     }
 }
