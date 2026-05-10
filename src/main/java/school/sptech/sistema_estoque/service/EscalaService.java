@@ -5,32 +5,38 @@ import school.sptech.sistema_estoque.dto.estoque.escala.EscalaRequest;
 import school.sptech.sistema_estoque.exception.EntidadeInvalidException;
 import school.sptech.sistema_estoque.exception.EntidadeNaoExisteException;
 import school.sptech.sistema_estoque.model.estoque.Escala;
-import school.sptech.sistema_estoque.repository.EscalaRepository;
+import school.sptech.sistema_estoque.port.EscalaPort;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
+
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class EscalaService {
-    private final EscalaRepository repository;
+    private final EscalaPort escalaPort;
 
-    public EscalaService(EscalaRepository repository) {
-        this.repository = repository;
+    public EscalaService(EscalaPort escalaPort) {
+        this.escalaPort = escalaPort;
     }
 
     public Escala cadastrarEscala(EscalaRequest request){
         if (request == null){ throw new EntidadeInvalidException("Escala Inválida"); }
+        if (escalaPort.findByNomeEscala(request.nomeEscala()).isPresent()) { throw new ResponseStatusException(HttpStatus.CONFLICT, "Escala com esse nome já existe"); }
         Escala e = new Escala(null, request.nomeEscala());
-        return repository.save(e);
+        return escalaPort.save(e);
     }
 
     public List<Escala> listarEscala(){
-        return repository.findAll();
+        return escalaPort.findAll();
     }
 
     public void excluirEscala(Integer id){
-        Optional<Escala> opt = repository.findById(id);
+        Optional<Escala> opt = escalaPort.findById(id);
         if (opt.isEmpty()){throw new EntidadeNaoExisteException("Escala Não Encontrada");}
-        repository.delete(opt.get());
+        escalaPort.delete(opt.get());
     }
 }
+
+
