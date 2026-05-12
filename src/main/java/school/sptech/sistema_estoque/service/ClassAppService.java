@@ -1,24 +1,37 @@
+
 package school.sptech.sistema_estoque.service;
 
 import org.springframework.stereotype.Service;
-import school.sptech.sistema_estoque.client.ClassAppClient;
 import school.sptech.sistema_estoque.dto.classapp.LabelsRequest;
 import school.sptech.sistema_estoque.dto.classapp.TagsRequest;
+import school.sptech.sistema_estoque.port.ClassAppPort;
 
 @Service
 public class ClassAppService {
-    private final ClassAppClient client;
-    public ClassAppService(ClassAppClient client) {
-        this.client = client;
+    private final ClassAppPort classAppPort;
+
+    public ClassAppService(ClassAppPort classAppPort) {
+        this.classAppPort = classAppPort;
     }
 
-    public TagsRequest getTags(){
-        return client.getTags();
+    public TagsRequest getTags() {
+        return classAppPort.getTags();
     }
 
-    public String getStudents(){return client.getStudents();}
+    public String getGroups() {
+        return classAppPort.getGroups();
+    }
 
-    public String getStaffs(){return client.getStaffs();}
+    public String getStudents() {
+        return classAppPort.getStudents();
+    }
 
-    public LabelsRequest getLabels(){return client.getLabels();}
+    public String getStaffs() {
+        return classAppPort.getStaffs();
+    }
+
+    public LabelsRequest getLabels() {
+        return classAppPort.getLabels();
+    }
 }
+

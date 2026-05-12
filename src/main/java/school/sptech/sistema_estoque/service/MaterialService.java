@@ -13,10 +13,8 @@ import school.sptech.sistema_estoque.model.estoque.Categoria;
 import school.sptech.sistema_estoque.model.estoque.CodigoBarras;
 import school.sptech.sistema_estoque.model.estoque.Material;
 import school.sptech.sistema_estoque.model.estoque.UnidadeMedida;
-import school.sptech.sistema_estoque.repository.AlmoxarifadoRepository;
-import school.sptech.sistema_estoque.repository.CategoriaRepository;
+import school.sptech.sistema_estoque.port.*;
 import school.sptech.sistema_estoque.repository.CodigoBarrasRepository;
-import school.sptech.sistema_estoque.repository.MaterialRepository;
 import school.sptech.sistema_estoque.repository.UnidadeMedidaRepository;
 
 import java.util.List;
@@ -24,73 +22,71 @@ import java.util.Optional;
 
 @Service
 public class MaterialService {
-    private final MaterialRepository matrepository;
-    private final CategoriaRepository catrepository;
-    private final AlmoxarifadoRepository almrepository;
-    private final UnidadeMedidaRepository unirepository;
-    private final CodigoBarrasRepository codigoBarrasRepository;
+    private final MaterialPort materialPort;;
+    private final CategoriaPort categoriaPort;
+    private final AlmoxarifadoPort almoxarifadoPort;
+    private final UnidadeMedidaPort unidadeMedidaPort;
+    private final CodigoBarrasPort codigoBarrasPort;
 
-    public MaterialService(MaterialRepository matrepository, CategoriaRepository catrepository,
-                           AlmoxarifadoRepository almrepository, UnidadeMedidaRepository unirepository,
-                           CodigoBarrasRepository codigoBarrasRepository) {
-        this.matrepository = matrepository;
-        this.catrepository = catrepository;
-        this.almrepository = almrepository;
-        this.unirepository = unirepository;
-        this.codigoBarrasRepository = codigoBarrasRepository;
+    public MaterialService(MaterialPort materialPort, CategoriaPort categoriaPort,
+                           AlmoxarifadoPort almoxarifadoPort, UnidadeMedidaPort unidadeMedidaPort,
+                           CodigoBarrasPort codigoBarrasPort) {
+        this.materialPort = materialPort;
+        this.categoriaPort = categoriaPort;
+        this.almoxarifadoPort = almoxarifadoPort;
+        this.unidadeMedidaPort = unidadeMedidaPort;
+        this.codigoBarrasPort = codigoBarrasPort; ;
     }
 
     public Material cadastrarMaterial(MaterialRequest request){
         if (request==null){throw new EntidadeInvalidException("Material Inválido");}
-        if (matrepository.existsByNomeMaterialAndAlmoxarifadoId(request.nomeMaterial(), request.idAlmoxarifado())){
+        if (materialPort.existsByNomeMaterialAndAlmoxarifadoId(request.nomeMaterial(), request.idAlmoxarifado())){
             throw new EntidadeConflictException("Já existe um Material cadastrado com esse email e id de material");
-        }
-        Optional<CodigoBarras> codigoExistente = codigoBarrasRepository.findById(request.codigoBarras());
+        }        Optional<CodigoBarras> codigoExistente = codigoBarrasPort.findById(request.codigoBarras());;
         if (codigoExistente.isPresent()) {
             return codigoExistente.get().getMaterial();
         }
 
-        Optional<Categoria> catOpt = catrepository.findById(request.idCategoria());
+        Optional<Categoria> catOpt = categoriaPort.findById(request.idCategoria());
         if (catOpt.isEmpty()){throw new EntidadeInvalidException("Categoria Não Encontrada");}
-        Optional<Almoxarifado> estOpt = almrepository.findById(request.idAlmoxarifado());
+        Optional<Almoxarifado> estOpt = almoxarifadoPort.findById(request.idAlmoxarifado());
         if (estOpt.isEmpty()){throw new EntidadeInvalidException("Estoque Não Encontrado");}
-        Optional<UnidadeMedida> uniOpt = unirepository.findById(request.idUnidadeMedida());
+        Optional<UnidadeMedida> uniOpt = unidadeMedidaPort.findById(request.idUnidadeMedida());
         if (uniOpt.isEmpty()){throw new EntidadeInvalidException("Unidade de Medida Não Encontrada");}
 
         Categoria c = catOpt.get();
         Almoxarifado a = estOpt.get();
         UnidadeMedida u = uniOpt.get();
         Material m = new Material(null, request.nomeMaterial(), c, a, u, 0);
-        Material salvo = matrepository.save(m);
-        codigoBarrasRepository.save(new CodigoBarras(request.codigoBarras(), salvo));
+        Material salvo = materialPort.save(m);
+        codigoBarrasPort.save(new CodigoBarras(request.codigoBarras(), salvo));
         return salvo;
     }
 
     public List<Material> listarMateriais(){
-        return matrepository.findAll();
+        return materialPort.findAll();
     }
 
     public void excluirMaterial(Integer id){
-        Optional<Material> opt = matrepository.findById(id);
+        Optional<Material> opt = materialPort.findById(id);
         if (opt.isEmpty()){throw new EntidadeNaoExisteException("Material Não Encontrado");}
-        matrepository.delete(opt.get());
+        materialPort.delete(opt.get());
     }
 
     public MaterialResponse atualizarParcial(Integer id, MaterialUpdateRequest request) {
 
-    Material material = matrepository.findById(id)
-            .orElseThrow(() -> new EntidadeInvalidException("Material não encontrado"));
+        Material material = materialPort.findById(id)
+                .orElseThrow(() -> new EntidadeInvalidException("Material não encontrado"));
 
-    if (request.nomeMaterial() != null) {
-        material.setNomeMaterial(request.nomeMaterial());
+        if (request.nomeMaterial() != null) {
+            material.setNomeMaterial(request.nomeMaterial());
+        }
+
+        if (request.quantidade() != null) {
+            material.setQuantidade(request.quantidade());
+        }
+
+        Material salvo = materialPort.save(material);
+        return MaterialMapper.toResponse(salvo);
     }
-
-    if (request.quantidade() != null) {
-        material.setQuantidade(request.quantidade());
-    }
-
-    Material salvo = matrepository.save(material);
-    return MaterialMapper.toResponse(salvo);
-}
-
 }

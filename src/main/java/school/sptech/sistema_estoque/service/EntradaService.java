@@ -1,3 +1,5 @@
+
+
 package school.sptech.sistema_estoque.service;
 
 import org.springframework.stereotype.Service;
@@ -10,10 +12,13 @@ import school.sptech.sistema_estoque.model.estoque.Material;
 import school.sptech.sistema_estoque.model.estoque.PedidoEntrada;
 import school.sptech.sistema_estoque.model.estoque.compound_id.PedidoEntradaId;
 import school.sptech.sistema_estoque.observer.MovimentacaoObserver;
+import school.sptech.sistema_estoque.port.CodigoBarrasPort;
+import school.sptech.sistema_estoque.port.FornecedorPort;
+import school.sptech.sistema_estoque.port.MaterialPort;
+import school.sptech.sistema_estoque.port.PedidoEntradaPort;
 import school.sptech.sistema_estoque.repository.CodigoBarrasRepository;
 import school.sptech.sistema_estoque.repository.FornecedorRepository;
 import school.sptech.sistema_estoque.repository.MaterialRepository;
-import school.sptech.sistema_estoque.repository.PedidoEntradaRepository;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.List;
@@ -21,32 +26,28 @@ import java.util.Optional;
 
 @Service
 public class EntradaService {
-    private final FornecedorRepository fornecedorRepository;
-    private final MaterialRepository materialRepository;
-    private final CodigoBarrasRepository codigoBarrasRepository;
-    private final PedidoEntradaRepository pedidoEntradaRepository;
+    private final FornecedorPort fornecedorPort;
+    private final MaterialPort materialPort;
+    private final CodigoBarrasPort codigoBarrasPort;
+    private final PedidoEntradaPort pedidoEntradaPort;
     private final MovimentacaoObserver observer;
 
-    public EntradaService(FornecedorRepository fornecedorRepository,
-                          MaterialRepository materialRepository,
-                          CodigoBarrasRepository codigoBarrasRepository,
-                          PedidoEntradaRepository pedidoEntradaRepository,
-                          @Qualifier("logEntrada") MovimentacaoObserver observer) {
-        this.fornecedorRepository = fornecedorRepository;
-        this.materialRepository = materialRepository;
-        this.codigoBarrasRepository = codigoBarrasRepository;
-        this.pedidoEntradaRepository = pedidoEntradaRepository;
+    public EntradaService(FornecedorPort fornecedorPort, MaterialPort materialPort, CodigoBarrasPort codigoBarrasPort, PedidoEntradaPort pedidoEntradaPort, MovimentacaoObserver observer) {
+        this.fornecedorPort = fornecedorPort;
+        this.materialPort = materialPort;
+        this.codigoBarrasPort = codigoBarrasPort;
+        this.pedidoEntradaPort = pedidoEntradaPort;
         this.observer = observer;
     }
 
     public PedidoEntrada cadastrarPedidoEntrada(PedidoEntradaRequest request) {
         if (request == null) { throw new EntidadeInvalidException("Pedido entrada invalido"); }
 
-        Optional<Fornecedor> fornecedorOptional = fornecedorRepository.findById(request.fornecedorId());
+        Optional<Fornecedor> fornecedorOptional = fornecedorPort.findById(request.fornecedorId());
         if (fornecedorOptional.isEmpty()) { throw new EntidadeInvalidException("Fornecedor nao encontrado"); }
-        Optional<Material> materialOptional = materialRepository.findById(request.materialId());
+        Optional<Material> materialOptional = materialPort.findById(request.materialId());
         if (materialOptional.isEmpty()) { throw new EntidadeInvalidException("Material nao encontrado"); }
-        Optional<CodigoBarras> codigoOptional = codigoBarrasRepository.findById(request.codigo());
+        Optional<CodigoBarras> codigoOptional = codigoBarrasPort.findById(request.codigo());
         if (codigoOptional.isEmpty()) { throw new EntidadeInvalidException("Codigo de barras nao encontrado"); }
 
         Material material = materialOptional.get();
@@ -55,10 +56,10 @@ public class EntradaService {
         }
 
         material.setQuantidade(material.getQuantidade() + request.quantidade());
-        materialRepository.save(material);
+        materialPort.save(material);
 
         PedidoEntrada pedidoEntrada = new PedidoEntrada(fornecedorOptional.get(), material, request.quantidade(), request.dataEntrada());
-        PedidoEntrada saved = pedidoEntradaRepository.save(pedidoEntrada);
+        PedidoEntrada saved = pedidoEntradaPort.save(pedidoEntrada);
 
         String mensagem = "Material '" + material.getNomeMaterial() + "' entrou com quantidade " + request.quantidade();
         observer.gerarLogs(mensagem);
@@ -67,15 +68,15 @@ public class EntradaService {
     }
 
     public List<PedidoEntrada> listarPedidosEntrada() {
-        return pedidoEntradaRepository.findAll();
+        return pedidoEntradaPort.findAll();
     }
 
     public void excluirEntrada(Integer fornecedorId, Integer materialId) {
         PedidoEntradaId id = new PedidoEntradaId();
         id.setFornecedor(fornecedorId);
         id.setMaterial(materialId);
-        Optional<PedidoEntrada> opt = pedidoEntradaRepository.findById(id);
+        Optional<PedidoEntrada> opt = pedidoEntradaPort.findById(id);
         if (opt.isEmpty()) { throw new EntidadeNaoExisteException("Entrada não encontrada"); }
-        pedidoEntradaRepository.delete(opt.get());
+        pedidoEntradaPort.delete(opt.get());
     }
 }
