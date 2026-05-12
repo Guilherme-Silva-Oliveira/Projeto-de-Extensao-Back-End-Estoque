@@ -3,8 +3,10 @@ package school.sptech.sistema_estoque.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import school.sptech.sistema_estoque.dto.estoque.fornecedor.FornecedorPatchDto;
 import school.sptech.sistema_estoque.dto.estoque.fornecedor.FornecedorRequest;
 import school.sptech.sistema_estoque.dto.estoque.fornecedor.FornecedorResponse;
 import school.sptech.sistema_estoque.dto.estoque.tipo_fornecedor.TipoFornecedorRequest;
@@ -16,6 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/v1/fornecedores")
+@Tag(name = "Fornecedores",description = "Operações Relacionadas à Fornecedores")
 public class FornecedorController {
     private final FornecedorService service;
 
@@ -41,7 +44,9 @@ public class FornecedorController {
     })
     @GetMapping
     public ResponseEntity<List<FornecedorResponse>> listarFornecedores(){
-        return ResponseEntity.ok(service.listarFornecedores().stream().map(FornecedorMapper::toFornecedorResponse).toList());
+        var fornecedores = service.listarFornecedores();
+        if (fornecedores.isEmpty()){return ResponseEntity.noContent().build();}
+        return ResponseEntity.ok(fornecedores.stream().map(FornecedorMapper::toFornecedorResponse).toList());
     }
 
     @Operation(summary = "Excluir Fornecedor")
@@ -84,5 +89,22 @@ public class FornecedorController {
     public ResponseEntity<Void> excluirTipoFornecedor(@PathVariable Integer id){
         service.excluirTipoFornecedor(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Atualizar um Fornecedor")
+    @ApiResponses({
+            @ApiResponse(responseCode = "404", description = "Fornecedor não encontrado"),
+            @ApiResponse(responseCode = "200", description = "Fornecedor atualizado")
+    })
+    @PatchMapping("/{id}")
+    public ResponseEntity<FornecedorResponse> atualizarFornecedor(
+            @PathVariable Integer id,
+            @RequestBody FornecedorPatchDto dto
+    ) {
+        var fornecedorAtualizado = service.atualizarFornecedor(id, dto);
+
+        return ResponseEntity.ok(
+                FornecedorMapper.toFornecedorResponse(fornecedorAtualizado)
+        );
     }
 }

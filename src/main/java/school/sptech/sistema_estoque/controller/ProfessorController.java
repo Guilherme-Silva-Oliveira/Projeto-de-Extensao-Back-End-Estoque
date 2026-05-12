@@ -3,17 +3,21 @@ package school.sptech.sistema_estoque.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import school.sptech.sistema_estoque.dto.estoque.professor.ProfessorPatchDto;
 import school.sptech.sistema_estoque.dto.estoque.professor.ProfessorRequest;
 import school.sptech.sistema_estoque.dto.estoque.professor.ProfessorResponse;
 import school.sptech.sistema_estoque.dto.mapper.ProfessorMapper;
+import school.sptech.sistema_estoque.model.estoque.Professor;
 import school.sptech.sistema_estoque.service.ProfessorService;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/v1/professores")
+@Tag(name = "Professores",description = "Operações Relacionadas à Professores")
 public class ProfessorController {
     private final ProfessorService service;
     public ProfessorController(ProfessorService service) {
@@ -39,6 +43,7 @@ public class ProfessorController {
     @GetMapping
     public ResponseEntity<List<ProfessorResponse>> listarProfessores(){
         var professores = service.listarProfessor();
+        if (professores.isEmpty()){return ResponseEntity.noContent().build();}
         return ResponseEntity.ok(professores.stream().map(ProfessorMapper::toResponse).toList());
     }
 
@@ -51,5 +56,20 @@ public class ProfessorController {
     public ResponseEntity<Void> excluirProfessor(@PathVariable Integer id){
         service.excluirProfessor(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Atualiza Professor")
+    @ApiResponses({
+            @ApiResponse(responseCode = "404", description = "Professor não encontrado"),
+            @ApiResponse(responseCode = "200", description = "Professor atualizado")
+    })
+    @PatchMapping("/{id}")
+    public ResponseEntity<ProfessorResponse> atualizarProfessor(
+            @PathVariable Integer id,
+            @RequestBody ProfessorPatchDto request
+    ){
+        Professor professorAtualizado = service.atualizarProfessor(id, request);
+
+        return ResponseEntity.ok(ProfessorMapper.toResponse(professorAtualizado));
     }
 }

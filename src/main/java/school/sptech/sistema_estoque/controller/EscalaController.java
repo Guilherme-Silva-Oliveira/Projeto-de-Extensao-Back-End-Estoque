@@ -3,6 +3,7 @@ package school.sptech.sistema_estoque.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import school.sptech.sistema_estoque.dto.estoque.escala.EscalaRequest;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/v1/escalas")
+@Tag(name = "Escalas",description = "Operações Relacionadas à Escalas")
 public class EscalaController {
     private final EscalaService service;
     public EscalaController(EscalaService service) {
@@ -39,6 +41,7 @@ public class EscalaController {
     @GetMapping
     public ResponseEntity<List<EscalaResponse>> listarEscalas(){
         var escalas = service.listarEscala();
+        if (escalas.isEmpty()){return ResponseEntity.noContent().build();}
         return ResponseEntity.ok(escalas.stream().map(EscalaMapper::toResponse).toList());
     }
 

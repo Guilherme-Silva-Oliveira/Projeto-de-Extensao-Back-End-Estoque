@@ -1,5 +1,6 @@
 package school.sptech.sistema_estoque.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import school.sptech.sistema_estoque.dto.classapp.LabelsRequest;
@@ -10,6 +11,7 @@ import school.sptech.sistema_estoque.service.ClassAppService;
 
 @RestController
 @RequestMapping("/v1")
+@Tag(name = "APIs Externas",description = "Operações Relacionadas à APIs Externas")
 public class SistemaController {
     private final ClassAppService serviceClassApp;
     public SistemaController(ClassAppService serviceClassApp) {

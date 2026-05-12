@@ -14,7 +14,7 @@ public class CodigoBarras {
     private String codigo;
 
     @ManyToOne
-    @JoinColumn(name = "fk_material")
+    @JoinColumn(name = "material_id")
     private Material material;
 
     public CodigoBarras() {

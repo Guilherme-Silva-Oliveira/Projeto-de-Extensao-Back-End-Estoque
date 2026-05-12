@@ -3,6 +3,7 @@ package school.sptech.sistema_estoque.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -11,10 +12,7 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import school.sptech.sistema_estoque.dto.estoque.almoxarife.AlmoxarifeLogin;
-import school.sptech.sistema_estoque.dto.estoque.almoxarife.AlmoxarifeRequest;
-import school.sptech.sistema_estoque.dto.estoque.almoxarife.AlmoxarifeResponse;
-import school.sptech.sistema_estoque.dto.estoque.almoxarife.AlmoxarifeToken;
+import school.sptech.sistema_estoque.dto.estoque.almoxarife.*;
 import school.sptech.sistema_estoque.dto.mapper.AlmoxarifeMapper;
 import school.sptech.sistema_estoque.model.estoque.Almoxarife;
 import school.sptech.sistema_estoque.service.AlmoxarifeService;
@@ -24,6 +22,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/v1/almoxarifes")
+@Tag(name = "Almoxarife",description = "Operações Relacionadas à Almoxarife")
 public class AlmoxarifeController {
 
     public static final String COOKIE_NOME = "authToken";
@@ -54,7 +53,9 @@ public class AlmoxarifeController {
     })
     @GetMapping
     public ResponseEntity<List<AlmoxarifeResponse>> listarAlmoxarifes(){
-        return ResponseEntity.ok(service.listarAlmoxarifes().stream().map(AlmoxarifeMapper::toResponse).toList());
+        var almoxarifes = service.listarAlmoxarifes();
+        if (almoxarifes.isEmpty()){return ResponseEntity.noContent().build();}
+        return ResponseEntity.ok(almoxarifes.stream().map(AlmoxarifeMapper::toResponse).toList());
     }
 
     @Operation(summary = "Excluir Almoxarife")
@@ -82,7 +83,7 @@ public class AlmoxarifeController {
         ResponseCookie cookie = ResponseCookie.from(COOKIE_NOME, autenticado.getToken())
                 .httpOnly(true)                          // inacessível ao JavaScript
                 .secure(false)                           // true em produção (exige HTTPS)
-                .sameSite("Strict")                      // bloqueia envio cross-site (mitiga CSRF)
+                .sameSite("Lax")                      // bloqueia envio cross-site (mitiga CSRF)
                 .path("/")                               // valido para toda a aplicacao
                 .maxAge(Duration.ofSeconds(jwtValidity)) // expira junto com o token JWT
                 .build();
@@ -101,7 +102,7 @@ public class AlmoxarifeController {
         ResponseCookie cookie = ResponseCookie.from(COOKIE_NOME, "")
                 .httpOnly(true)
                 .secure(false)
-                .sameSite("Strict")
+                .sameSite("Lax")
                 .path("/")
                 .maxAge(0)  
                 .build();
@@ -110,4 +111,13 @@ public class AlmoxarifeController {
 
         return ResponseEntity.noContent().build();
     }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<AlmoxarifeResponse> atualizarParcial(
+            @PathVariable Integer id,
+            @RequestBody AlmoxarifeUpdateRequest request) {
+
+        return ResponseEntity.ok(service.atualizarParcial(id, request));
+    }
+
 }

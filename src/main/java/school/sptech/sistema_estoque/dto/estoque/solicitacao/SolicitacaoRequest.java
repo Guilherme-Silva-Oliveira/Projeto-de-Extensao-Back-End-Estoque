@@ -8,6 +8,6 @@ import java.time.LocalDateTime;
 
 public record SolicitacaoRequest(
         @NotNull @Schema(description = "Fk para Professor",example = "1") Integer idProfessor,
-        @NotBlank @Schema(description = "Motivo da Solicitação",example = "Atividade Avaliativa")String motivo,
+        @NotBlank @Schema(description = "Motivo da Solicitação",example = "Atividade Avaliativa")String descricao,
         @NotNull @Schema(description = "Data da Solicitação",example = "20-04-2026") LocalDateTime dataSolicitacao
 ) {}

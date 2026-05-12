@@ -11,8 +11,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
 import school.sptech.sistema_estoque.dto.estoque.almoxarife.AlmoxarifeRequest;
+import school.sptech.sistema_estoque.dto.estoque.almoxarife.AlmoxarifeResponse;
 import school.sptech.sistema_estoque.dto.estoque.almoxarife.AlmoxarifeToken;
+import school.sptech.sistema_estoque.dto.estoque.almoxarife.AlmoxarifeUpdateRequest;
 import school.sptech.sistema_estoque.dto.mapper.AlmoxarifeMapper;
+import school.sptech.sistema_estoque.exception.EntidadeConflictException;
 import school.sptech.sistema_estoque.exception.EntidadeInvalidException;
 import school.sptech.sistema_estoque.exception.EntidadeNaoExisteException;
 import school.sptech.sistema_estoque.model.estoque.Almoxarifado;
@@ -80,4 +83,28 @@ public class AlmoxarifeService {
         return AlmoxarifeMapper.toEntity(almoxarifeAutenticado, token);
     }
 
+    public AlmoxarifeResponse atualizarParcial(Integer id, AlmoxarifeUpdateRequest request) {
+
+        Almoxarife almoxarife = almoxarifeRepository.findById(id)
+            .orElseThrow(() -> new EntidadeInvalidException("Almoxarife não encontrado"));
+
+        if (request.nome() != null) {
+            almoxarife.setNome(request.nome());
+        }
+        if (request.telefone() != null) {
+            almoxarife.setTelefone(request.telefone());
+        }
+        if (request.senha() != null) {
+            almoxarife.setSenha(request.senha());
+        }
+
+        if (request.idAlmoxarifado() != null) {
+            Almoxarifado novoAlmoxarifado = almoxarifadoRepository.findById(request.idAlmoxarifado())
+                .orElseThrow(() -> new EntidadeInvalidException("Almoxarifado não encontrado"));
+            almoxarife.setAlmoxarifado(novoAlmoxarifado);
+        }
+
+        Almoxarife salvo = almoxarifeRepository.save(almoxarife);
+        return AlmoxarifeMapper.toResponse(salvo);
+    }
 }

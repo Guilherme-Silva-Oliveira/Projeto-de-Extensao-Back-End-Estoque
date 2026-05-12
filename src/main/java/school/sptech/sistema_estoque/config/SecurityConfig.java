@@ -43,18 +43,21 @@ public class SecurityConfig {
 
 
     private static final String[] URLS_PERMITIDAS = {
-        "/swagger-ui/**",
-        "/swagger-ui.html",
-        "/swagger-resources",
-        "/swagger-resources/**",
-        "/v1/almoxarifes/login",
-        "/v1/almoxarifes/logout",
-        "/h2-console/**",
-        "/h2-console/*/**"
+            "/swagger-ui/**",
+            "/swagger-ui.html",
+            "/swagger-resources",
+            "/swagger-resources/**",
+            "/v1/almoxarifes/login",
+            "/v1/almoxarifes",
+            "/v1/codigos",
+            "/v1/almoxarifes/logout",
+            "/h2-console/**",
+            "/h2-console/*/**",
+            "/v3/api-docs/**"
     };
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, AutenticacaoFilter jwtAuthenticationFilter) throws Exception {
         http
             // permite h2
             .headers(headers -> headers
@@ -66,8 +69,8 @@ public class SecurityConfig {
             .csrf(CsrfConfigurer<HttpSecurity>::disable)
 
             .authorizeHttpRequests(authorize -> authorize
-                    .requestMatchers(URLS_PERMITIDAS).permitAll()  
-                    .anyRequest().authenticated()                  
+                    .requestMatchers(URLS_PERMITIDAS).permitAll()
+                    .anyRequest().authenticated()
             )
 
             // em caso de erro, chama o entry point
@@ -79,9 +82,9 @@ public class SecurityConfig {
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
             // define o filtro JWT antes de outro tipo de verificação
-            http.addFilterBefore(jwtAuthenticationFilterBean(), UsernamePasswordAuthenticationFilter.class);
-            
-            return http.build();
+        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
     }
 
     // cria o authenticationManager
@@ -96,16 +99,10 @@ public class SecurityConfig {
         return authenticationManagerBuilder.build();
     }
 
-    // cria o gerenciador de tokens
-    @Bean
-    public GerenciadorTokenJwt jwtAuthenticationUtilBean() {
-        return new GerenciadorTokenJwt();
-    }
-
     // cria o filter com o gerenciador 
     @Bean
-    public AutenticacaoFilter jwtAuthenticationFilterBean() {
-        return new AutenticacaoFilter(autenticacaoService, jwtAuthenticationUtilBean());
+    public AutenticacaoFilter jwtAuthenticationFilterBean(GerenciadorTokenJwt jwtTokenManager) {
+        return new AutenticacaoFilter(autenticacaoService, jwtTokenManager);
     }
 
     // define o algoritimo de hash

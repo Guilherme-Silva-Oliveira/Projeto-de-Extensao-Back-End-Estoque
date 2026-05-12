@@ -3,7 +3,9 @@ package school.sptech.sistema_estoque.service;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import school.sptech.sistema_estoque.dto.estoque.professor.ProfessorPatchDto;
 import school.sptech.sistema_estoque.dto.estoque.professor.ProfessorRequest;
+import school.sptech.sistema_estoque.exception.EntidadeConflictException;
 import school.sptech.sistema_estoque.exception.EntidadeInvalidException;
 import school.sptech.sistema_estoque.exception.EntidadeNaoExisteException;
 import school.sptech.sistema_estoque.model.estoque.Professor;
@@ -36,5 +38,30 @@ public class ProfessorService {
         Optional<Professor> opt = professorPort.findById(id);
         if (opt.isEmpty()){throw new EntidadeNaoExisteException("Professor Não Encontrada");}
         professorPort.delete(opt.get());
+    }
+
+    public Professor atualizarProfessor(Integer id, ProfessorPatchDto request){
+
+        Optional<Professor> opt = repository.findById(id);
+
+        if(opt.isEmpty()){
+            throw new EntidadeNaoExisteException("Professor Não Encontrado");
+        }
+
+        Professor professor = opt.get();
+
+        if(request.nome() != null){
+            professor.setNome(request.nome());
+        }
+
+        if(request.email() != null){
+            professor.setEmail(request.email());
+        }
+
+        if(request.telefone() != null){
+            professor.setTelefone(request.telefone());
+        }
+
+        return repository.save(professor);
     }
 }

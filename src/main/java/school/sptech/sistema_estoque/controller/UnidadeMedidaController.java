@@ -3,6 +3,7 @@ package school.sptech.sistema_estoque.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import school.sptech.sistema_estoque.dto.estoque.unidade_medida.UnidadeMedidaRequest;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/v1/unidademedida")
+@Tag(name = "Unidade de Medida",description = "Operações Relacionadas à Unidade de Medida")
 public class UnidadeMedidaController {
     private final UnidadeMedidaService service;
     public UnidadeMedidaController(UnidadeMedidaService service) {
@@ -37,8 +39,9 @@ public class UnidadeMedidaController {
             @ApiResponse(responseCode = "200",description = "Unidades de Medida Encontradas")
     })
     @GetMapping
-    public ResponseEntity<List<UnidadeMedidaResponse>> listarSaidas(){
+    public ResponseEntity<List<UnidadeMedidaResponse>> listarUnidadeMedida(){
         var unidades = service.listarUnidadeMedida();
+        if (unidades.isEmpty()){return ResponseEntity.noContent().build();}
         return ResponseEntity.ok(unidades.stream().map(UnidadeMedidaMapper::toResponse).toList());
     }
 

@@ -3,8 +3,10 @@ package school.sptech.sistema_estoque.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import school.sptech.sistema_estoque.dto.estoque.material.MaterialUpdateRequest;
 import school.sptech.sistema_estoque.dto.estoque.material.MaterialRequest;
 import school.sptech.sistema_estoque.dto.estoque.material.MaterialResponse;
 import school.sptech.sistema_estoque.dto.mapper.MaterialMapper;
@@ -14,6 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/v1/materiais")
+@Tag(name = "Materiais",description = "Operações Relacionadas à Materiais")
 public class MaterialController {
     private final MaterialService service;
     public MaterialController(MaterialService service) {
@@ -42,6 +45,7 @@ public class MaterialController {
     @GetMapping
     public ResponseEntity<List<MaterialResponse>> listarMateriais(){
         var materiais = service.listarMateriais();
+        if (materiais.isEmpty()){return ResponseEntity.noContent().build();}
         return ResponseEntity.ok(materiais.stream().map(MaterialMapper::toResponse).toList());
     }
 
@@ -55,4 +59,12 @@ public class MaterialController {
         service.excluirMaterial(id);
         return ResponseEntity.noContent().build();
     }
+    @PatchMapping("/{id}")
+        public ResponseEntity<MaterialResponse> atualizarParcial(
+            @PathVariable Integer id,
+            @RequestBody MaterialUpdateRequest request) {
+
+        return ResponseEntity.ok(service.atualizarParcial(id, request));
+    }
+
 }

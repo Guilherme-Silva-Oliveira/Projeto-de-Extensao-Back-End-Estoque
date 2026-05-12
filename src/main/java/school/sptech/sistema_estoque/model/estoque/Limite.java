@@ -17,6 +17,7 @@ public class Limite {
     private TipoLimite tipoLimite;
 
     @ManyToOne
+    @JoinColumn(name = "material_id")
     private Material material;
 
     public Limite() {

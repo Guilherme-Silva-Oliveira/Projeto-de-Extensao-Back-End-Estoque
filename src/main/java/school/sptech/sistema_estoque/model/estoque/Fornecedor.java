@@ -1,11 +1,8 @@
 package school.sptech.sistema_estoque.model.estoque;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 public class Fornecedor {
@@ -23,6 +20,9 @@ public class Fornecedor {
     @ManyToOne
     @JoinColumn(name = "tipo_fornecedor_id")
     private TipoFornecedor tipoFornecedor;
+
+    @OneToMany(mappedBy = "fornecedor", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<PedidoEntrada> pedidosEntrada;
 
     public Fornecedor() {
     }
@@ -73,5 +73,13 @@ public class Fornecedor {
 
     public void setTipoFornecedor(TipoFornecedor tipoFornecedor) {
         this.tipoFornecedor = tipoFornecedor;
+    }
+
+    public List<PedidoEntrada> getPedidosEntrada() {
+        return pedidosEntrada;
+    }
+
+    public void setPedidosEntrada(List<PedidoEntrada> pedidosEntrada) {
+        this.pedidosEntrada = pedidosEntrada;
     }
 }

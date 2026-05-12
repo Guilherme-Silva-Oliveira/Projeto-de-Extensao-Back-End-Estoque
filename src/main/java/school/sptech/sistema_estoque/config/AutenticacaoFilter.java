@@ -42,6 +42,7 @@ public class AutenticacaoFilter extends OncePerRequestFilter {
         String username = null;
         String jwtToken = extrairToken(request);
 
+
         if (jwtToken != null) {
             try {
                 username = jwtTokenManager.getUsernameFromToken(jwtToken);

@@ -3,6 +3,7 @@ package school.sptech.sistema_estoque.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import school.sptech.sistema_estoque.dto.estoque.almoxarifado.AlmoxarifadoRequest;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/v1/almoxarifados")
+@Tag(name = "Almoxarifado",description = "Operações Relacionadas à Almoxarifado")
 public class AlmoxarifadoController {
     private final AlmoxarifadoService service;
     public AlmoxarifadoController(AlmoxarifadoService service) {
@@ -39,6 +41,7 @@ public class AlmoxarifadoController {
     @GetMapping
     public ResponseEntity<List<AlmoxarifadoResponse>> listarAlmoxarifados(){
         var almoxarifados = service.listarAlmoxarifados();
+        if (almoxarifados.isEmpty()){return ResponseEntity.noContent().build();}
         return ResponseEntity.ok(almoxarifados.stream().map(AlmoxarifadoMapper::toResponse).toList());
     }
 
