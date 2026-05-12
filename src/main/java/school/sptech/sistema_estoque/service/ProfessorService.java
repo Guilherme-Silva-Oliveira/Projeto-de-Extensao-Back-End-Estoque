@@ -42,7 +42,7 @@ public class ProfessorService {
 
     public Professor atualizarProfessor(Integer id, ProfessorPatchDto request){
 
-        Optional<Professor> opt = repository.findById(id);
+        Optional<Professor> opt = professorPort.findById(id);
 
         if(opt.isEmpty()){
             throw new EntidadeNaoExisteException("Professor Não Encontrado");
@@ -62,6 +62,6 @@ public class ProfessorService {
             professor.setTelefone(request.telefone());
         }
 
-        return repository.save(professor);
+        return professorPort.save(professor);
     }
 }

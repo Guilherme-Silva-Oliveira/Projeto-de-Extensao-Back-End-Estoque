@@ -85,7 +85,7 @@ public class AlmoxarifeService {
 
     public AlmoxarifeResponse atualizarParcial(Integer id, AlmoxarifeUpdateRequest request) {
 
-        Almoxarife almoxarife = almoxarifeRepository.findById(id)
+        Almoxarife almoxarife = almoxarifePort.findById(id)
             .orElseThrow(() -> new EntidadeInvalidException("Almoxarife não encontrado"));
 
         if (request.nome() != null) {
@@ -99,12 +99,12 @@ public class AlmoxarifeService {
         }
 
         if (request.idAlmoxarifado() != null) {
-            Almoxarifado novoAlmoxarifado = almoxarifadoRepository.findById(request.idAlmoxarifado())
+            Almoxarifado novoAlmoxarifado = almoxarifadoPort.findById(request.idAlmoxarifado())
                 .orElseThrow(() -> new EntidadeInvalidException("Almoxarifado não encontrado"));
             almoxarife.setAlmoxarifado(novoAlmoxarifado);
         }
 
-        Almoxarife salvo = almoxarifeRepository.save(almoxarife);
+        Almoxarife salvo = almoxarifePort.save(almoxarife);
         return AlmoxarifeMapper.toResponse(salvo);
     }
 }
