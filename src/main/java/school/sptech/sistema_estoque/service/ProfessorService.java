@@ -7,34 +7,34 @@ import school.sptech.sistema_estoque.dto.estoque.professor.ProfessorRequest;
 import school.sptech.sistema_estoque.exception.EntidadeInvalidException;
 import school.sptech.sistema_estoque.exception.EntidadeNaoExisteException;
 import school.sptech.sistema_estoque.model.estoque.Professor;
-import school.sptech.sistema_estoque.repository.ProfessorRepository;
+import school.sptech.sistema_estoque.port.ProfessorPort;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class ProfessorService {
-    private final ProfessorRepository repository;
-    public ProfessorService(ProfessorRepository repository) {
-        this.repository = repository;
+    private final ProfessorPort professorPort;
+    public ProfessorService(ProfessorPort professorPort) {
+        this.professorPort = professorPort;
     }
 
     public Professor cadastrarProfessor(ProfessorRequest request){
         if (request == null){throw new EntidadeInvalidException("Professor Inválido");}
-        if (repository.existsByEmailAndTelefone(request.email(), request.telefone())){
+        if (professorPort.existsByEmailAndTelefone(request.email(), request.telefone())){
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe um almoxarife cadastrado com esse email e id de almoxarifado");
         }
         Professor professor = new Professor(null, request.nome(), request.email(), request.telefone());
-        return repository.save(professor);
+        return professorPort.save(professor);
     }
 
     public List<Professor> listarProfessor(){
-        return repository.findAll();
+        return professorPort.findAll();
     }
 
     public void excluirProfessor(Integer id){
-        Optional<Professor> opt = repository.findById(id);
+        Optional<Professor> opt = professorPort.findById(id);
         if (opt.isEmpty()){throw new EntidadeNaoExisteException("Professor Não Encontrada");}
-        repository.delete(opt.get());
+        professorPort.delete(opt.get());
     }
 }
