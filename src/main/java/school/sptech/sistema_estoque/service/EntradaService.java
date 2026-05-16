@@ -1,8 +1,7 @@
-
-
 package school.sptech.sistema_estoque.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Qualifier;
 import school.sptech.sistema_estoque.dto.estoque.pedido_entrada.PedidoEntradaRequest;
 import school.sptech.sistema_estoque.exception.EntidadeInvalidException;
 import school.sptech.sistema_estoque.exception.EntidadeNaoExisteException;
@@ -16,10 +15,6 @@ import school.sptech.sistema_estoque.port.CodigoBarrasPort;
 import school.sptech.sistema_estoque.port.FornecedorPort;
 import school.sptech.sistema_estoque.port.MaterialPort;
 import school.sptech.sistema_estoque.port.PedidoEntradaPort;
-import school.sptech.sistema_estoque.repository.CodigoBarrasRepository;
-import school.sptech.sistema_estoque.repository.FornecedorRepository;
-import school.sptech.sistema_estoque.repository.MaterialRepository;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,7 +27,8 @@ public class EntradaService {
     private final PedidoEntradaPort pedidoEntradaPort;
     private final MovimentacaoObserver observer;
 
-    public EntradaService(FornecedorPort fornecedorPort, MaterialPort materialPort, CodigoBarrasPort codigoBarrasPort, PedidoEntradaPort pedidoEntradaPort, MovimentacaoObserver observer) {
+    public EntradaService(FornecedorPort fornecedorPort, MaterialPort materialPort, CodigoBarrasPort codigoBarrasPort, PedidoEntradaPort pedidoEntradaPort,
+            @Qualifier("logEntrada") MovimentacaoObserver observer) { 
         this.fornecedorPort = fornecedorPort;
         this.materialPort = materialPort;
         this.codigoBarrasPort = codigoBarrasPort;

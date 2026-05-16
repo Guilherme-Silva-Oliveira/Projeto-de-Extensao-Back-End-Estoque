@@ -31,7 +31,7 @@ public class SaidaService {
     private final EscalaPort escalaPort;
     private final MovimentacaoObserver observer;
 
-    public SaidaService(PedidoSaidaPort pedidoSaidaPort, MaterialPort materialPort, SolicitacaoPort solicitacaoPort, EscalaPort escalaPort, MovimentacaoObserver observer) {
+    public SaidaService(PedidoSaidaPort pedidoSaidaPort, MaterialPort materialPort, SolicitacaoPort solicitacaoPort, EscalaPort escalaPort, @Qualifier("logSaida") MovimentacaoObserver observer) {
         this.pedidoSaidaPort = pedidoSaidaPort;
         this.materialPort = materialPort;
         this.solicitacaoPort = solicitacaoPort;

@@ -42,4 +42,3 @@ public class MaterialAdapter implements MaterialPort {
         return materialRepository.findAll();
     }
 }
-
