@@ -40,7 +40,11 @@ public class SaidaService {
     }
 
     public List<PedidoSaida> listarPedidoSaida() {
-        return pedidoSaidaPort.findAll();
+        List<PedidoSaida> pedidos = pedidoSaidaPort.findAll();
+        if (pedidos.isEmpty()) {
+            throw new EntidadeNaoExisteException("Nenhum pedido de saída encontrado");
+        }
+        return pedidos;
     }
 
     public PedidoSaida cadastrarPedidoSaida(PedidoSaidaRequest request) {

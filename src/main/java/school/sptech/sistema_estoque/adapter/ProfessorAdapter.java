@@ -41,5 +41,16 @@ public class ProfessorAdapter implements ProfessorPort {
     public Boolean existsByEmailAndTelefone(String email, String telefone) {
         return professorRepository.existsByEmailAndTelefone(email, telefone);
     }
+
+    @Override
+    public Boolean existsByEmail(String email) {
+        return professorRepository.existsByEmail(email);
+    }
+
+    @Override
+    public Boolean existsByTelefone(String telefone) {
+        return professorRepository.existsByTelefone(telefone);
+    }
+
 }
 
