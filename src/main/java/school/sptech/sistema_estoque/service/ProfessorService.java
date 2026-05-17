@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import school.sptech.sistema_estoque.dto.estoque.professor.ProfessorPatchDto;
 import school.sptech.sistema_estoque.dto.estoque.professor.ProfessorRequest;
-import school.sptech.sistema_estoque.exception.EntidadeConflictException;
 import school.sptech.sistema_estoque.exception.EntidadeInvalidException;
 import school.sptech.sistema_estoque.exception.EntidadeNaoExisteException;
 import school.sptech.sistema_estoque.model.estoque.Professor;
@@ -17,21 +16,31 @@ import java.util.Optional;
 @Service
 public class ProfessorService {
     private final ProfessorPort professorPort;
+
     public ProfessorService(ProfessorPort professorPort) {
         this.professorPort = professorPort;
     }
 
-    public Professor cadastrarProfessor(ProfessorRequest request){
-        if (request == null){throw new EntidadeInvalidException("Professor Inválido");}
-        if (professorPort.existsByEmailAndTelefone(request.email(), request.telefone())){
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe um almoxarife cadastrado com esse email e id de almoxarifado");
+    public Professor cadastrarProfessor(ProfessorRequest request) {
+        if (request == null) {
+            throw new EntidadeInvalidException("Professor Inválido");
+        }
+        if (professorPort.existsByEmail(request.email())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe um professor cadastrado com esse email");
+        }
+        if (professorPort.existsByTelefone(request.telefone())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe um professor cadastrado com esse telefone");
         }
         Professor professor = new Professor(null, request.nome(), request.email(), request.telefone());
         return professorPort.save(professor);
     }
 
-    public List<Professor> listarProfessor(){
-        return professorPort.findAll();
+    public List<Professor> listarProfessor() {
+        List<Professor> professores = professorPort.findAll();
+        if (professores.isEmpty()) {
+            throw new EntidadeNaoExisteException("Nenhum professor cadastrado");
+        }
+        return professores;
     }
 
     public void excluirProfessor(Integer id){

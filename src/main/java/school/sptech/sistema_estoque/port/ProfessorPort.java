@@ -16,5 +16,10 @@ public interface ProfessorPort {
     void delete(Professor professor);
 
     Boolean existsByEmailAndTelefone(String email, String telefone);
+
+    // para os testes
+    Boolean existsByEmail(String email);
+    Boolean existsByTelefone(String telefone);
+
 }
 
