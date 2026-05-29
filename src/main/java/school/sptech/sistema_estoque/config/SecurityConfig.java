@@ -53,7 +53,11 @@ public class SecurityConfig {
             "/v1/almoxarifes/logout",
             "/h2-console/**",
             "/h2-console/*/**",
-            "/v3/api-docs/**"
+            "/v3/api-docs/**",
+            "/v1/ia",
+            "/v1/saidas",
+            "v1/solicitacoes"
+
     };
 
     @Bean

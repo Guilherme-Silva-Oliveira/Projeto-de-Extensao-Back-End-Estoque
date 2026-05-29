@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import school.sptech.sistema_estoque.dto.estoque.solicitacao.SolicitacaoRequest;
 import school.sptech.sistema_estoque.dto.estoque.solicitacao.SolicitacaoResponse;
-import school.sptech.sistema_estoque.dto.ia.SolicitacaoIARequest;
 import school.sptech.sistema_estoque.dto.mapper.SolicitacaoMapper;
 import school.sptech.sistema_estoque.service.SolicitacaoService;
 
