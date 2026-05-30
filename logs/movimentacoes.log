@@ -2,3 +2,5 @@
 2026-05-29 00:15:19 DEBUG - [PAINEL - SAIDA] Material 'Folha A4 Sulfite' saiu com quantidade 32
 2026-05-29 22:45:06 INFO  - [ENTRADA] PedidoEntrada com fornecedor: '1' e material '1' da data: '2026-05-10T00:00' foi definido como devolucao.
 2026-05-29 22:45:06 DEBUG - [PAINEL - ENTRADA] PedidoEntrada com fornecedor: '1' e material '1' da data: '2026-05-10T00:00' foi definido como devolucao.
+2026-05-29 23:00:26 INFO  - [ENTRADA] Material 'Folha A4 Sulfite' entrou com quantidade 50
+2026-05-29 23:00:26 DEBUG - [PAINEL - ENTRADA] Material 'Folha A4 Sulfite' entrou com quantidade 50

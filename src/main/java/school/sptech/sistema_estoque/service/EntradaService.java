@@ -1,6 +1,9 @@
 package school.sptech.sistema_estoque.service;
 
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Qualifier;
 import school.sptech.sistema_estoque.dto.estoque.pedido_entrada.PedidoEntradaRequest;
@@ -95,5 +98,9 @@ public class EntradaService {
         observer.gerarLogs(mensagem);
         observer.atualizar(mensagem);
         return saved;
+    }
+
+    public Page<PedidoEntrada> listarPedidosEntradaDevolucao(Pageable pageable) {
+        return pedidoEntradaPort.buscarApenasDevolucoes(pageable);
     }
 }

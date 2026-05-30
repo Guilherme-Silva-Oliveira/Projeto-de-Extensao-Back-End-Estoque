@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import school.sptech.sistema_estoque.dto.estoque.pedido_entrada.PedidoEntradaRequest;
@@ -44,6 +46,17 @@ public class EntradaController {
     public ResponseEntity<List<PedidoEntradaResponse>> listarEntradas(){
         var entradas = service.listarPedidosEntrada();
         if (entradas.isEmpty()){return ResponseEntity.noContent().build();}
+        return ResponseEntity.ok(entradas.stream().map(EntradaMapper::toResponse).toList());
+    }
+
+    @GetMapping("/devolucoes")
+    public ResponseEntity<List<PedidoEntradaResponse>> listarEntradasDevolucao(
+            @PageableDefault(size = 10, page = 0) Pageable pageable
+    ) {
+        var entradas = service.listarPedidosEntradaDevolucao(pageable);
+        if (entradas.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
         return ResponseEntity.ok(entradas.stream().map(EntradaMapper::toResponse).toList());
     }
 
