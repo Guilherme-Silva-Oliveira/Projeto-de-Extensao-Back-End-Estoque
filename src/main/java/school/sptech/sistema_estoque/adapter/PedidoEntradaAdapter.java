@@ -1,5 +1,7 @@
 package school.sptech.sistema_estoque.adapter;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import school.sptech.sistema_estoque.model.estoque.PedidoEntrada;
 import school.sptech.sistema_estoque.model.estoque.compound_id.PedidoEntradaId;
@@ -35,6 +37,11 @@ public class PedidoEntradaAdapter implements PedidoEntradaPort {
     @Override
     public void delete(PedidoEntrada pedidoEntrada) {
         repository.delete(pedidoEntrada);
+    }
+
+    @Override
+    public Page<PedidoEntrada> buscarApenasDevolucoes(Pageable pageable) {
+        return repository.findByIsDevolucaoTrue(pageable);
     }
 
 }
