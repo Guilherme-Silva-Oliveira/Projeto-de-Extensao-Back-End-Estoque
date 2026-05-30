@@ -57,4 +57,10 @@ public class EntradaController {
         service.excluirEntrada(fornecedorId, materialId);
         return ResponseEntity.noContent().build();
     }
+
+    @PatchMapping("/fornecedor/{fornecedorId}/material/{materialId}/devolucao")
+    public ResponseEntity<PedidoEntradaResponse> alternarStatus(@PathVariable Integer fornecedorId, @PathVariable Integer materialId) {
+    PedidoEntradaResponse response = EntradaMapper.toResponse(service.definirDevolucao(fornecedorId, materialId));
+    return ResponseEntity.ok(response);
+}
 }

@@ -1,5 +1,6 @@
 package school.sptech.sistema_estoque.service;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Qualifier;
 import school.sptech.sistema_estoque.dto.estoque.pedido_entrada.PedidoEntradaRequest;
@@ -54,7 +55,7 @@ public class EntradaService {
         material.setQuantidade(material.getQuantidade() + request.quantidade());
         materialPort.save(material);
 
-        PedidoEntrada pedidoEntrada = new PedidoEntrada(fornecedorOptional.get(), material, request.quantidade(), request.dataEntrada());
+        PedidoEntrada pedidoEntrada = new PedidoEntrada(fornecedorOptional.get(), material, request.quantidade(), request.dataEntrada(), request.isDevolucao());
         PedidoEntrada saved = pedidoEntradaPort.save(pedidoEntrada);
 
         String mensagem = "Material '" + material.getNomeMaterial() + "' entrou com quantidade " + request.quantidade();
@@ -74,5 +75,25 @@ public class EntradaService {
         Optional<PedidoEntrada> opt = pedidoEntradaPort.findById(id);
         if (opt.isEmpty()) { throw new EntidadeNaoExisteException("Entrada não encontrada"); }
         pedidoEntradaPort.delete(opt.get());
+    }
+
+    @Transactional
+    public PedidoEntrada definirDevolucao(Integer fornecedorId, Integer materialId){
+        PedidoEntradaId id = new PedidoEntradaId();
+        id.setFornecedor(fornecedorId);
+        id.setMaterial(materialId);
+        Optional<PedidoEntrada> pedidoEntrada = pedidoEntradaPort.findById(id);
+        if (pedidoEntrada.isEmpty()){
+            throw new EntidadeInvalidException("PedidoEntrada nao encontrado");
+        }
+        pedidoEntrada.get().setDevolucao(true);
+        PedidoEntrada saved = pedidoEntradaPort.save(pedidoEntrada.get());
+
+        String mensagem = "PedidoEntrada com fornecedor: '" + pedidoEntrada.get().getFornecedor().getId() + "' e material '" + pedidoEntrada.get().getMaterial().getId() +
+                 "' da data: '" + pedidoEntrada.get().getDataEntrada() + "' foi definido como devolucao.";
+
+        observer.gerarLogs(mensagem);
+        observer.atualizar(mensagem);
+        return saved;
     }
 }

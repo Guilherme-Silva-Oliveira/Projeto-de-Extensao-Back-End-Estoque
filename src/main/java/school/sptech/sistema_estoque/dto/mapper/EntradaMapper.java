@@ -29,7 +29,8 @@ public class EntradaMapper {
                 entity.getQuantidade(),
                 entity.getDataEntrada(),
                 fornecedorResponse,
-                materialResponse
+                materialResponse,
+                entity.getDevolucao()
         );
     }
 }

@@ -1,11 +1,6 @@
 package school.sptech.sistema_estoque.model.estoque;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.IdClass;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import school.sptech.sistema_estoque.model.estoque.compound_id.PedidoEntradaId;
 
 import java.time.LocalDateTime;
@@ -29,6 +24,9 @@ public class PedidoEntrada {
 
     private LocalDateTime dataEntrada;
 
+    @Column(name = "is_devolucao", nullable = false)
+    private boolean isDevolucao;
+
     public PedidoEntrada() {
     }
 
@@ -37,6 +35,14 @@ public class PedidoEntrada {
         this.material = material;
         this.quantidade = quantidade;
         this.dataEntrada = dataEntrada;
+    }
+
+    public PedidoEntrada(Fornecedor fornecedor, Material material, Integer quantidade, LocalDateTime dataEntrada, boolean isDevolucao) {
+        this.fornecedor = fornecedor;
+        this.material = material;
+        this.quantidade = quantidade;
+        this.dataEntrada = dataEntrada;
+        this.isDevolucao = isDevolucao;
     }
 
     public Fornecedor getFornecedor() {
@@ -69,5 +75,13 @@ public class PedidoEntrada {
 
     public void setDataEntrada(LocalDateTime dataEntrada) {
         this.dataEntrada = dataEntrada;
+    }
+
+    public Boolean getDevolucao() {
+        return isDevolucao;
+    }
+
+    public void setDevolucao(Boolean devolucao) {
+        isDevolucao = devolucao;
     }
 }
