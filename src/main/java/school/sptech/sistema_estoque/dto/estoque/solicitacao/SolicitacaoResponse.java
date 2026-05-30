@@ -9,6 +9,7 @@ public record SolicitacaoResponse(
         @Schema(description = "ID da Solicitação") Integer id,
         @Schema(description = "Professor Associado") Professor professor,
         @Schema(description = "Descrição da Solicitação")String descricao,
-        @Schema(description = "Data da Solicitação") LocalDateTime dataSolicitacao
+        @Schema(description = "Data da Solicitação") LocalDateTime dataSolicitacao,
+        @Schema(description = "Data da Solicitação") Boolean isAceito
 ) {
 }

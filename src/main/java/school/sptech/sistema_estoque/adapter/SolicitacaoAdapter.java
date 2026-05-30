@@ -1,5 +1,7 @@
 package school.sptech.sistema_estoque.adapter;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import school.sptech.sistema_estoque.model.estoque.Solicitacao;
 import school.sptech.sistema_estoque.port.SolicitacaoPort;
@@ -34,5 +36,10 @@ public class SolicitacaoAdapter implements SolicitacaoPort {
     @Override
     public void delete(Solicitacao solicitacao) {
         solicitacaoRepository.delete(solicitacao);
+    }
+
+    @Override
+    public Page<Solicitacao> findByIsAceito(Boolean aceito, Pageable pageable) {
+        return solicitacaoRepository.findByIsAceito(aceito, pageable);
     }
 }

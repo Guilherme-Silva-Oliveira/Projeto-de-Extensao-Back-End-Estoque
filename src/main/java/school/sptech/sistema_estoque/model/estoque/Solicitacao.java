@@ -17,6 +17,9 @@ public class Solicitacao {
     @OneToMany(mappedBy = "solicitacao", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<PedidoSaida> pedidosSaida;
 
+    @Column(name = "is_aceito")
+    private Boolean isAceito;
+
     public Solicitacao(Integer id, Professor professor, String descricao, LocalDateTime dataSolicitacao, List<PedidoSaida> pedidosSaida) {
         this.id = id;
         this.professor = professor;
@@ -65,5 +68,13 @@ public class Solicitacao {
 
     public void setPedidosSaida(List<PedidoSaida> pedidosSaida) {
         this.pedidosSaida = pedidosSaida;
+    }
+
+    public Boolean getAceito() {
+        return isAceito;
+    }
+
+    public void setAceito(Boolean aceito) {
+        isAceito = aceito;
     }
 }
