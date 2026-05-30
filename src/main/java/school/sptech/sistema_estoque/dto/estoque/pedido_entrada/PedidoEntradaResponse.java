@@ -10,6 +10,7 @@ public record PedidoEntradaResponse(
         @Schema(description = "Quantidade da Entrada")Integer quantidade,
         @Schema(description = "Data da Entrada do Material") LocalDateTime dataEntrada,
         @Schema(description = "Fornecedor Associado") FornecedorResponse fornecedor,
-        @Schema(description = "Material Associado") MaterialResponse material
+        @Schema(description = "Material Associado") MaterialResponse material,
+        @Schema(description = "Identificador devolução") Boolean isDevolucao
 ) {
 }
