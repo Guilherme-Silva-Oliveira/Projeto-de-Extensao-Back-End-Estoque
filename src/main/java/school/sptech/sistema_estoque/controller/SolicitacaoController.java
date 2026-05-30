@@ -4,11 +4,15 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import school.sptech.sistema_estoque.dto.estoque.solicitacao.DecisaoSolicitacaoDTO;
 import school.sptech.sistema_estoque.dto.estoque.solicitacao.SolicitacaoRequest;
 import school.sptech.sistema_estoque.dto.estoque.solicitacao.SolicitacaoResponse;
 import school.sptech.sistema_estoque.dto.mapper.SolicitacaoMapper;
+import school.sptech.sistema_estoque.model.estoque.Solicitacao;
 import school.sptech.sistema_estoque.service.SolicitacaoService;
 
 import java.util.List;
@@ -45,6 +49,17 @@ public class SolicitacaoController {
         return ResponseEntity.ok(solicitacoes.stream().map(SolicitacaoMapper::toResponse).toList());
     }
 
+    @GetMapping("/boolean")
+    public ResponseEntity<List<SolicitacaoResponse>> listarSolicitacoesReprovadas(
+            @PageableDefault(size = 10, page = 0) Pageable pageable,
+            @RequestParam Boolean bool
+
+    ){
+        var solicitacoes = service.listarSolicitacoesBoolean(bool, pageable);
+        if (solicitacoes.isEmpty()){return ResponseEntity.noContent().build();}
+        return ResponseEntity.ok(solicitacoes.stream().map(SolicitacaoMapper::toResponse).toList());
+    }
+
     @Operation(summary = "Excluir Solicitação")
     @ApiResponses({
             @ApiResponse(responseCode = "404",description = "Nenhuma Solicitação Encontrada"),
@@ -54,5 +69,15 @@ public class SolicitacaoController {
     public ResponseEntity<Void> excluirSolicitacao(@PathVariable Integer id){
         service.excluirSolicitacao(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}/decisao")
+    public ResponseEntity<SolicitacaoResponse> avaliarSolicitacao(
+        @PathVariable Integer id,
+        @RequestBody DecisaoSolicitacaoDTO decisao
+    ) {
+        Solicitacao resultado = service.avaliar(id, decisao.aceita());
+        SolicitacaoResponse response = SolicitacaoMapper.toResponse(resultado);
+        return ResponseEntity.ok(response);
     }
 }
