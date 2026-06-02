@@ -11,6 +11,7 @@ public class Solicitacao {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @ManyToOne private Professor professor;
+    @ManyToOne private Motivo motivo;
     private String descricao;
     private LocalDateTime dataSolicitacao;
 
@@ -20,12 +21,14 @@ public class Solicitacao {
     @Column(name = "is_aceito")
     private Boolean isAceito;
 
-    public Solicitacao(Integer id, Professor professor, String descricao, LocalDateTime dataSolicitacao, List<PedidoSaida> pedidosSaida) {
+    public Solicitacao(Integer id, Professor professor, Motivo motivo, String descricao, LocalDateTime dataSolicitacao, List<PedidoSaida> pedidosSaida, Boolean isAceito) {
         this.id = id;
         this.professor = professor;
+        this.motivo = motivo;
         this.descricao = descricao;
         this.dataSolicitacao = dataSolicitacao;
         this.pedidosSaida = pedidosSaida;
+        this.isAceito = isAceito;
     }
 
     public Solicitacao() {}
@@ -76,5 +79,13 @@ public class Solicitacao {
 
     public void setAceito(Boolean aceito) {
         isAceito = aceito;
+    }
+
+    public Motivo getMotivo() {
+        return motivo;
+    }
+
+    public void setMotivo(Motivo motivo) {
+        this.motivo = motivo;
     }
 }
