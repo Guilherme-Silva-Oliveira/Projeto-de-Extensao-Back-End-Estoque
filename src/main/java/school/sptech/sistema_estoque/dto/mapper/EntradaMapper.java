@@ -30,7 +30,7 @@ public class EntradaMapper {
                 entity.getDataEntrada(),
                 fornecedorResponse,
                 materialResponse,
-                entity.getDevolucao()
+                entity.isDevolucao()
         );
     }
 }

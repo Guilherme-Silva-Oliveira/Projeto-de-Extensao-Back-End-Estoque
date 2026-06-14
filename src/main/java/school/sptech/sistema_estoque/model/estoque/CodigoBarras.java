@@ -5,39 +5,17 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Table(name = "codigo_barras")
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter @Setter
 public class CodigoBarras {
-
-    @Id
-    private String codigo;
-
-    @ManyToOne
-    @JoinColumn(name = "material_id")
+    @Id private String codigo;
+    @ManyToOne @JoinColumn(name = "material_id")
     private Material material;
-
-    public CodigoBarras() {
-    }
-
-    public CodigoBarras(String codigo, Material material) {
-        this.codigo = codigo;
-        this.material = material;
-    }
-
-    public String getCodigo() {
-        return codigo;
-    }
-
-    public void setCodigo(String codigo) {
-        this.codigo = codigo;
-    }
-
-    public Material getMaterial() {
-        return material;
-    }
-
-    public void setMaterial(Material material) {
-        this.material = material;
-    }
 }

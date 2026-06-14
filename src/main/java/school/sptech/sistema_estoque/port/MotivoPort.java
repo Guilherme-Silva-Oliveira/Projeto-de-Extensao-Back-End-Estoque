@@ -7,10 +7,7 @@ import java.util.Optional;
 
 public interface MotivoPort {
     Motivo save(Motivo motivo);
-
     List<Motivo> findAll();
-
     Optional<Motivo> findById(Integer id);
-
     void delete(Motivo motivo);
 }

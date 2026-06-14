@@ -8,12 +8,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PedidoSaidaPort {
-
     PedidoSaida save(PedidoSaida pedidoSaida);
-
     List<PedidoSaida> findAll();
-
     Optional<PedidoSaida> findById(PedidoSaidaId id);
-
     void delete(PedidoSaida pedidoSaida);
 }

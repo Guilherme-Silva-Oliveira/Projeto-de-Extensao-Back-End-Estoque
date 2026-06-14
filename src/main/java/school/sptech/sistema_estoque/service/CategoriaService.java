@@ -1,6 +1,7 @@
 
 package school.sptech.sistema_estoque.service;
 
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import school.sptech.sistema_estoque.dto.estoque.categoria.CategoriaRequest;
 import school.sptech.sistema_estoque.exception.EntidadeInvalidException;
@@ -14,17 +15,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class CategoriaService {
     private final CategoriaPort categoriaPort;
-
-    public CategoriaService(CategoriaPort categoriaPort) {
-        this.categoriaPort = categoriaPort;
-    }
 
     public Categoria cadastrarCategoria(CategoriaRequest request){
         if (request == null) {throw new EntidadeInvalidException("Categoria Inválida");}
         if (categoriaPort.findByNomeCategoria(request.nomeCategoria()).isPresent()) {throw new ResponseStatusException(HttpStatus.CONFLICT, "Categoria com esse nome já existe");}
-        Categoria c = new Categoria(null, request.nomeCategoria());
+        Categoria c = new Categoria(); c.setNomeCategoria(request.nomeCategoria());
         return categoriaPort.save(c);
     }
 
@@ -33,8 +31,7 @@ public class CategoriaService {
     }
 
     public void excluirCategoria(Integer id){
-        Optional<Categoria> opt = categoriaPort.findById(id);
-        if (opt.isEmpty()){throw new EntidadeNaoExisteException("Categoria Não Encontrada");}
-        categoriaPort.delete(opt.get());
+        Categoria categoria = categoriaPort.findById(id).orElseThrow(()-> new EntidadeNaoExisteException("Categoria Não Encontrada"));
+        categoriaPort.delete(categoria);
     }
 }
