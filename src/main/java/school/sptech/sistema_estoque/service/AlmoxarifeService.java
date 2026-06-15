@@ -1,5 +1,6 @@
 package school.sptech.sistema_estoque.service;
 
+import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -27,30 +28,20 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class AlmoxarifeService {
     private final AlmoxarifadoPort almoxarifadoPort;
     private final AlmoxarifePort almoxarifePort;
-
     private final AuthenticationManager authenticationManager;
     private final GerenciadorTokenJwt gerenciadorTokenJwt;
-
     private final PasswordEncoder encoder;
-
-    public AlmoxarifeService(AlmoxarifadoPort almoxarifadoPort, AlmoxarifePort almoxarifePort, AuthenticationManager authenticationManager, GerenciadorTokenJwt gerenciadorTokenJwt, PasswordEncoder encoder) {
-        this.almoxarifadoPort = almoxarifadoPort;
-        this.almoxarifePort = almoxarifePort;
-        this.authenticationManager = authenticationManager;
-        this.gerenciadorTokenJwt = gerenciadorTokenJwt;
-        this.encoder = encoder;
-    }
 
     public Almoxarife cadastrarAlmoxarife(AlmoxarifeRequest request) {
         if (request == null) {throw new EntidadeInvalidException("Almoxarife invalido");}
         if (almoxarifePort.existsByEmailAndAlmoxarifadoId(request.email(), request.idAlmoxarifado())){throw new EntidadeConflictException("Já existe um almoxarife cadastrado com esse email e id de almoxarifado");}
-        Optional<Almoxarifado> almoxarifadoOptional = almoxarifadoPort.findById(request.idAlmoxarifado());
-        if (almoxarifadoOptional.isEmpty()) {throw new EntidadeInvalidException("Almoxarifado nao encontrado");}
+        Almoxarifado almoxarifado = almoxarifadoPort.findById(request.idAlmoxarifado()).orElseThrow(()-> new EntidadeNaoExisteException("Almoxarifado Não Encontrado"));
         String novaSenha = encoder.encode(request.senha());
-        Almoxarife almoxarife = new Almoxarife(null, request.nome(), request.email(), request.telefone(), novaSenha, almoxarifadoOptional.get());
+        Almoxarife almoxarife = new Almoxarife(null, request.nome(), request.email(), request.telefone(), novaSenha, almoxarifado);
         return almoxarifePort.save(almoxarife);
     }
 
@@ -59,51 +50,31 @@ public class AlmoxarifeService {
     }
 
     public void excluirAlmoxarife(Integer id){
-        Optional<Almoxarife> opt = almoxarifePort.findById(id);
-        if (opt.isEmpty()){throw new EntidadeNaoExisteException("Almoxarife Não Encontrado");}
-        almoxarifePort.delete(opt.get());
+        Almoxarife almoxarife = almoxarifePort.findById(id).orElseThrow(()-> new EntidadeNaoExisteException("Almoxarife Não Encontrado"));
+        almoxarifePort.delete(almoxarife);
     }
 
 
     public AlmoxarifeToken autenticar(Almoxarife almoxarife) {
-        final UsernamePasswordAuthenticationToken credentials = new UsernamePasswordAuthenticationToken(
-                almoxarife.getEmail(), almoxarife.getSenha());
-
+        final UsernamePasswordAuthenticationToken credentials = new UsernamePasswordAuthenticationToken(almoxarife.getEmail(), almoxarife.getSenha());
         final Authentication authentication = this.authenticationManager.authenticate(credentials);
-
-        Almoxarife almoxarifeAutenticado =
-                almoxarifePort.findByEmail(almoxarife.getEmail())
-                        .orElseThrow(
-                                () -> new ResponseStatusException(404, "Email do Almoxarife não cadastrado", null));
-
+        Almoxarife almoxarifeAutenticado = almoxarifePort.findByEmail(almoxarife.getEmail())
+                        .orElseThrow(() -> new ResponseStatusException(404, "Email do Almoxarife não cadastrado", null));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
         final String token = gerenciadorTokenJwt.generateToken(authentication);
-
         return AlmoxarifeMapper.toEntity(almoxarifeAutenticado, token);
     }
 
     public AlmoxarifeResponse atualizarParcial(Integer id, AlmoxarifeUpdateRequest request) {
-
-        Almoxarife almoxarife = almoxarifePort.findById(id)
-            .orElseThrow(() -> new EntidadeInvalidException("Almoxarife não encontrado"));
-
-        if (request.nome() != null) {
-            almoxarife.setNome(request.nome());
-        }
-        if (request.telefone() != null) {
-            almoxarife.setTelefone(request.telefone());
-        }
-        if (request.senha() != null) {
-            almoxarife.setSenha(request.senha());
-        }
-
+        Almoxarife almoxarife = almoxarifePort.findById(id).orElseThrow(() -> new EntidadeInvalidException("Almoxarife não encontrado"));
+        if (request.nome() != null) {almoxarife.setNome(request.nome());}
+        if (request.telefone() != null) {almoxarife.setTelefone(request.telefone());}
+        if (request.senha() != null) {almoxarife.setSenha(request.senha());}
         if (request.idAlmoxarifado() != null) {
             Almoxarifado novoAlmoxarifado = almoxarifadoPort.findById(request.idAlmoxarifado())
                 .orElseThrow(() -> new EntidadeInvalidException("Almoxarifado não encontrado"));
             almoxarife.setAlmoxarifado(novoAlmoxarifado);
         }
-
         Almoxarife salvo = almoxarifePort.save(almoxarife);
         return AlmoxarifeMapper.toResponse(salvo);
     }

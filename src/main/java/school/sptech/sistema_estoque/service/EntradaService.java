@@ -42,7 +42,6 @@ public class EntradaService {
 
     public PedidoEntrada cadastrarPedidoEntrada(PedidoEntradaRequest request) {
         if (request == null) { throw new EntidadeInvalidException("Pedido entrada invalido"); }
-
         Optional<Fornecedor> fornecedorOptional = fornecedorPort.findById(request.fornecedorId());
         if (fornecedorOptional.isEmpty()) { throw new EntidadeInvalidException("Fornecedor nao encontrado"); }
         Optional<Material> materialOptional = materialPort.findById(request.materialId());

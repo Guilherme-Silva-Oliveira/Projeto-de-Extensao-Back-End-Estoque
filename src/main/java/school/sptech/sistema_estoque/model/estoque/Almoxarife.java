@@ -8,9 +8,15 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Table(name = "almoxarife")
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter @Setter
 public class Almoxarife {
 
     @Id
@@ -32,64 +38,4 @@ public class Almoxarife {
     @ManyToOne
     @JoinColumn(name = "almoxarifado_id")
     private Almoxarifado almoxarifado;
-
-    public Almoxarife() {
-    }
-
-    public Almoxarife(Integer id, String nome, String email, String telefone, String senha, Almoxarifado almoxarifado) {
-        this.id = id;
-        this.nome = nome;
-        this.email = email;
-        this.telefone = telefone;
-        this.senha = senha;
-        this.almoxarifado = almoxarifado;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getTelefone() {
-        return telefone;
-    }
-
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
-    }
-
-    public String getSenha() {
-        return senha;
-    }
-
-    public void setSenha(String senha) {
-        this.senha = senha;
-    }
-
-    public Almoxarifado getAlmoxarifado() {
-        return almoxarifado;
-    }
-
-    public void setAlmoxarifado(Almoxarifado almoxarifado) {
-        this.almoxarifado = almoxarifado;
-    }
 }

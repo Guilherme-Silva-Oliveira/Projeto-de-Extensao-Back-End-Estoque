@@ -1,11 +1,15 @@
 package school.sptech.sistema_estoque.model.estoque;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import school.sptech.sistema_estoque.model.estoque.compound_id.PedidoSaidaId;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "pedido_saida")
+@Getter @Setter
 @IdClass(PedidoSaidaId.class)
 public class PedidoSaida {
 

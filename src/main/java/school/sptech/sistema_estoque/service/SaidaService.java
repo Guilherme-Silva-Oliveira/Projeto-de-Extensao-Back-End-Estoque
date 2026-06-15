@@ -1,14 +1,12 @@
 package school.sptech.sistema_estoque.service;
 
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import school.sptech.sistema_estoque.dto.estoque.pedido_saida.PedidoSaidaRequest;
 import school.sptech.sistema_estoque.exception.EntidadeInvalidException;
 import school.sptech.sistema_estoque.exception.EntidadeNaoExisteException;
-import school.sptech.sistema_estoque.model.estoque.Escala;
-import school.sptech.sistema_estoque.model.estoque.Material;
-import school.sptech.sistema_estoque.model.estoque.PedidoSaida;
-import school.sptech.sistema_estoque.model.estoque.Solicitacao;
+import school.sptech.sistema_estoque.model.estoque.*;
 import school.sptech.sistema_estoque.model.estoque.compound_id.PedidoSaidaId;
 import school.sptech.sistema_estoque.observer.MovimentacaoObserver;
 import school.sptech.sistema_estoque.port.EscalaPort;
@@ -24,20 +22,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class SaidaService {
     private final PedidoSaidaPort pedidoSaidaPort;
     private final MaterialPort materialPort;
     private final SolicitacaoPort solicitacaoPort;
     private final EscalaPort escalaPort;
     private final MovimentacaoObserver observer;
-
-    public SaidaService(PedidoSaidaPort pedidoSaidaPort, MaterialPort materialPort, SolicitacaoPort solicitacaoPort, EscalaPort escalaPort, @Qualifier("logSaida") MovimentacaoObserver observer) {
-        this.pedidoSaidaPort = pedidoSaidaPort;
-        this.materialPort = materialPort;
-        this.solicitacaoPort = solicitacaoPort;
-        this.escalaPort = escalaPort;
-        this.observer = observer;
-    }
 
     public List<PedidoSaida> listarPedidoSaida() {
         List<PedidoSaida> pedidos = pedidoSaidaPort.findAll();
@@ -49,26 +40,16 @@ public class SaidaService {
 
     public PedidoSaida cadastrarPedidoSaida(PedidoSaidaRequest request) {
         if (request == null) { throw new EntidadeInvalidException("Pedido Saida Inválido"); }
-        Optional<Material> materialOptional = materialPort.findById(request.materialId());
-        if (materialOptional.isEmpty()) { throw new EntidadeInvalidException("Material não encontrado"); }
-        Material material = materialOptional.get();
-        Optional<Solicitacao> solicitacaoOptional = solicitacaoPort.findById(request.solicitacaoId());
-        if (solicitacaoOptional.isEmpty()) { throw new EntidadeInvalidException("Solicitação de origem não encontrada"); }
-        Solicitacao solicitacao = solicitacaoOptional.get();
-        Optional<Escala> escalaOptional = escalaPort.findById(request.escalaId());
-        if (escalaOptional.isEmpty()) { throw new EntidadeInvalidException("Escala associada não encontrada"); }
-        Escala escala = escalaOptional.get();
-
+        Material material = materialPort.findById(request.materialId()).orElseThrow(()-> new EntidadeNaoExisteException("Material Não Encontrado"));
+        Solicitacao solicitacao = solicitacaoPort.findById(request.solicitacaoId()).orElseThrow(()-> new EntidadeNaoExisteException("Solicitação Não Encontrado"));
+        Escala escala = escalaPort.findById(request.escalaId()).orElseThrow(()-> new EntidadeNaoExisteException("Escala Não Encontrado"));
         material.setQuantidade(material.getQuantidade() - request.quantidade());
         materialPort.save(material);
-
         PedidoSaida pedidoSaida = new PedidoSaida(material, solicitacao, request.quantidade(), request.dataSolicitacao(), escala);
         PedidoSaida saved = pedidoSaidaPort.save(pedidoSaida);
-
         String mensagem = "Material '" + material.getNomeMaterial() + "' saiu com quantidade " + request.quantidade();
         observer.gerarLogs(mensagem);
         observer.atualizar(mensagem);
-
         return saved;
     }
 
@@ -76,8 +57,7 @@ public class SaidaService {
         PedidoSaidaId id = new PedidoSaidaId();
         id.setMaterial(materialId);
         id.setSolicitacao(solicitacaoId);
-        Optional<PedidoSaida> opt = pedidoSaidaPort.findById(id);
-        if (opt.isEmpty()) { throw new EntidadeNaoExisteException("Saída não encontrada"); }
-        pedidoSaidaPort.delete(opt.get());
+        PedidoSaida pedidoSaida = pedidoSaidaPort.findById(id).orElseThrow(()-> new EntidadeNaoExisteException("Pedido de Saída Não Encontrado"));
+        pedidoSaidaPort.delete(pedidoSaida);
     }
 }

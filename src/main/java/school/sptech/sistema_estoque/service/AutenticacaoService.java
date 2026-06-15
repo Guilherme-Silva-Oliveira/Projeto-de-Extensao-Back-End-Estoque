@@ -12,12 +12,9 @@ import school.sptech.sistema_estoque.port.AlmoxarifePort;
 
 @Service
 public class AutenticacaoService implements UserDetailsService {
-
-    // Repository do usuario
     @Autowired
     AlmoxarifePort almoxarifePort;
 
-    // carrega dados do usuário por usename
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Almoxarife almoxarife = almoxarifePort.findByEmail(username)

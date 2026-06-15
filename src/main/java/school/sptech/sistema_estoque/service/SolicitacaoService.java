@@ -2,6 +2,7 @@ package school.sptech.sistema_estoque.service;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,26 +26,18 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class SolicitacaoService {
     private final ProfessorPort professorPort;
     private final EscalaPort escalaPort;
     private final SolicitacaoPort solicitacaoPort;
     private final MotivoPort motivoPort;
 
-    public SolicitacaoService(ProfessorPort professorPort, EscalaPort escalaPort, SolicitacaoPort solicitacaoPort, MotivoPort motivoPort) {
-        this.professorPort = professorPort;
-        this.escalaPort = escalaPort;
-        this.solicitacaoPort = solicitacaoPort;
-        this.motivoPort = motivoPort;
-    }
-
     public Solicitacao cadastrarSolicitacao(SolicitacaoRequest request) {
         if (request == null){throw new EntidadeInvalidException("Solicitacao Inválida");}
-        Optional<Professor> professorOptional = professorPort.findById(request.idProfessor());
-        if (professorOptional.isEmpty()){throw new EntidadeInvalidException("Professor não encontrado");}
-        Optional<Motivo> motivoOptional = motivoPort.findById(request.idMotivo());
-        if (motivoOptional.isEmpty()){throw new EntidadeInvalidException("Motivo não encontrado");}
-        Solicitacao solicitacao = SolicitacaoMapper.toEntity(request, professorOptional.get(),motivoOptional.get(), request.dataSolicitacao());
+        Professor professor = professorPort.findById(request.idProfessor()).orElseThrow(()-> new EntidadeNaoExisteException("Professor Não Encontrado"));
+        Motivo motivo = motivoPort.findById(request.idMotivo()).orElseThrow(()-> new EntidadeNaoExisteException("Motivo Não Encontrado"));
+        Solicitacao solicitacao = SolicitacaoMapper.toEntity(request, professor,motivo, request.dataSolicitacao());
         return solicitacaoPort.save(solicitacao);
     }
 
@@ -53,21 +46,15 @@ public class SolicitacaoService {
     }
 
     public void excluirSolicitacao(Integer id){
-        Optional<Solicitacao> opt = solicitacaoPort.findById(id);
-        if (opt.isEmpty()){throw new EntidadeNaoExisteException("Solicitacao Não Encontrada");}
-        solicitacaoPort.delete(opt.get());
+        Solicitacao solicitacao = solicitacaoPort.findById(id).orElseThrow(()-> new EntidadeNaoExisteException("Solicitação Não Encontrado"));
+        solicitacaoPort.delete(solicitacao);
     }
 
     @Transactional
     public Solicitacao avaliar(Integer id, Boolean novaDecisao) {
-    Solicitacao solicitacao = solicitacaoPort.findById(id)
-            .orElseThrow(() -> new EntidadeInvalidException("Solicitação não encontrada"));
-
-    solicitacao.setAceito(novaDecisao);
-
-    Solicitacao saved = solicitacaoPort.save(solicitacao);
-
-    return saved;
+    Solicitacao solicitacao = solicitacaoPort.findById(id).orElseThrow(() -> new EntidadeInvalidException("Solicitação não encontrada"));
+    solicitacao.setIsAceito(novaDecisao);
+    return solicitacaoPort.save(solicitacao);
 }
 
     public Page<Solicitacao> listarSolicitacoesBoolean(Boolean bool, Pageable pageable) {
