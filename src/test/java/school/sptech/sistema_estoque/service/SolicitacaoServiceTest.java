@@ -55,29 +55,28 @@ public class SolicitacaoServiceTest {
             Integer idProfessor = 12;
             Integer idMotivo = 2;
             String descricao = "Descricao";
-            String emailProfessor = "email@email.com";
             LocalDateTime dataSolicitacao = LocalDateTime.MIN;
 
-            Solicitacao solicitacao = new Solicitacao();
-            solicitacao.setDescricao(descricao);
+            Professor professor = new Professor();
+            professor.setId(idProfessor);
+            professor.setEmail("email@email.com");
 
-            SolicitacaoRequest solicitacaoRequest =
+            Motivo motivo = new Motivo();
+
+            Solicitacao solicitacaoSalva = new Solicitacao();
+            solicitacaoSalva.setDescricao(descricao);
+
+            SolicitacaoRequest request =
                     new SolicitacaoRequest(idProfessor, idMotivo, descricao, dataSolicitacao);
 
-            Motivo motivoFake = new Motivo();
-
-            Professor professor = new Professor();
-            professor.setEmail(emailProfessor);
-            professor.setId(idProfessor);
-
             Mockito.when(professorPort.findById(idProfessor)).thenReturn(Optional.of(professor));
-            Mockito.when(motivoPort.findById(idMotivo)).thenReturn(Optional.of(motivoFake));
-            Mockito.when(solicitacaoPort.save(any(Solicitacao.class))).thenReturn(solicitacao);
+            Mockito.when(motivoPort.findById(idMotivo)).thenReturn(Optional.of(motivo));
+            Mockito.when(solicitacaoPort.save(any(Solicitacao.class))).thenReturn(solicitacaoSalva);
 
-            Solicitacao resultado = service.cadastrarSolicitacao(solicitacaoRequest);
+            Solicitacao resultado = service.cadastrarSolicitacao(request);
 
             Assertions.assertNotNull(resultado);
-            Assertions.assertEquals(solicitacao.getDescricao(), resultado.getDescricao());
+            Assertions.assertEquals(descricao, resultado.getDescricao());
             Mockito.verify(solicitacaoPort, Mockito.times(1)).save(any(Solicitacao.class));
         }
 
@@ -97,7 +96,7 @@ public class SolicitacaoServiceTest {
 
             Mockito.when(professorPort.findById(99)).thenReturn(Optional.empty());
 
-            Assertions.assertThrows(EntidadeInvalidException.class, () ->
+            Assertions.assertThrows(EntidadeNaoExisteException.class, () ->
                     service.cadastrarSolicitacao(request));
 
             Mockito.verify(solicitacaoPort, Mockito.never()).save(any());
@@ -108,18 +107,16 @@ public class SolicitacaoServiceTest {
         void deveLancarExceptionMotivoNaoEncontrado() {
 
             Integer idProfessor = 12;
-            Integer idMotivo = 99;
-
             Professor professor = new Professor();
             professor.setId(idProfessor);
 
             SolicitacaoRequest request =
-                    new SolicitacaoRequest(idProfessor, idMotivo, "Descricao", LocalDateTime.MIN);
+                    new SolicitacaoRequest(idProfessor, 99, "Descricao", LocalDateTime.MIN);
 
             Mockito.when(professorPort.findById(idProfessor)).thenReturn(Optional.of(professor));
-            Mockito.when(motivoPort.findById(idMotivo)).thenReturn(Optional.empty());
+            Mockito.when(motivoPort.findById(99)).thenReturn(Optional.empty());
 
-            Assertions.assertThrows(EntidadeInvalidException.class, () ->
+            Assertions.assertThrows(EntidadeNaoExisteException.class, () ->
                     service.cadastrarSolicitacao(request));
 
             Mockito.verify(solicitacaoPort, Mockito.never()).save(any());
@@ -127,9 +124,7 @@ public class SolicitacaoServiceTest {
     }
 
 
-    // ─────────────────────────────────────────────────────────
-    //  listarSolicitacoes
-    // ─────────────────────────────────────────────────────────
+
     @Nested
     @DisplayName("Testes do metodo listarSolicitacoes")
     class MetodoListar {
@@ -167,9 +162,7 @@ public class SolicitacaoServiceTest {
     }
 
 
-    // ─────────────────────────────────────────────────────────
-    //  excluirSolicitacao
-    // ─────────────────────────────────────────────────────────
+
     @Nested
     @DisplayName("Testes do metodo excluirSolicitacao")
     class MetodoExcluir {
@@ -204,9 +197,6 @@ public class SolicitacaoServiceTest {
     }
 
 
-    // ─────────────────────────────────────────────────────────
-    //  avaliar
-    // ─────────────────────────────────────────────────────────
     @Nested
     @DisplayName("Testes do metodo avaliar")
     class MetodoAvaliar {
@@ -217,10 +207,9 @@ public class SolicitacaoServiceTest {
 
             Integer id = 1;
             Solicitacao solicitacao = new Solicitacao();
-            solicitacao.setAceito(null);
 
             Solicitacao solicitacaoSalva = new Solicitacao();
-            solicitacaoSalva.setAceito(true);
+            solicitacaoSalva.setIsAceito(true);
 
             Mockito.when(solicitacaoPort.findById(id)).thenReturn(Optional.of(solicitacao));
             Mockito.when(solicitacaoPort.save(any(Solicitacao.class))).thenReturn(solicitacaoSalva);
@@ -228,7 +217,7 @@ public class SolicitacaoServiceTest {
             Solicitacao resultado = service.avaliar(id, true);
 
             Assertions.assertNotNull(resultado);
-            Assertions.assertTrue(resultado.getAceito());
+            Assertions.assertTrue(resultado.getIsAceito());
             Mockito.verify(solicitacaoPort, Mockito.times(1)).save(any(Solicitacao.class));
         }
 
@@ -240,7 +229,7 @@ public class SolicitacaoServiceTest {
             Solicitacao solicitacao = new Solicitacao();
 
             Solicitacao solicitacaoSalva = new Solicitacao();
-            solicitacaoSalva.setAceito(false);
+            solicitacaoSalva.setIsAceito(false);
 
             Mockito.when(solicitacaoPort.findById(id)).thenReturn(Optional.of(solicitacao));
             Mockito.when(solicitacaoPort.save(any(Solicitacao.class))).thenReturn(solicitacaoSalva);
@@ -248,7 +237,7 @@ public class SolicitacaoServiceTest {
             Solicitacao resultado = service.avaliar(id, false);
 
             Assertions.assertNotNull(resultado);
-            Assertions.assertFalse(resultado.getAceito());
+            Assertions.assertFalse(resultado.getIsAceito());
         }
 
         @Test
@@ -259,6 +248,7 @@ public class SolicitacaoServiceTest {
 
             Mockito.when(solicitacaoPort.findById(id)).thenReturn(Optional.empty());
 
+            // avaliar lança EntidadeInvalidException conforme a service atual
             Assertions.assertThrows(EntidadeInvalidException.class, () ->
                     service.avaliar(id, true));
 
@@ -267,9 +257,7 @@ public class SolicitacaoServiceTest {
     }
 
 
-    // ─────────────────────────────────────────────────────────
-    //  listarSolicitacoesBoolean
-    // ─────────────────────────────────────────────────────────
+
     @Nested
     @DisplayName("Testes do metodo listarSolicitacoesBoolean")
     class MetodoListarBoolean {
@@ -279,7 +267,7 @@ public class SolicitacaoServiceTest {
         void deveRetornarSolicitacoesAceitas() {
 
             Solicitacao s1 = new Solicitacao();
-            s1.setAceito(true);
+            s1.setIsAceito(true);
 
             Pageable pageable = PageRequest.of(0, 10);
             Page<Solicitacao> pageFake = new PageImpl<>(List.of(s1));
@@ -290,7 +278,7 @@ public class SolicitacaoServiceTest {
 
             Assertions.assertNotNull(resultado);
             Assertions.assertEquals(1, resultado.getTotalElements());
-            Assertions.assertTrue(resultado.getContent().get(0).getAceito());
+            Assertions.assertTrue(resultado.getContent().get(0).getIsAceito());
             Mockito.verify(solicitacaoPort, Mockito.times(1)).findByIsAceito(true, pageable);
         }
 
@@ -299,7 +287,7 @@ public class SolicitacaoServiceTest {
         void deveRetornarSolicitacoesRejeitadas() {
 
             Solicitacao s1 = new Solicitacao();
-            s1.setAceito(false);
+            s1.setIsAceito(false);
 
             Pageable pageable = PageRequest.of(0, 10);
             Page<Solicitacao> pageFake = new PageImpl<>(List.of(s1));
@@ -310,7 +298,7 @@ public class SolicitacaoServiceTest {
 
             Assertions.assertNotNull(resultado);
             Assertions.assertEquals(1, resultado.getTotalElements());
-            Assertions.assertFalse(resultado.getContent().get(0).getAceito());
+            Assertions.assertFalse(resultado.getContent().get(0).getIsAceito());
         }
 
         @Test
