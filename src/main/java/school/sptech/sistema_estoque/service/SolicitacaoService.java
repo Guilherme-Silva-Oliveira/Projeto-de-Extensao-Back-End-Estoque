@@ -27,13 +27,11 @@ import java.util.Optional;
 @Service
 public class SolicitacaoService {
     private final ProfessorPort professorPort;
-    private final EscalaPort escalaPort;
     private final SolicitacaoPort solicitacaoPort;
     private final MotivoPort motivoPort;
 
-    public SolicitacaoService(ProfessorPort professorPort, EscalaPort escalaPort, SolicitacaoPort solicitacaoPort, MotivoPort motivoPort) {
+    public SolicitacaoService(ProfessorPort professorPort, SolicitacaoPort solicitacaoPort, MotivoPort motivoPort) {
         this.professorPort = professorPort;
-        this.escalaPort = escalaPort;
         this.solicitacaoPort = solicitacaoPort;
         this.motivoPort = motivoPort;
     }
