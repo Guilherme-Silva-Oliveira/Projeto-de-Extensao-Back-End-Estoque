@@ -4,21 +4,17 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter @Setter
 public class UnidadeMedida {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String nomeUnidade;
-
-    public UnidadeMedida(Integer id, String nomeUnidade) {
-        this.id = id;
-        this.nomeUnidade = nomeUnidade;
-    }
-    public UnidadeMedida() {}
-
-    public Integer getId() {return id;}
-    public void setId(Integer id) {this.id = id;}
-    public String getNomeUnidade() {return nomeUnidade;}
-    public void setNomeUnidade(String nomeUnidade) {this.nomeUnidade = nomeUnidade;}
 }

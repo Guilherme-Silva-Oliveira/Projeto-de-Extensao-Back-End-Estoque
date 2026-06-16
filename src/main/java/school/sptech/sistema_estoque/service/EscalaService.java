@@ -1,5 +1,6 @@
 package school.sptech.sistema_estoque.service;
 
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import school.sptech.sistema_estoque.dto.estoque.escala.EscalaRequest;
 import school.sptech.sistema_estoque.exception.EntidadeInvalidException;
@@ -14,12 +15,9 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class EscalaService {
     private final EscalaPort escalaPort;
-
-    public EscalaService(EscalaPort escalaPort) {
-        this.escalaPort = escalaPort;
-    }
 
     public Escala cadastrarEscala(EscalaRequest request){
         if (request == null){ throw new EntidadeInvalidException("Escala Inválida"); }
@@ -33,9 +31,8 @@ public class EscalaService {
     }
 
     public void excluirEscala(Integer id){
-        Optional<Escala> opt = escalaPort.findById(id);
-        if (opt.isEmpty()){throw new EntidadeNaoExisteException("Escala Não Encontrada");}
-        escalaPort.delete(opt.get());
+        Escala escala = escalaPort.findById(id).orElseThrow(()-> new EntidadeNaoExisteException("Escala Não Encontrada"));
+        escalaPort.delete(escala);
     }
 }
 

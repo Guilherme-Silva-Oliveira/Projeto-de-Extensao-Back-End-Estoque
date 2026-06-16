@@ -19,6 +19,6 @@ public class SolicitacaoMapper {
     }
 
     public static SolicitacaoResponse toResponse(Solicitacao entity){
-        return new SolicitacaoResponse(entity.getId(), entity.getProfessor(),entity.getMotivo(), entity.getDescricao(), entity.getDataSolicitacao(), entity.getAceito());
+        return new SolicitacaoResponse(entity.getId(), entity.getProfessor(),entity.getMotivo(), entity.getDescricao(), entity.getDataSolicitacao(), entity.getIsAceito());
     }
 }

@@ -1,5 +1,6 @@
 package school.sptech.sistema_estoque.service;
 
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -16,13 +17,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class FornecedorService {
     private final FornecedorPort fornecedorPort;
     private final TipoFornecedorPort tipoFornecedorPort;
-    public FornecedorService(FornecedorPort fornecedorPort , TipoFornecedorPort tipoFornecedorPort) {
-        this.fornecedorPort = fornecedorPort;
-        this.tipoFornecedorPort = tipoFornecedorPort;
-    }
 
     public TipoFornecedor cadastrarTipoFornecedor(TipoFornecedorRequest request) {
         if (request == null) {throw new EntidadeInvalidException("Tipo fornecedor invalido");}
@@ -35,19 +33,15 @@ public class FornecedorService {
     }
 
     public void excluirTipoFornecedor(Integer id){
-        Optional<TipoFornecedor> opt = tipoFornecedorPort.findById(id);
-        if (opt.isEmpty()){throw new EntidadeNaoExisteException("Tipo Fornecedor Não Encontrado");}
-        tipoFornecedorPort.delete(opt.get());
+        TipoFornecedor tipoFornecedor = tipoFornecedorPort.findById(id).orElseThrow(()-> new EntidadeNaoExisteException("Tipo Fornecedor Não Encontrado"));
+        tipoFornecedorPort.delete(tipoFornecedor);
     }
 
     public Fornecedor cadastrarFornecedor(FornecedorRequest request) {
         if (request == null) {throw new EntidadeInvalidException("Fornecedor invalido");}
-        if (fornecedorPort.existsByEmailAndTelefone(request.email(), request.telefone())){
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe um almoxarife cadastrado com esse email e id de almoxarifado");
-        }
-        Optional<TipoFornecedor> tipoOptional = tipoFornecedorPort.findById(request.idTipoFornecedor());
-        if (tipoOptional.isEmpty()) {throw new EntidadeInvalidException("Tipo fornecedor nao encontrado");}
-        Fornecedor fornecedor = new Fornecedor(null, request.nome(), request.email(), request.telefone(), tipoOptional.get());
+        if (fornecedorPort.existsByEmailAndTelefone(request.email(), request.telefone())){throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe um almoxarife cadastrado com esse email e id de almoxarifado");}
+        TipoFornecedor tipoFornecedor = tipoFornecedorPort.findById(request.idTipoFornecedor()).orElseThrow(()-> new EntidadeNaoExisteException("Tipo Fornecedor Não Encontrado"));
+        Fornecedor fornecedor = new Fornecedor(); fornecedor.setNome(request.nome()); fornecedor.setEmail(request.email()); fornecedor.setTelefone(request.telefone()); fornecedor.setTipoFornecedor(tipoFornecedor);
         return fornecedorPort.save(fornecedor);
     }
 
@@ -56,49 +50,20 @@ public class FornecedorService {
     }
 
     public void excluirFornecedor(Integer id){
-        Optional<Fornecedor> opt = fornecedorPort.findById(id);
-        if (opt.isEmpty()){throw new EntidadeNaoExisteException("Fornecedor Não Encontrado");}
-        fornecedorPort.delete(opt.get());
+        Fornecedor fornecedor = fornecedorPort.findById(id).orElseThrow(()-> new EntidadeNaoExisteException("Fornecedor Não Encontrado"));
+        fornecedorPort.delete(fornecedor);
     }
 
     public Fornecedor atualizarFornecedor(Integer id, FornecedorPatchDto dto){
-
-        Optional<Fornecedor> fornecedorOptional = fornecedorPort.findById(id);
-
-        if (fornecedorOptional.isEmpty()){
-            throw new EntidadeNaoExisteException("Fornecedor Não Encontrado");
-        }
-
-        if (dto == null){
-            throw new EntidadeInvalidException("Dados inválidos");
-        }
-
-        Fornecedor fornecedor = fornecedorOptional.get();
-
-        if (dto.nome() != null){
-            fornecedor.setNome(dto.nome());
-        }
-
-        if (dto.email() != null){
-            fornecedor.setEmail(dto.email());
-        }
-
-        if (dto.telefone() != null){
-            fornecedor.setTelefone(dto.telefone());
-        }
-
+        if (dto == null){throw new EntidadeInvalidException("Dados inválidos");}
+        Fornecedor fornecedor = fornecedorPort.findById(id).orElseThrow(()-> new EntidadeNaoExisteException("Fornecedor Não Encontrado"));
+        if (dto.nome() != null){fornecedor.setNome(dto.nome());}
+        if (dto.email() != null){fornecedor.setEmail(dto.email());}
+        if (dto.telefone() != null){fornecedor.setTelefone(dto.telefone());}
         if (dto.tipoFornecedor() != null && dto.tipoFornecedor().id() != null){
-
-            Optional<TipoFornecedor> tipoOptional =
-                    tipoFornecedorPort.findById(dto.tipoFornecedor().id());
-
-            if (tipoOptional.isEmpty()){
-                throw new EntidadeInvalidException("Tipo fornecedor nao encontrado");
-            }
-
-            fornecedor.setTipoFornecedor(tipoOptional.get());
+            TipoFornecedor tipoFornecedor = tipoFornecedorPort.findById(dto.tipoFornecedor().id()).orElseThrow(()-> new EntidadeNaoExisteException("Tipo Fornecedor Não Encontrado"));
+            fornecedor.setTipoFornecedor(tipoFornecedor);
         }
-
         return fornecedorPort.save(fornecedor);
     }
 }

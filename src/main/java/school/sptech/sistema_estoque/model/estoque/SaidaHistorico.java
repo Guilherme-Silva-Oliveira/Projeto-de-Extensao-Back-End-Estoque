@@ -4,10 +4,17 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter @Setter
 public class SaidaHistorico {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -15,24 +22,4 @@ public class SaidaHistorico {
     private String nomeSolicitante;
     private String escala;
     private Integer quantidade;
-
-    public SaidaHistorico(Integer id, LocalDateTime dataSaida, String nomeSolicitante, String escala, Integer quantidade) {
-        this.id = id;
-        this.dataSaida = dataSaida;
-        this.nomeSolicitante = nomeSolicitante;
-        this.escala = escala;
-        this.quantidade = quantidade;
-    }
-    public SaidaHistorico() {}
-
-    public Integer getId() {return id;}
-    public void setId(Integer id) {this.id = id;}
-    public LocalDateTime getDataSaida() {return dataSaida;}
-    public void setDataSaida(LocalDateTime dataSaida) {this.dataSaida = dataSaida;}
-    public String getNomeSolicitante() {return nomeSolicitante;}
-    public void setNomeSolicitante(String nomeSolicitante) {this.nomeSolicitante = nomeSolicitante;}
-    public String getEscala() {return escala;}
-    public void setEscala(String escala) {this.escala = escala;}
-    public Integer getQuantidade() {return quantidade;}
-    public void setQuantidade(Integer quantidade) {this.quantidade = quantidade;}
 }
