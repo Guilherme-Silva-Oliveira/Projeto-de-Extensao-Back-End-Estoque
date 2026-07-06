@@ -15,6 +15,7 @@ public class SolicitacaoMapper {
         entity.setDataSolicitacao(data);
         entity.setProfessor(professor);
         entity.setDescricao(request.descricao());
+        entity.setMotivo(motivo);
         return entity;
     }
 

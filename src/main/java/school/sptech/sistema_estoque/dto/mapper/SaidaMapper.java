@@ -15,6 +15,7 @@ public class SaidaMapper {
         entity.setEscala(escala);
         entity.setQuantidade(request.quantidade());
         entity.setDataSolicitacao(request.dataSolicitacao() != null ? request.dataSolicitacao() : java.time.LocalDateTime.now());
+        entity.setInteligenciaArtificialId(request.inteligenciaArtificialId());
         return entity;
     }
 
@@ -24,6 +25,7 @@ public class SaidaMapper {
                 entity.getSolicitacao(),
                 entity.getQuantidade(),
                 entity.getDataSolicitacao(),
-                entity.getEscala());
+                entity.getEscala(),
+                entity.getInteligenciaArtificialId());
     }
 }
