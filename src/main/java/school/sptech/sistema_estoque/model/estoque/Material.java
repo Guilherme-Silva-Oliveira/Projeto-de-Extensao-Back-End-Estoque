@@ -16,6 +16,7 @@ public class Material {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String nomeMaterial;
+    private String descricao;
     @ManyToOne private Categoria categoria;
     @ManyToOne private Almoxarifado almoxarifado;
     @ManyToOne private UnidadeMedida unidadeMedida;

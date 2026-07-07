@@ -41,6 +41,7 @@ public class MaterialService {
         m.setCategoria(categoria);
         m.setAlmoxarifado(almoxarifado);
         m.setQuantidade(0);
+        m.setDescricao(request.descricao());
         Material salvo = materialPort.save(m);
         codigoBarrasPort.save(new CodigoBarras(request.codigoBarras(), salvo));
         return salvo;
@@ -59,6 +60,7 @@ public class MaterialService {
         Material material = materialPort.findById(id).orElseThrow(() -> new EntidadeInvalidException("Material não encontrado"));
         if (request.nomeMaterial() != null) {material.setNomeMaterial(request.nomeMaterial());}
         if (request.quantidade() != null) {material.setQuantidade(request.quantidade());}
+        if (request.descricao() != null) {material.setDescricao(request.descricao());}
         Material salvo = materialPort.save(material);
         return MaterialMapper.toResponse(salvo);
     }

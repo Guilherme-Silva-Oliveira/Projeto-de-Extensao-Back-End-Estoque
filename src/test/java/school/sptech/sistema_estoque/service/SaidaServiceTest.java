@@ -104,7 +104,7 @@ class SaidaServiceTest {
             Escala escala = new Escala();
             PedidoSaida pedidoSaida = new PedidoSaida();
 
-            PedidoSaidaRequest request = new PedidoSaidaRequest(1, 1, 10, LocalDateTime.now(), 1);
+            PedidoSaidaRequest request = new PedidoSaidaRequest(1, 1, 10, LocalDateTime.now(), 1, 1);
 
             when(materialPort.findById(request.materialId())).thenReturn(Optional.of(material));
             when(solicitacaoPort.findById(request.solicitacaoId())).thenReturn(Optional.of(solicitacao));
@@ -132,7 +132,7 @@ class SaidaServiceTest {
         @DisplayName("Deve Lançar Exception Por Material Não Encontrado")
         void deveLancarExceptionMaterialNaoEncontrado() {
 
-            PedidoSaidaRequest request = new PedidoSaidaRequest(1, 1, 10, LocalDateTime.now(), 1);
+            PedidoSaidaRequest request = new PedidoSaidaRequest(1, 1, 10, LocalDateTime.now(), 1, 1);
 
             when(materialPort.findById(request.materialId())).thenReturn(Optional.empty());
 
@@ -150,7 +150,7 @@ class SaidaServiceTest {
             Material material = new Material();
             material.setQuantidade(50);
 
-            PedidoSaidaRequest request = new PedidoSaidaRequest(1, 1, 10, LocalDateTime.now(), 1);
+            PedidoSaidaRequest request = new PedidoSaidaRequest(1, 1, 10, LocalDateTime.now(), 1, 1);
 
             when(materialPort.findById(request.materialId())).thenReturn(Optional.of(material));
             when(solicitacaoPort.findById(request.solicitacaoId())).thenReturn(Optional.empty());
@@ -171,7 +171,7 @@ class SaidaServiceTest {
 
             Solicitacao solicitacao = new Solicitacao();
 
-            PedidoSaidaRequest request = new PedidoSaidaRequest(1, 1, 10, LocalDateTime.now(), 1);
+            PedidoSaidaRequest request = new PedidoSaidaRequest(1, 1, 10, LocalDateTime.now(), 1, 1);
 
             when(materialPort.findById(request.materialId())).thenReturn(Optional.of(material));
             when(solicitacaoPort.findById(request.solicitacaoId())).thenReturn(Optional.of(solicitacao));

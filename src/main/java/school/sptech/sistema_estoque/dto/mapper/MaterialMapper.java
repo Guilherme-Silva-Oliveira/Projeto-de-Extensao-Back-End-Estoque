@@ -15,6 +15,7 @@ public class MaterialMapper {
         m.setUnidadeMedida(unidadeMedida);
         m.setNomeMaterial(request.nomeMaterial());
         m.setQuantidade(0);
+        m.setDescricao(request.descricao());
         return m;
     }
 
@@ -25,7 +26,8 @@ public class MaterialMapper {
                 UnidadeMedidaMapper.toResponse(entity.getUnidadeMedida()),
                 AlmoxarifadoMapper.toResponse(entity.getAlmoxarifado()),
                 entity.getNomeMaterial(),
-                entity.getQuantidade()
+                entity.getQuantidade(),
+                entity.getDescricao()
         );
     }
 }

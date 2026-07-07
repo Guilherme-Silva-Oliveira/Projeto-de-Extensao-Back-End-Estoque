@@ -26,13 +26,16 @@ public class PedidoSaida {
     @ManyToOne
     @JoinColumn(name = "escala_id")
     private Escala escala;
+    @Column(name = "inteligencia_artificial_id")
+    private Integer inteligenciaArtificialId;
 
-    public PedidoSaida(Material material, Solicitacao solicitacao, Integer quantidade, LocalDateTime dataSolicitacao, Escala escala) {
+    public PedidoSaida(Material material, Solicitacao solicitacao, Integer quantidade, LocalDateTime dataSolicitacao, Escala escala, Integer inteligenciaArtificialId) {
         this.material = material;
         this.solicitacao = solicitacao;
         this.quantidade = quantidade;
         this.dataSolicitacao = dataSolicitacao;
         this.escala = escala;
+        this.inteligenciaArtificialId = inteligenciaArtificialId;
     }
 
     public PedidoSaida() {
@@ -76,5 +79,13 @@ public class PedidoSaida {
 
     public void setEscala(Escala escala) {
         this.escala = escala;
+    }
+
+    public Integer getInteligenciaArtificialId() {
+        return inteligenciaArtificialId;
+    }
+
+    public void setInteligenciaArtificialId(Integer inteligenciaArtificialId) {
+        this.inteligenciaArtificialId = inteligenciaArtificialId;
     }
 }

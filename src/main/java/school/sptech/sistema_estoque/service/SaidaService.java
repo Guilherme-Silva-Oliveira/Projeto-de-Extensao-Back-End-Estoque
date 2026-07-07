@@ -45,7 +45,7 @@ public class SaidaService {
         Escala escala = escalaPort.findById(request.escalaId()).orElseThrow(()-> new EntidadeNaoExisteException("Escala Não Encontrado"));
         material.setQuantidade(material.getQuantidade() - request.quantidade());
         materialPort.save(material);
-        PedidoSaida pedidoSaida = new PedidoSaida(material, solicitacao, request.quantidade(), request.dataSolicitacao(), escala);
+        PedidoSaida pedidoSaida = new PedidoSaida(material, solicitacao, request.quantidade(), request.dataSolicitacao(), escala, request.inteligenciaArtificialId());
         PedidoSaida saved = pedidoSaidaPort.save(pedidoSaida);
         String mensagem = "Material '" + material.getNomeMaterial() + "' saiu com quantidade " + request.quantidade();
         observer.gerarLogs(mensagem);

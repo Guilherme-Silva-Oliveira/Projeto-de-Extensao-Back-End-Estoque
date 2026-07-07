@@ -12,6 +12,8 @@ public record PedidoSaidaResponse(
         @Schema(description = "Solicitação Associada") Solicitacao solicitacao,
         @Schema(description = "Quantidade da Solicitação") Integer quantidade,
         @Schema(description = "Data da Solicitação") LocalDateTime dataSolicitacao,
-        @Schema(description = "Escala Associada") Escala escala
+        @Schema(description = "Escala Associada") Escala escala,
+        @Schema(description = "Fk para modelo de IA utilizado") Integer inteligenciaArtificialId
+
 ) {
 }
