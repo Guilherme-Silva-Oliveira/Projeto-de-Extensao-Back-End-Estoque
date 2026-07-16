@@ -1,5 +1,6 @@
 package school.sptech.sistema_estoque.model.estoque;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,13 +22,11 @@ public class Material {
     @ManyToOne private Almoxarifado almoxarifado;
     @ManyToOne private UnidadeMedida unidadeMedida;
     private Integer quantidade;
-    @OneToMany(mappedBy = "material", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<Limite> limites;
-    @OneToMany(mappedBy = "material", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<PedidoEntrada> pedidosEntrada;
-    @OneToMany(mappedBy = "material", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<PedidoSaida> pedidosSaida;
 
-    @OneToMany(mappedBy = "material", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "material", cascade = CascadeType.REMOVE, orphanRemoval = true) @JsonIgnore
+    private List<Limite> limites;
+    @OneToMany(mappedBy = "material", cascade = CascadeType.REMOVE, orphanRemoval = true) @JsonIgnore
+    private List<PedidoEntrada> pedidosEntrada;
+    @OneToMany(mappedBy = "material", cascade = CascadeType.REMOVE, orphanRemoval = true) @JsonIgnore
     private List<CodigoBarras> codigosBarras;
 }

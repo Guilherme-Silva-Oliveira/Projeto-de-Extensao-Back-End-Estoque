@@ -18,12 +18,12 @@ public class Solicitacao {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @ManyToOne private Professor professor;
+    @ManyToOne private Material material;
+    private Integer quantidade;
+    private Integer inteligenciaArtificialId;
     @ManyToOne private Motivo motivo;
     private String descricao;
     private LocalDateTime dataSolicitacao;
-
-    @OneToMany(mappedBy = "solicitacao", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<PedidoSaida> pedidosSaida;
     @Column(name = "is_aceito")
     private Boolean isAceito;
 }
