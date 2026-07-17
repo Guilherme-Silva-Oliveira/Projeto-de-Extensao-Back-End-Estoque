@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import school.sptech.sistema_estoque.model.estoque.Historico;
 import school.sptech.sistema_estoque.model.estoque.Solicitacao;
+import school.sptech.sistema_estoque.model.estoque.Status;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,4 +17,5 @@ public interface SolicitacaoPort {
     Page<Solicitacao> findByIsAceito(Boolean aceito, Pageable pageable);
     Historico saveHistorico (Historico historico);
     List<Optional<Historico>> findHistoricoById(Integer id);
+    Optional<Status> findStatusById(Integer id);
 }

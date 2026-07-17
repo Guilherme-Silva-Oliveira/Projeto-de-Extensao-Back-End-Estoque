@@ -80,4 +80,13 @@ public class SolicitacaoController {
         SolicitacaoResponse response = SolicitacaoMapper.toResponse(resultado);
         return ResponseEntity.ok(response);
     }
+
+    @PostMapping("/atualizarStatus/{solicitacaoId}/{status}")
+    public ResponseEntity<Void> atualizarStatus(
+        @PathVariable Integer solicitacaoId,
+        @PathVariable Integer status
+    ) {
+        service.atualizarStatus(solicitacaoId, status);
+        return ResponseEntity.ok().build();
+    }
 }

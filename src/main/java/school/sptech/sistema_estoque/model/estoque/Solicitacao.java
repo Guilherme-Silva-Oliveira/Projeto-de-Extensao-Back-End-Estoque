@@ -24,6 +24,7 @@ public class Solicitacao {
     @ManyToOne private Motivo motivo;
     private String descricao;
     private LocalDateTime dataSolicitacao;
+    private LocalDateTime dataParaEnvio;
     @Column(name = "is_aceito")
     private Boolean isAceito;
 }

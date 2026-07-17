@@ -51,9 +51,13 @@ public class SolicitacaoService {
     public Solicitacao avaliar(Integer id, Boolean novaDecisao) {
         Solicitacao solicitacao = solicitacaoPort.findById(id).orElseThrow(() -> new EntidadeInvalidException("Solicitação não encontrada"));
         List<Optional<Historico>> historicos = solicitacaoPort.findHistoricoById(id);
+        StatusSolicitacao status = null;
+        if (novaDecisao){status = StatusSolicitacao.ACEITA;
+        }else {status = StatusSolicitacao.REJEITADA;}
+
         if (!historicos.isEmpty()){
             Historico historico = historicos.getFirst().orElseThrow(() -> new EntidadeInvalidException("Histórico não encontrado"));
-            solicitacaoPort.saveHistorico(getNovoHistorico(historico, StatusSolicitacao.ACEITA));
+            solicitacaoPort.saveHistorico(getNovoHistorico(historico.getSolicitacao(), status));
         }else{
             throw new EntidadeInvalidException("Nenhum Histórico Associado à esta Solicitação!!");
         }
@@ -65,11 +69,18 @@ public class SolicitacaoService {
         return solicitacaoPort.findByIsAceito(bool, pageable);
     }
 
-    public Historico getNovoHistorico(Historico historico, StatusSolicitacao status){
+    public Historico getNovoHistorico(Solicitacao solicitacao, StatusSolicitacao status){
         Historico h = new Historico();
-        h.setSolicitacao(historico.getSolicitacao());
+        h.setSolicitacao(solicitacao);
         h.setDataAlteracao(LocalDateTime.now());
         h.setStatusSolicitacao(status.getDescricao());
         return h;
+    }
+
+    public void atualizarStatus(Integer solicitacaoId, Integer status) {
+        Solicitacao solicitacao = solicitacaoPort.findById(solicitacaoId).orElseThrow(() -> new EntidadeInvalidException("Solicitação não encontrada"));
+        Status statusBD = solicitacaoPort.findStatusById(status).orElseThrow(() -> new EntidadeInvalidException("Status não encontrado"));
+        StatusSolicitacao statusTarget = StatusSolicitacao.valueOf(statusBD.getDescStatus());
+        solicitacaoPort.saveHistorico(getNovoHistorico(solicitacao, statusTarget));
     }
 }
