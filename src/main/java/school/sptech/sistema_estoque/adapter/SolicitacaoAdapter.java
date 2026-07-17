@@ -3,8 +3,10 @@ package school.sptech.sistema_estoque.adapter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
+import school.sptech.sistema_estoque.model.estoque.Historico;
 import school.sptech.sistema_estoque.model.estoque.Solicitacao;
 import school.sptech.sistema_estoque.port.SolicitacaoPort;
+import school.sptech.sistema_estoque.repository.HistoricoRepository;
 import school.sptech.sistema_estoque.repository.SolicitacaoRepository;
 
 import java.util.List;
@@ -13,9 +15,11 @@ import java.util.Optional;
 @Component
 public class SolicitacaoAdapter implements SolicitacaoPort {
     private final SolicitacaoRepository solicitacaoRepository;
+    private final HistoricoRepository historicoRepository;
 
-    public SolicitacaoAdapter(SolicitacaoRepository solicitacaoRepository) {
+    public SolicitacaoAdapter(SolicitacaoRepository solicitacaoRepository, HistoricoRepository historicoRepository) {
         this.solicitacaoRepository = solicitacaoRepository;
+        this.historicoRepository = historicoRepository;
     }
 
     @Override
@@ -41,5 +45,15 @@ public class SolicitacaoAdapter implements SolicitacaoPort {
     @Override
     public Page<Solicitacao> findByIsAceito(Boolean aceito, Pageable pageable) {
         return solicitacaoRepository.findByIsAceito(aceito, pageable);
+    }
+
+    @Override
+    public Historico saveHistorico(Historico historico) {
+        return historicoRepository.save(historico);
+    }
+
+    @Override
+    public List<Optional<Historico>> findHistoricoById(Integer id) {
+        return List.of(historicoRepository.findById(id));
     }
 }
