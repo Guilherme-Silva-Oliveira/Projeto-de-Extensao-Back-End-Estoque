@@ -61,12 +61,7 @@ public class SolicitacaoService {
         }else{
             throw new EntidadeInvalidException("Nenhum Histórico Associado à esta Solicitação!!");
         }
-        solicitacao.setIsAceito(novaDecisao);
         return solicitacaoPort.save(solicitacao);
-    }
-
-    public Page<Solicitacao> listarSolicitacoesBoolean(Boolean bool, Pageable pageable) {
-        return solicitacaoPort.findByIsAceito(bool, pageable);
     }
 
     public Historico getNovoHistorico(Solicitacao solicitacao, StatusSolicitacao status){
@@ -82,5 +77,16 @@ public class SolicitacaoService {
         Status statusBD = solicitacaoPort.findStatusById(status).orElseThrow(() -> new EntidadeInvalidException("Status não encontrado"));
         StatusSolicitacao statusTarget = StatusSolicitacao.valueOf(statusBD.getDescStatus());
         solicitacaoPort.saveHistorico(getNovoHistorico(solicitacao, statusTarget));
+    }
+
+    @Transactional
+    public void verificarPrazos(){
+        Status statusExpirado = solicitacaoPort.findStatusById(5).orElseThrow(() -> new EntidadeInvalidException("Status não encontrado"));
+        List<Solicitacao> solicitacoes = solicitacaoPort.findAll();
+        solicitacoes.forEach(solicitacao -> {
+            if (solicitacao.getDataParaEnvio().isBefore(LocalDateTime.now())) {
+                solicitacaoPort.saveHistorico(getNovoHistorico(solicitacao,StatusSolicitacao.valueOf(statusExpirado.getDescStatus())));
+            }
+        });
     }
 }

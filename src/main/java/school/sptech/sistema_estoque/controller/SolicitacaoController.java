@@ -49,17 +49,6 @@ public class SolicitacaoController {
         return ResponseEntity.ok(solicitacoes.stream().map(SolicitacaoMapper::toResponse).toList());
     }
 
-    @GetMapping("/boolean")
-    public ResponseEntity<List<SolicitacaoResponse>> listarSolicitacoesReprovadas(
-            @PageableDefault(size = 10, page = 0) Pageable pageable,
-            @RequestParam Boolean bool
-
-    ){
-        var solicitacoes = service.listarSolicitacoesBoolean(bool, pageable);
-        if (solicitacoes.isEmpty()){return ResponseEntity.noContent().build();}
-        return ResponseEntity.ok(solicitacoes.stream().map(SolicitacaoMapper::toResponse).toList());
-    }
-
     @Operation(summary = "Excluir Solicitação")
     @ApiResponses({
             @ApiResponse(responseCode = "404",description = "Nenhuma Solicitação Encontrada"),
@@ -87,6 +76,12 @@ public class SolicitacaoController {
         @PathVariable Integer status
     ) {
         service.atualizarStatus(solicitacaoId, status);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/verificarPrazos")
+    public ResponseEntity<Void> verificarPrazos(){
+        service.verificarPrazos();
         return ResponseEntity.ok().build();
     }
 }

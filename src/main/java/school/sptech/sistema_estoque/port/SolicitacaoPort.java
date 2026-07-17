@@ -14,8 +14,8 @@ public interface SolicitacaoPort {
     List<Solicitacao> findAll();
     Optional<Solicitacao> findById(Integer id);
     void delete(Solicitacao solicitacao);
-    Page<Solicitacao> findByIsAceito(Boolean aceito, Pageable pageable);
     Historico saveHistorico (Historico historico);
     List<Optional<Historico>> findHistoricoById(Integer id);
     Optional<Status> findStatusById(Integer id);
+    Optional<Historico> findBySolicitacaoId(Integer id);
 }

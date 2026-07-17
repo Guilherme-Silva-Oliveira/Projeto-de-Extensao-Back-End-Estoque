@@ -6,4 +6,6 @@ import school.sptech.sistema_estoque.model.estoque.Historico;
 
 import java.util.Optional;
 
-public interface HistoricoRepository extends JpaRepository<Historico, Integer> {}
+public interface HistoricoRepository extends JpaRepository<Historico, Integer> {
+    Optional<Historico> findBySolicitacaoId(Integer id);
+}

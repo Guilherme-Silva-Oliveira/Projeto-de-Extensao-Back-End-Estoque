@@ -20,13 +20,12 @@ public class SolicitacaoMapper {
         entity.setQuantidade(request.quantidade());
         entity.setInteligenciaArtificialId(request.inteligenciaArtificialId());
         entity.setDescricao(request.descricao());
-        entity.setIsAceito(request.isAceito());
         entity.setMotivo(motivo);
         entity.setDataParaEnvio(request.dataParaEnvio());
         return entity;
     }
 
     public static SolicitacaoResponse toResponse(Solicitacao entity){
-        return new SolicitacaoResponse(entity.getId(),entity.getQuantidade(),entity.getDescricao(), entity.getDataSolicitacao(), entity.getDataParaEnvio(), entity.getIsAceito());
+        return new SolicitacaoResponse(entity.getId(),entity.getQuantidade(),entity.getDescricao(), entity.getDataSolicitacao(), entity.getDataParaEnvio());
     }
 }

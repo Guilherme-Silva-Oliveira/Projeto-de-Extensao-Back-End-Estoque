@@ -25,6 +25,4 @@ public class Solicitacao {
     private String descricao;
     private LocalDateTime dataSolicitacao;
     private LocalDateTime dataParaEnvio;
-    @Column(name = "is_aceito")
-    private Boolean isAceito;
 }

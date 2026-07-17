@@ -47,11 +47,6 @@ public class SolicitacaoAdapter implements SolicitacaoPort {
     }
 
     @Override
-    public Page<Solicitacao> findByIsAceito(Boolean aceito, Pageable pageable) {
-        return solicitacaoRepository.findByIsAceito(aceito, pageable);
-    }
-
-    @Override
     public Historico saveHistorico(Historico historico) {
         return historicoRepository.save(historico);
     }
@@ -64,5 +59,10 @@ public class SolicitacaoAdapter implements SolicitacaoPort {
     @Override
     public Optional<Status> findStatusById(Integer id) {
         return statusRepository.findById(id);
+    }
+
+    @Override
+    public Optional<Historico> findBySolicitacaoId(Integer id) {
+        return historicoRepository.findBySolicitacaoId(id);
     }
 }
