@@ -22,6 +22,7 @@ public class SolicitacaoMapper {
         entity.setDescricao(request.descricao());
         entity.setMotivo(motivo);
         entity.setDataParaEnvio(request.dataParaEnvio());
+        entity.setDeveDevolver(request.deveDevolver());
         return entity;
     }
 

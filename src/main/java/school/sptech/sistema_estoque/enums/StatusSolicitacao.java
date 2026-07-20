@@ -7,7 +7,8 @@ public enum StatusSolicitacao {
     PENDENTE_ENTREGA(4,"PENDENTE_ENTREGA"),
     PRAZO_EXPIRADO(5,"PRAZO_EXPIRADO"),
     CANCELADA(6,"CANCELADA"),
-    FINALIZADA(7,"FINALIZADA");
+    FINALIZADA(7,"FINALIZADA"),
+    PENDENTE_DEVOLUCAO(8,"PENDENTE_DEVOLUÇÃO");
 
     private final Integer codStatus;
     private final String descricao;

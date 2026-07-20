@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import school.sptech.sistema_estoque.dto.estoque.solicitacao.SolicitacaoRequest;
+import school.sptech.sistema_estoque.dto.mapper.AlertaMapper;
 import school.sptech.sistema_estoque.dto.mapper.HistoricoMapper;
 import school.sptech.sistema_estoque.dto.mapper.SolicitacaoMapper;
 import school.sptech.sistema_estoque.enums.StatusSolicitacao;
@@ -50,7 +51,7 @@ public class SolicitacaoService {
     @Transactional
     public Solicitacao avaliar(Integer id, Boolean novaDecisao) {
         Solicitacao solicitacao = solicitacaoPort.findById(id).orElseThrow(() -> new EntidadeInvalidException("Solicitação não encontrada"));
-        List<Optional<Historico>> historicos = solicitacaoPort.findHistoricoById(id);
+        List<Optional<Historico>> historicos = solicitacaoPort.findBySolicitacaoId(id);
         StatusSolicitacao status = null;
         if (novaDecisao){status = StatusSolicitacao.ACEITA;
         }else {status = StatusSolicitacao.REJEITADA;}
@@ -61,7 +62,7 @@ public class SolicitacaoService {
         }else{
             throw new EntidadeInvalidException("Nenhum Histórico Associado à esta Solicitação!!");
         }
-        return solicitacaoPort.save(solicitacao);
+        return solicitacao;
     }
 
     public Historico getNovoHistorico(Solicitacao solicitacao, StatusSolicitacao status){
@@ -79,6 +80,17 @@ public class SolicitacaoService {
         solicitacaoPort.saveHistorico(getNovoHistorico(solicitacao, statusTarget));
     }
 
+    public void finalizarSolicitacao(Integer solicitacaoId){
+        Solicitacao solicitacao = solicitacaoPort.findById(solicitacaoId).orElseThrow(() -> new EntidadeInvalidException("Solicitação não encontrada"));
+        List<Optional<Historico>> historicos = solicitacaoPort.findBySolicitacaoId(solicitacaoId);
+        if (!historicos.isEmpty()){
+            Historico historico = historicos.getFirst().orElseThrow(() -> new EntidadeInvalidException("Histórico não encontrado"));
+            solicitacaoPort.saveHistorico(getNovoHistorico(historico.getSolicitacao(), getNextStatusParaFinalizar(solicitacao)));
+        }else{
+            throw new EntidadeInvalidException("Nenhum Histórico Associado à esta Solicitação!!");
+        }
+    }
+
     @Transactional
     public void verificarPrazos(){
         Status statusExpirado = solicitacaoPort.findStatusById(5).orElseThrow(() -> new EntidadeInvalidException("Status não encontrado"));
@@ -88,5 +100,13 @@ public class SolicitacaoService {
                 solicitacaoPort.saveHistorico(getNovoHistorico(solicitacao,StatusSolicitacao.valueOf(statusExpirado.getDescStatus())));
             }
         });
+    }
+
+    public StatusSolicitacao getNextStatusParaFinalizar(Solicitacao solicitacao){
+        StatusSolicitacao status = solicitacao.getDeveDevolver() ? StatusSolicitacao.PENDENTE_DEVOLUCAO : StatusSolicitacao.FINALIZADA;
+        if (status.equals(StatusSolicitacao.PENDENTE_DEVOLUCAO)) {
+            solicitacaoPort.salvarAlerta(AlertaMapper.toEntity(solicitacao));
+        }
+        return status;
     }
 }

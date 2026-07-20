@@ -4,8 +4,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import school.sptech.sistema_estoque.model.estoque.Almoxarifado;
 import school.sptech.sistema_estoque.model.estoque.Historico;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface HistoricoRepository extends JpaRepository<Historico, Integer> {
-    Optional<Historico> findBySolicitacaoId(Integer id);
+    List<Optional<Historico>> findBySolicitacaoId(Integer id);
 }

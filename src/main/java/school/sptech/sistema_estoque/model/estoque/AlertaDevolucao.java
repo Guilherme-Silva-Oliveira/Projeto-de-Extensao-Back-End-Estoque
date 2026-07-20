@@ -6,24 +6,23 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter @Setter
-public class Solicitacao {
-
+public class AlertaDevolucao {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @ManyToOne private Professor professor;
-    @ManyToOne private Material material;
-    private Integer quantidade;
-    private Boolean deveDevolver;
-    private Integer inteligenciaArtificialId;
-    @ManyToOne private Motivo motivo;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "solicitacao_id")
+    private Solicitacao solicitacao;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "professor_id")
+    private Professor professor;
     private String descricao;
-    private LocalDateTime dataSolicitacao;
-    private LocalDateTime dataParaEnvio;
+    private Boolean devolvido;
 }

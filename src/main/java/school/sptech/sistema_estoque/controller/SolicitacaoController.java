@@ -84,4 +84,10 @@ public class SolicitacaoController {
         service.verificarPrazos();
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/finalizarSolicitacao/{id}")
+    public ResponseEntity<Void> finalizarSolicitacao(@PathVariable Integer id){
+        service.finalizarSolicitacao(id);
+        return ResponseEntity.ok().build();
+    }
 }

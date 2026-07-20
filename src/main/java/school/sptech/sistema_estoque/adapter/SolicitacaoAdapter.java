@@ -3,10 +3,12 @@ package school.sptech.sistema_estoque.adapter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
+import school.sptech.sistema_estoque.model.estoque.AlertaDevolucao;
 import school.sptech.sistema_estoque.model.estoque.Historico;
 import school.sptech.sistema_estoque.model.estoque.Solicitacao;
 import school.sptech.sistema_estoque.model.estoque.Status;
 import school.sptech.sistema_estoque.port.SolicitacaoPort;
+import school.sptech.sistema_estoque.repository.AlertaDevolucaoRepository;
 import school.sptech.sistema_estoque.repository.HistoricoRepository;
 import school.sptech.sistema_estoque.repository.SolicitacaoRepository;
 import school.sptech.sistema_estoque.repository.StatusRepository;
@@ -19,11 +21,13 @@ public class SolicitacaoAdapter implements SolicitacaoPort {
     private final SolicitacaoRepository solicitacaoRepository;
     private final HistoricoRepository historicoRepository;
     private final StatusRepository statusRepository;
+    private final AlertaDevolucaoRepository alertaDevolucaoRepository;
 
-    public SolicitacaoAdapter(SolicitacaoRepository solicitacaoRepository, HistoricoRepository historicoRepository, StatusRepository statusRepository) {
+    public SolicitacaoAdapter(SolicitacaoRepository solicitacaoRepository, HistoricoRepository historicoRepository, StatusRepository statusRepository, AlertaDevolucaoRepository alertaDevolucaoRepository) {
         this.solicitacaoRepository = solicitacaoRepository;
         this.historicoRepository = historicoRepository;
         this.statusRepository = statusRepository;
+        this.alertaDevolucaoRepository = alertaDevolucaoRepository;
     }
 
     @Override
@@ -52,17 +56,17 @@ public class SolicitacaoAdapter implements SolicitacaoPort {
     }
 
     @Override
-    public List<Optional<Historico>> findHistoricoById(Integer id) {
-        return List.of(historicoRepository.findById(id));
-    }
-
-    @Override
     public Optional<Status> findStatusById(Integer id) {
         return statusRepository.findById(id);
     }
 
     @Override
-    public Optional<Historico> findBySolicitacaoId(Integer id) {
+    public List<Optional<Historico>> findBySolicitacaoId(Integer id) {
         return historicoRepository.findBySolicitacaoId(id);
+    }
+
+    @Override
+    public void salvarAlerta(AlertaDevolucao alerta) {
+        alertaDevolucaoRepository.save(alerta);
     }
 }
