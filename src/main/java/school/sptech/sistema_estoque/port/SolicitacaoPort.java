@@ -2,10 +2,7 @@ package school.sptech.sistema_estoque.port;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import school.sptech.sistema_estoque.model.estoque.AlertaDevolucao;
-import school.sptech.sistema_estoque.model.estoque.Historico;
-import school.sptech.sistema_estoque.model.estoque.Solicitacao;
-import school.sptech.sistema_estoque.model.estoque.Status;
+import school.sptech.sistema_estoque.model.estoque.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,4 +16,5 @@ public interface SolicitacaoPort {
     Optional<Status> findStatusById(Integer id);
     List<Optional<Historico>> findBySolicitacaoId(Integer id);
     void salvarAlerta(AlertaDevolucao alerta);
+    void salvarLista(ListaMaterial lista);
 }

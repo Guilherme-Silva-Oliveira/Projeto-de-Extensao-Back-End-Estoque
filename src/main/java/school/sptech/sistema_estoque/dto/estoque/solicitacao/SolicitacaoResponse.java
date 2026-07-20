@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 
 public record SolicitacaoResponse(
         @Schema(description = "ID da Solicitação") Integer id,
-        @Schema(description = "Quantidade da Solicitação") Integer quantidade,
         @Schema(description = "Descrição da Solicitação")String descricao,
         @Schema(description = "Data da Solicitação") LocalDateTime dataSolicitacao,
         @Schema(description = "Data da Solicitação") LocalDateTime dataParaEnvio

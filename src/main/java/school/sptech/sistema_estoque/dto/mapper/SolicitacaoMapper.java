@@ -12,14 +12,13 @@ import school.sptech.sistema_estoque.model.estoque.Solicitacao;
 import java.time.LocalDateTime;
 
 public class SolicitacaoMapper {
-    public static Solicitacao toEntity(SolicitacaoRequest request, Professor professor, Motivo motivo, LocalDateTime data, Material material, StatusSolicitacao status){
+    public static Solicitacao toEntity(SolicitacaoRequest request, Professor professor, Motivo motivo, LocalDateTime data, StatusSolicitacao status){
         Solicitacao entity = new Solicitacao();
         entity.setDataSolicitacao(data);
         entity.setProfessor(professor);
-        entity.setMaterial(material);
-        entity.setQuantidade(request.quantidade());
         entity.setInteligenciaArtificialId(request.inteligenciaArtificialId());
         entity.setDescricao(request.descricao());
+        entity.setMateriais(request.materiais());
         entity.setMotivo(motivo);
         entity.setDataParaEnvio(request.dataParaEnvio());
         entity.setDeveDevolver(request.deveDevolver());
@@ -27,6 +26,6 @@ public class SolicitacaoMapper {
     }
 
     public static SolicitacaoResponse toResponse(Solicitacao entity){
-        return new SolicitacaoResponse(entity.getId(),entity.getQuantidade(),entity.getDescricao(), entity.getDataSolicitacao(), entity.getDataParaEnvio());
+        return new SolicitacaoResponse(entity.getId(),entity.getDescricao(), entity.getDataSolicitacao(), entity.getDataParaEnvio());
     }
 }

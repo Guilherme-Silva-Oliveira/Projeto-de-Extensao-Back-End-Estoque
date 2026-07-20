@@ -1,10 +1,7 @@
 package school.sptech.sistema_estoque.service;
 
 import jakarta.transaction.Transactional;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import school.sptech.sistema_estoque.dto.estoque.solicitacao.SolicitacaoRequest;
 import school.sptech.sistema_estoque.dto.mapper.AlertaMapper;
@@ -17,6 +14,7 @@ import school.sptech.sistema_estoque.model.estoque.*;
 import school.sptech.sistema_estoque.port.*;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,9 +30,17 @@ public class SolicitacaoService {
         if (request == null){throw new EntidadeInvalidException("Solicitacao Inválida");}
         Professor professor = professorPort.findById(request.idProfessor()).orElseThrow(()-> new EntidadeNaoExisteException("Professor Não Encontrado"));
         Motivo motivo = motivoPort.findById(request.idMotivo()).orElseThrow(()-> new EntidadeNaoExisteException("Motivo Não Encontrado"));
-        Material material = materialPort.findById(request.idMaterial()).orElseThrow(()-> new EntidadeNaoExisteException("Material Não Encontrado"));
-        Solicitacao solicitacao = SolicitacaoMapper.toEntity(request, professor,motivo, request.dataSolicitacao(),material, StatusSolicitacao.RECEBIDA);
+
+        List<String> listaMateriais = Arrays.asList(request.materiais().split(","));
+        List<String> listaQuantidades = Arrays.asList(request.quantidade().split(","));
+        Solicitacao solicitacao = SolicitacaoMapper.toEntity(request, professor,motivo, request.dataSolicitacao(), StatusSolicitacao.RECEBIDA);
         Solicitacao paraSalvarHistorico = solicitacaoPort.save(solicitacao);
+
+        for (int i = 0; i < listaMateriais.size(); i++) {
+            Material material = materialPort.findByNomeMaterial(listaMateriais.get(i)).orElseThrow(()-> new EntidadeNaoExisteException("Material Não Encontrado"));
+            solicitacaoPort.salvarLista(getNovaListaMaterial(paraSalvarHistorico, Integer.valueOf(listaQuantidades.get(i)), material));
+        }
+
         solicitacaoPort.saveHistorico(HistoricoMapper.toEntity(paraSalvarHistorico));
         return paraSalvarHistorico;
     }
@@ -108,5 +114,14 @@ public class SolicitacaoService {
             solicitacaoPort.salvarAlerta(AlertaMapper.toEntity(solicitacao));
         }
         return status;
+    }
+
+    public ListaMaterial getNovaListaMaterial(Solicitacao solicitacao, Integer quantidade, Material material){
+        ListaMaterial l = new ListaMaterial();
+        l.setSolicitacao(solicitacao);
+        l.setQuantidade(quantidade);
+        l.setReservado(false);
+        l.setMaterial(material);
+        return l;
     }
 }

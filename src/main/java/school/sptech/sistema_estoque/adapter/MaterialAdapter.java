@@ -41,4 +41,9 @@ public class MaterialAdapter implements MaterialPort {
     public List<Material> findAll() {
         return materialRepository.findAll();
     }
+
+    @Override
+    public Optional<Material> findByNomeMaterial(String nome) {
+        return materialRepository.findByNomeMaterial(nome);
+    }
 }

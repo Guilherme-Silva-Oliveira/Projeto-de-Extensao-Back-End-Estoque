@@ -10,22 +10,17 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter @Setter
-public class AlertaDevolucao {
+public class ListaMaterial {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "material_id")
-    private Material material;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "solicitacao_id")
     private Solicitacao solicitacao;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "professor_id")
-    private Professor professor;
+    @JoinColumn(name = "material_id")
+    private Material material;
 
-    private String descricao;
-    private Boolean devolvido;
+    private Boolean reservado; //CAMPO PARA QUANDO SEPARAR O MATERIAL PARA ENTREGA COLOCAR TRUE
+    private Integer quantidade;
 }
