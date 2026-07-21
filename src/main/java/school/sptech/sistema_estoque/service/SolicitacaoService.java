@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -33,14 +34,15 @@ public class SolicitacaoService {
 
         List<String> listaMateriais = Arrays.asList(request.materiais().split(","));
         List<String> listaQuantidades = Arrays.asList(request.quantidade().split(","));
+        List<String> listaDevolucoes = Arrays.asList(request.deveDevolver().split(","));
+
         Solicitacao solicitacao = SolicitacaoMapper.toEntity(request, professor,motivo, request.dataSolicitacao(), StatusSolicitacao.RECEBIDA);
         Solicitacao paraSalvarHistorico = solicitacaoPort.save(solicitacao);
 
         for (int i = 0; i < listaMateriais.size(); i++) {
             Material material = materialPort.findByNomeMaterial(listaMateriais.get(i)).orElseThrow(()-> new EntidadeNaoExisteException("Material Não Encontrado"));
-            solicitacaoPort.salvarLista(getNovaListaMaterial(paraSalvarHistorico, Integer.valueOf(listaQuantidades.get(i)), material));
+            solicitacaoPort.salvarLista(getNovaListaMaterial(paraSalvarHistorico, Integer.valueOf(listaQuantidades.get(i)), Boolean.valueOf(listaDevolucoes.get(i)), material));
         }
-
         solicitacaoPort.saveHistorico(HistoricoMapper.toEntity(paraSalvarHistorico));
         return paraSalvarHistorico;
     }
@@ -86,6 +88,7 @@ public class SolicitacaoService {
         solicitacaoPort.saveHistorico(getNovoHistorico(solicitacao, statusTarget));
     }
 
+    @Transactional
     public void finalizarSolicitacao(Integer solicitacaoId){
         Solicitacao solicitacao = solicitacaoPort.findById(solicitacaoId).orElseThrow(() -> new EntidadeInvalidException("Solicitação não encontrada"));
         List<Optional<Historico>> historicos = solicitacaoPort.findBySolicitacaoId(solicitacaoId);
@@ -108,20 +111,52 @@ public class SolicitacaoService {
         });
     }
 
+    public void devolverMaterial(Integer solicitacaoId){
+        Solicitacao solicitacao = solicitacaoPort.findById(solicitacaoId).orElseThrow(() -> new EntidadeInvalidException("Solicitação não encontrada"));
+        List<Optional<AlertaDevolucao>> alertasOpt = solicitacaoPort.findAlertaBySolicitacaoId(solicitacao.getId());
+        if (!alertasOpt.isEmpty()) {
+            List<AlertaDevolucao> alertas = alertasOpt.stream().filter(Optional::isPresent).map(Optional::get).toList();
+            for (AlertaDevolucao a : alertas){
+                if (!a.getDevolvido()){
+                    a.setDevolvido(true);
+                    solicitacaoPort.salvarAlerta(a);
+                    solicitacaoPort.saveHistorico(getNovoHistorico(solicitacao,StatusSolicitacao.FINALIZADA));
+                }
+            }
+        }else {
+            throw new EntidadeInvalidException("Nenhum Alerta de Devolução Associado à esta Solicitação!!");
+        }
+
+    }
+
     public StatusSolicitacao getNextStatusParaFinalizar(Solicitacao solicitacao){
-        StatusSolicitacao status = solicitacao.getDeveDevolver() ? StatusSolicitacao.PENDENTE_DEVOLUCAO : StatusSolicitacao.FINALIZADA;
-        if (status.equals(StatusSolicitacao.PENDENTE_DEVOLUCAO)) {
+        List<Optional<ListaMaterial>> listaMaterial = solicitacaoPort.findListaBySolicitacaoId(solicitacao.getId());
+        StatusSolicitacao status = null;
+        if (listaMaterial.isEmpty()) {
+            throw new EntidadeInvalidException("Nenhuma Lista de Materiais Associada à esta Solicitação!!");
+        }else{
+            for (Optional<ListaMaterial> lmOpt : listaMaterial) {
+                if (lmOpt.isPresent()) {
+                    ListaMaterial lm = lmOpt.get();
+                    if (lm.getDeveDevolver()){
+                        status = StatusSolicitacao.PENDENTE_DEVOLUCAO;
+                    }
+                }
+            }
+        }
+        if (status != null){
             solicitacaoPort.salvarAlerta(AlertaMapper.toEntity(solicitacao));
         }
         return status;
     }
 
-    public ListaMaterial getNovaListaMaterial(Solicitacao solicitacao, Integer quantidade, Material material){
+    public ListaMaterial getNovaListaMaterial(Solicitacao solicitacao, Integer quantidade,Boolean deveDevolver, Material material){
         ListaMaterial l = new ListaMaterial();
         l.setSolicitacao(solicitacao);
         l.setQuantidade(quantidade);
         l.setReservado(false);
         l.setMaterial(material);
+        l.setDeveDevolver(deveDevolver);
         return l;
     }
 }

@@ -22,5 +22,6 @@ public class ListaMaterial {
     private Material material;
 
     private Boolean reservado; //CAMPO PARA QUANDO SEPARAR O MATERIAL PARA ENTREGA COLOCAR TRUE
+    private Boolean deveDevolver;
     private Integer quantidade;
 }

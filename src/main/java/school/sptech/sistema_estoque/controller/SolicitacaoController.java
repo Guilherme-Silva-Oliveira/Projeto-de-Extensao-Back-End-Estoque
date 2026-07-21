@@ -4,8 +4,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import school.sptech.sistema_estoque.dto.estoque.solicitacao.DecisaoSolicitacaoDTO;
@@ -88,6 +86,12 @@ public class SolicitacaoController {
     @PostMapping("/finalizarSolicitacao/{id}")
     public ResponseEntity<Void> finalizarSolicitacao(@PathVariable Integer id){
         service.finalizarSolicitacao(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/devolverMaterial/{solicitacaoId}")
+    public ResponseEntity<Void> devolverMaterial(@PathVariable Integer solicitacaoId){
+        service.devolverMaterial(solicitacaoId);
         return ResponseEntity.ok().build();
     }
 }
