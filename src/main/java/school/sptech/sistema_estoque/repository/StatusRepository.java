@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import school.sptech.sistema_estoque.model.estoque.Solicitacao;
+import school.sptech.sistema_estoque.model.estoque.Status;
 
-public interface SolicitacaoRepository extends JpaRepository<Solicitacao, Integer> {
+public interface StatusRepository extends JpaRepository<Status, Integer> {
 }

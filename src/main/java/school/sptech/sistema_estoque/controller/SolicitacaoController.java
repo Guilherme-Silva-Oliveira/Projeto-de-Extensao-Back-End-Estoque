@@ -49,17 +49,6 @@ public class SolicitacaoController {
         return ResponseEntity.ok(solicitacoes.stream().map(SolicitacaoMapper::toResponse).toList());
     }
 
-    @GetMapping("/boolean")
-    public ResponseEntity<List<SolicitacaoResponse>> listarSolicitacoesReprovadas(
-            @PageableDefault(size = 10, page = 0) Pageable pageable,
-            @RequestParam Boolean bool
-
-    ){
-        var solicitacoes = service.listarSolicitacoesBoolean(bool, pageable);
-        if (solicitacoes.isEmpty()){return ResponseEntity.noContent().build();}
-        return ResponseEntity.ok(solicitacoes.stream().map(SolicitacaoMapper::toResponse).toList());
-    }
-
     @Operation(summary = "Excluir Solicitação")
     @ApiResponses({
             @ApiResponse(responseCode = "404",description = "Nenhuma Solicitação Encontrada"),
@@ -79,5 +68,26 @@ public class SolicitacaoController {
         Solicitacao resultado = service.avaliar(id, decisao.aceita());
         SolicitacaoResponse response = SolicitacaoMapper.toResponse(resultado);
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/atualizarStatus/{solicitacaoId}/{status}")
+    public ResponseEntity<Void> atualizarStatus(
+        @PathVariable Integer solicitacaoId,
+        @PathVariable Integer status
+    ) {
+        service.atualizarStatus(solicitacaoId, status);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/verificarPrazos")
+    public ResponseEntity<Void> verificarPrazos(){
+        service.verificarPrazos();
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/finalizarSolicitacao/{id}")
+    public ResponseEntity<Void> finalizarSolicitacao(@PathVariable Integer id){
+        service.finalizarSolicitacao(id);
+        return ResponseEntity.ok().build();
     }
 }

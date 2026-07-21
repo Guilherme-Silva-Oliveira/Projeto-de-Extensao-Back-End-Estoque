@@ -3,9 +3,9 @@ package school.sptech.sistema_estoque.adapter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
-import school.sptech.sistema_estoque.model.estoque.Solicitacao;
+import school.sptech.sistema_estoque.model.estoque.*;
 import school.sptech.sistema_estoque.port.SolicitacaoPort;
-import school.sptech.sistema_estoque.repository.SolicitacaoRepository;
+import school.sptech.sistema_estoque.repository.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,9 +13,17 @@ import java.util.Optional;
 @Component
 public class SolicitacaoAdapter implements SolicitacaoPort {
     private final SolicitacaoRepository solicitacaoRepository;
+    private final HistoricoRepository historicoRepository;
+    private final StatusRepository statusRepository;
+    private final AlertaDevolucaoRepository alertaDevolucaoRepository;
+    private final ListaMaterialRepository listaMaterialRepository;
 
-    public SolicitacaoAdapter(SolicitacaoRepository solicitacaoRepository) {
+    public SolicitacaoAdapter(SolicitacaoRepository solicitacaoRepository, HistoricoRepository historicoRepository, StatusRepository statusRepository, AlertaDevolucaoRepository alertaDevolucaoRepository, ListaMaterialRepository listaMaterialRepository) {
         this.solicitacaoRepository = solicitacaoRepository;
+        this.historicoRepository = historicoRepository;
+        this.statusRepository = statusRepository;
+        this.alertaDevolucaoRepository = alertaDevolucaoRepository;
+        this.listaMaterialRepository = listaMaterialRepository;
     }
 
     @Override
@@ -39,7 +47,27 @@ public class SolicitacaoAdapter implements SolicitacaoPort {
     }
 
     @Override
-    public Page<Solicitacao> findByIsAceito(Boolean aceito, Pageable pageable) {
-        return solicitacaoRepository.findByIsAceito(aceito, pageable);
+    public Historico saveHistorico(Historico historico) {
+        return historicoRepository.save(historico);
+    }
+
+    @Override
+    public Optional<Status> findStatusById(Integer id) {
+        return statusRepository.findById(id);
+    }
+
+    @Override
+    public List<Optional<Historico>> findBySolicitacaoId(Integer id) {
+        return historicoRepository.findBySolicitacaoId(id);
+    }
+
+    @Override
+    public void salvarAlerta(AlertaDevolucao alerta) {
+        alertaDevolucaoRepository.save(alerta);
+    }
+
+    @Override
+    public void salvarLista(ListaMaterial lista) {
+        listaMaterialRepository.save(lista);
     }
 }

@@ -18,12 +18,11 @@ public class Solicitacao {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @ManyToOne private Professor professor;
-    @ManyToOne private Material material;
-    private Integer quantidade;
+    private Boolean deveDevolver;
     private Integer inteligenciaArtificialId;
     @ManyToOne private Motivo motivo;
     private String descricao;
+    private String materiais; // Armazena materiais como string (ex: "Caneta,Papel")
     private LocalDateTime dataSolicitacao;
-    @Column(name = "is_aceito")
-    private Boolean isAceito;
+    private LocalDateTime dataParaEnvio;
 }

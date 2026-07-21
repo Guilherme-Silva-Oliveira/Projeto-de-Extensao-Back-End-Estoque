@@ -11,6 +11,7 @@ public interface MaterialPort {
     List<Material> findAll();
     Boolean existsByNomeMaterialAndAlmoxarifadoId(String nomeMaterial, Integer idAlmoxarifado);
     Optional<Material> findById(Integer id);
+    Optional<Material> findByNomeMaterial(String nome);
     void delete(Material material);
 }
 
