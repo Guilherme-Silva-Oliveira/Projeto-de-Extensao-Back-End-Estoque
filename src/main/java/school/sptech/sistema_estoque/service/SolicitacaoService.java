@@ -3,6 +3,7 @@ package school.sptech.sistema_estoque.service;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import school.sptech.sistema_estoque.dto.estoque.front.FrontResponse;
 import school.sptech.sistema_estoque.dto.estoque.solicitacao.SolicitacaoRequest;
 import school.sptech.sistema_estoque.dto.mapper.AlertaMapper;
 import school.sptech.sistema_estoque.dto.mapper.HistoricoMapper;
@@ -14,6 +15,7 @@ import school.sptech.sistema_estoque.model.estoque.*;
 import school.sptech.sistema_estoque.port.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -126,7 +128,13 @@ public class SolicitacaoService {
         }else {
             throw new EntidadeInvalidException("Nenhum Alerta de Devolução Associado à esta Solicitação!!");
         }
+    }
 
+    public FrontResponse gerarRelatorio(Integer professorId){
+        Professor professor = professorPort.findById(professorId).orElseThrow(() -> new EntidadeInvalidException("Professor não encontrado"));
+        Solicitacao solicitacao = solicitacaoPort.findByProfessorId(professor.getId()).orElseThrow(() -> new EntidadeInvalidException("Solicitação não encontrada"));
+        List<Optional<ListaMaterial>> listaMaterial = solicitacaoPort.findListaBySolicitacaoId(solicitacao.getId());
+        return getNovoFrontResponse(solicitacao, professor, listaMaterial);
     }
 
     public StatusSolicitacao getNextStatusParaFinalizar(Solicitacao solicitacao){
@@ -158,5 +166,20 @@ public class SolicitacaoService {
         l.setMaterial(material);
         l.setDeveDevolver(deveDevolver);
         return l;
+    }
+
+    public FrontResponse getNovoFrontResponse(Solicitacao solicitacao, Professor professor, List<Optional<ListaMaterial>> listaMateriais){
+        List<String> listaMateriaisSave = new ArrayList<>();
+        List<String> alertas = new ArrayList<>();
+        if (listaMateriais.isEmpty()){
+            throw new EntidadeInvalidException("Nenhuma Lista de Materiais Associada à esta Solicitação!!");
+        }else {
+            for (Optional<ListaMaterial> lmOpt : listaMateriais) {
+                lmOpt.ifPresent(lm -> listaMateriaisSave.add(lm.getMaterial().getNomeMaterial()));
+            }
+        }
+        List<Optional<AlertaDevolucao>> alertasOpt = solicitacaoPort.findAlertaBySolicitacaoId(solicitacao.getId());
+        alertasOpt.forEach(opt -> opt.ifPresent(alerta -> alertas.add(alerta.getDescricao())));
+        return new FrontResponse(solicitacao.getDescricao(),solicitacao.getDataSolicitacao(),solicitacao.getDataParaEnvio(),professor.getNome(),listaMateriaisSave,alertas);
     }
 }

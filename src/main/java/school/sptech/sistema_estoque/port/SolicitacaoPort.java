@@ -9,6 +9,7 @@ import java.util.Optional;
 
 public interface SolicitacaoPort {
     Solicitacao save(Solicitacao solicitacao);
+    Optional<Solicitacao> findByProfessorId(Integer professorId);
     List<Solicitacao> findAll();
     Optional<Solicitacao> findById(Integer id);
     void delete(Solicitacao solicitacao);

@@ -80,4 +80,9 @@ public class SolicitacaoAdapter implements SolicitacaoPort {
     public List<Optional<ListaMaterial>> findListaBySolicitacaoId(Integer solicitacaoId) {
         return listaMaterialRepository.findAllBySolicitacaoId(solicitacaoId);
     }
+
+    @Override
+    public Optional<Solicitacao> findByProfessorId(Integer professorId) {
+        return solicitacaoRepository.findByProfessorId(professorId);
+    }
 }
