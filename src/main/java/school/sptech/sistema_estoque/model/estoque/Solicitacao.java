@@ -18,7 +18,6 @@ public class Solicitacao {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @ManyToOne private Professor professor;
-    private Boolean deveDevolver;
     private Integer inteligenciaArtificialId;
     @ManyToOne private Motivo motivo;
     private String descricao;

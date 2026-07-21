@@ -70,4 +70,14 @@ public class SolicitacaoAdapter implements SolicitacaoPort {
     public void salvarLista(ListaMaterial lista) {
         listaMaterialRepository.save(lista);
     }
+
+    @Override
+    public List<Optional<AlertaDevolucao>> findAlertaBySolicitacaoId(Integer solicitacaoId) {
+        return alertaDevolucaoRepository.findAllBySolicitacaoId(solicitacaoId);
+    }
+
+    @Override
+    public List<Optional<ListaMaterial>> findListaBySolicitacaoId(Integer solicitacaoId) {
+        return listaMaterialRepository.findAllBySolicitacaoId(solicitacaoId);
+    }
 }

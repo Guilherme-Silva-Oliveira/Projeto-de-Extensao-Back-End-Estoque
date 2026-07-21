@@ -15,10 +15,6 @@ public class AlertaDevolucao {
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "material_id")
-    private Material material;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "solicitacao_id")
     private Solicitacao solicitacao;
 

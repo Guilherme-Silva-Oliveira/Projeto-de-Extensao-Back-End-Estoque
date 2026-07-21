@@ -17,4 +17,6 @@ public interface SolicitacaoPort {
     List<Optional<Historico>> findBySolicitacaoId(Integer id);
     void salvarAlerta(AlertaDevolucao alerta);
     void salvarLista(ListaMaterial lista);
+    List<Optional<AlertaDevolucao>> findAlertaBySolicitacaoId(Integer solicitacaoId);
+    List<Optional<ListaMaterial>> findListaBySolicitacaoId(Integer solicitacaoId);
 }

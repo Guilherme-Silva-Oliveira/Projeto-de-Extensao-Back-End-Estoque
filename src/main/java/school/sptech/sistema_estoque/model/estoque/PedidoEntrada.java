@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @IdClass(PedidoEntradaId.class)
 public class PedidoEntrada {
 
+    private Integer professorId;
     @Id @ManyToOne @JoinColumn(name = "fornecedor_id")
     private Fornecedor fornecedor;
     @Id @ManyToOne @JoinColumn(name = "material_id")
