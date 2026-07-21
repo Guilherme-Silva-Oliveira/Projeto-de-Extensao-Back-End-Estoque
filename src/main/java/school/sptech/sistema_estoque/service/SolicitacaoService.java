@@ -120,6 +120,7 @@ public class SolicitacaoService {
                 if (!a.getDevolvido()){
                     a.setDevolvido(true);
                     solicitacaoPort.salvarAlerta(a);
+                    solicitacaoPort.saveHistorico(getNovoHistorico(solicitacao,StatusSolicitacao.FINALIZADA));
                 }
             }
         }else {
