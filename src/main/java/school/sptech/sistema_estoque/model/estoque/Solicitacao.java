@@ -24,4 +24,5 @@ public class Solicitacao {
     private String materiais; // Armazena materiais como string (ex: "Caneta,Papel")
     private LocalDateTime dataSolicitacao;
     private LocalDateTime dataParaEnvio;
+    private String alerta;
 }

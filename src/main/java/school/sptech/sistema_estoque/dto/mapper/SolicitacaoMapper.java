@@ -21,10 +21,11 @@ public class SolicitacaoMapper {
         entity.setMateriais(request.materiais());
         entity.setMotivo(motivo);
         entity.setDataParaEnvio(request.dataParaEnvio());
+        entity.setAlerta(request.alerta());
         return entity;
     }
 
     public static SolicitacaoResponse toResponse(Solicitacao entity){
-        return new SolicitacaoResponse(entity.getId(),entity.getDescricao(), entity.getDataSolicitacao(), entity.getDataParaEnvio());
+        return new SolicitacaoResponse(entity.getId(),entity.getDescricao(), entity.getDataSolicitacao(), entity.getDataParaEnvio(),entity.getAlerta());
     }
 }

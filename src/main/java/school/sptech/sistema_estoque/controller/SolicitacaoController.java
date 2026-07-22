@@ -60,7 +60,7 @@ public class SolicitacaoController {
     }
 
     @PatchMapping("/{id}/decisao")
-    public ResponseEntity<SolicitacaoResponse> avaliarSolicitacao(
+    public ResponseEntity<SolicitacaoResponse> aceitarSolicitacao(
         @PathVariable Integer id,
         @RequestBody DecisaoSolicitacaoDTO decisao
     ) {
