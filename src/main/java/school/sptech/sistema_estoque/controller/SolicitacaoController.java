@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import school.sptech.sistema_estoque.dto.estoque.front.FrontResponse;
 import school.sptech.sistema_estoque.dto.estoque.solicitacao.DecisaoSolicitacaoDTO;
 import school.sptech.sistema_estoque.dto.estoque.solicitacao.SolicitacaoRequest;
 import school.sptech.sistema_estoque.dto.estoque.solicitacao.SolicitacaoResponse;
@@ -59,7 +60,7 @@ public class SolicitacaoController {
     }
 
     @PatchMapping("/{id}/decisao")
-    public ResponseEntity<SolicitacaoResponse> avaliarSolicitacao(
+    public ResponseEntity<SolicitacaoResponse> aceitarSolicitacao(
         @PathVariable Integer id,
         @RequestBody DecisaoSolicitacaoDTO decisao
     ) {
@@ -93,5 +94,10 @@ public class SolicitacaoController {
     public ResponseEntity<Void> devolverMaterial(@PathVariable Integer solicitacaoId){
         service.devolverMaterial(solicitacaoId);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/relatorio/{professorId}")
+    public ResponseEntity<FrontResponse> gerarRelatorio(@PathVariable Integer professorId){
+        return ResponseEntity.ok(service.gerarRelatorio(professorId));
     }
 }

@@ -9,6 +9,7 @@ import java.util.Optional;
 
 public interface SolicitacaoPort {
     Solicitacao save(Solicitacao solicitacao);
+    Optional<Solicitacao> findByProfessorId(Integer professorId);
     List<Solicitacao> findAll();
     Optional<Solicitacao> findById(Integer id);
     void delete(Solicitacao solicitacao);
@@ -17,6 +18,7 @@ public interface SolicitacaoPort {
     List<Optional<Historico>> findBySolicitacaoId(Integer id);
     void salvarAlerta(AlertaDevolucao alerta);
     void salvarLista(ListaMaterial lista);
+    void salvarAlertaSolicitacao(AlertaSolicitacao alertaSolicitacao);
     List<Optional<AlertaDevolucao>> findAlertaBySolicitacaoId(Integer solicitacaoId);
     List<Optional<ListaMaterial>> findListaBySolicitacaoId(Integer solicitacaoId);
 }

@@ -15,5 +15,6 @@ public record SolicitacaoRequest(
         @Schema(description = "Fk para modelo de IA utilizado") Integer inteligenciaArtificialId,
         @NotBlank @Schema(description = "Motivo da Solicitação",example = "Atividade Avaliativa")String descricao,
         @NotNull @Schema(description = "Data da Solicitação",example = "20-04-2026") LocalDateTime dataSolicitacao,
-        @NotNull @Schema(description = "Data da Solicitação",example = "20-04-2026") LocalDateTime dataParaEnvio
+        @NotNull @Schema(description = "Data da Solicitação",example = "20-04-2026") LocalDateTime dataParaEnvio,
+        @Schema(description = "Alerta",example = "TUDO CERTO: Material encaminhado para solicitação") String alerta
 ) {}

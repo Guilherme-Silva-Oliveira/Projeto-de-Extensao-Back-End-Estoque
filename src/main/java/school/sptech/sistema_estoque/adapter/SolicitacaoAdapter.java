@@ -17,13 +17,15 @@ public class SolicitacaoAdapter implements SolicitacaoPort {
     private final StatusRepository statusRepository;
     private final AlertaDevolucaoRepository alertaDevolucaoRepository;
     private final ListaMaterialRepository listaMaterialRepository;
+    private final AlertaSolicitacaoRepository alertaSolicitacaoRepository;
 
-    public SolicitacaoAdapter(SolicitacaoRepository solicitacaoRepository, HistoricoRepository historicoRepository, StatusRepository statusRepository, AlertaDevolucaoRepository alertaDevolucaoRepository, ListaMaterialRepository listaMaterialRepository) {
+    public SolicitacaoAdapter(SolicitacaoRepository solicitacaoRepository, HistoricoRepository historicoRepository, StatusRepository statusRepository, AlertaDevolucaoRepository alertaDevolucaoRepository, ListaMaterialRepository listaMaterialRepository, AlertaSolicitacaoRepository alertaSolicitacaoRepository) {
         this.solicitacaoRepository = solicitacaoRepository;
         this.historicoRepository = historicoRepository;
         this.statusRepository = statusRepository;
         this.alertaDevolucaoRepository = alertaDevolucaoRepository;
         this.listaMaterialRepository = listaMaterialRepository;
+        this.alertaSolicitacaoRepository = alertaSolicitacaoRepository;
     }
 
     @Override
@@ -79,5 +81,15 @@ public class SolicitacaoAdapter implements SolicitacaoPort {
     @Override
     public List<Optional<ListaMaterial>> findListaBySolicitacaoId(Integer solicitacaoId) {
         return listaMaterialRepository.findAllBySolicitacaoId(solicitacaoId);
+    }
+
+    @Override
+    public Optional<Solicitacao> findByProfessorId(Integer professorId) {
+        return solicitacaoRepository.findByProfessorId(professorId);
+    }
+
+    @Override
+    public void salvarAlertaSolicitacao(AlertaSolicitacao alertaSolicitacao) {
+        alertaSolicitacaoRepository.save(alertaSolicitacao);
     }
 }
