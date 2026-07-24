@@ -10,5 +10,6 @@ public record MaterialRequest(
         @NotBlank @Schema(description = "Nome do Material",example = "Papel Sulfite") String nomeMaterial,
         @Schema(description = "Código de Barras do Material",example = "670981205") String codigoBarras,
         @NotNull @Schema(description = "Fk para Unidade de Medida",example = "1") Integer idUnidadeMedida,
-        @Schema(description = "Descricao do material",example = "Papel Branco A4") String descricao
+        @Schema(description = "Descricao do material",example = "Papel Branco A4") String descricao,
+        @Schema(description = "Indentificador do material",example = "Setor B") String identificadorEstoque
 ){}

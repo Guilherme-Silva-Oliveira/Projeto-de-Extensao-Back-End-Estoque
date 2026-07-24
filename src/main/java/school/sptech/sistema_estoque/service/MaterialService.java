@@ -23,6 +23,7 @@ public class MaterialService {
     private final AlmoxarifadoPort almoxarifadoPort;
     private final UnidadeMedidaPort unidadeMedidaPort;
     private final CodigoBarrasPort codigoBarrasPort;
+    private final SetorEstoquePort setorEstoquePort;
 
     public Material cadastrarMaterial(MaterialRequest request){
         if (request==null){throw new EntidadeInvalidException("Material Inválido");}
@@ -34,6 +35,7 @@ public class MaterialService {
         Categoria categoria = categoriaPort.findById(request.idCategoria()).orElseThrow(()-> new EntidadeNaoExisteException("Categoria Não Encontrado"));
         Almoxarifado almoxarifado = almoxarifadoPort.findById(request.idAlmoxarifado()).orElseThrow(()-> new EntidadeNaoExisteException("Almoxarifado Não Encontrado"));
         UnidadeMedida unidadeMedida = unidadeMedidaPort.findById(request.idUnidadeMedida()).orElseThrow(()-> new EntidadeNaoExisteException("Unidade de Medida Não Encontrado"));
+        SetorEstoque setor = setorEstoquePort.findByIdentificadorSetor(request.identificadorEstoque()).orElseThrow(()-> new EntidadeNaoExisteException("Setor de Estoque Não Encontrado"));
 
         Material m = new Material();
         m.setNomeMaterial(request.nomeMaterial());
@@ -42,6 +44,8 @@ public class MaterialService {
         m.setAlmoxarifado(almoxarifado);
         m.setQuantidade(0);
         m.setDescricao(request.descricao());
+        m.setSetor(setor);
+
         Material salvo = materialPort.save(m);
         codigoBarrasPort.save(new CodigoBarras(request.codigoBarras(), salvo));
         return salvo;
