@@ -1,5 +1,6 @@
 package school.sptech.sistema_estoque.config;
 
+import feign.Logger;
 import feign.RequestInterceptor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -13,5 +14,10 @@ public class FeignConfig {
     @Bean
     public RequestInterceptor classAppInterceptor(){
         return requestTemplate -> requestTemplate.header("Authorization", "Bearer " + token);
+    }
+
+    @Bean
+    Logger.Level feignLoggerLevel() {
+        return Logger.Level.FULL;
     }
 }

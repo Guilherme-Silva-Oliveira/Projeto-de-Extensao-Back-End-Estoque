@@ -6,6 +6,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import school.sptech.sistema_estoque.client.ClassAppClient;
+import school.sptech.sistema_estoque.dto.classapp.MensagemRequest;
+import school.sptech.sistema_estoque.dto.classapp.MessageData;
+import school.sptech.sistema_estoque.dto.classapp.Recipients;
 import school.sptech.sistema_estoque.dto.estoque.front.FrontResponse;
 import school.sptech.sistema_estoque.dto.estoque.solicitacao.SolicitacaoRequest;
 import school.sptech.sistema_estoque.dto.mapper.AlertaMapper;
@@ -33,6 +37,7 @@ public class SolicitacaoService {
     private final MotivoPort motivoPort;
     private final MaterialPort materialPort;
     private final JavaMailSender mailSender;
+    private final ClassAppClient classAppClient;
 
     @Value("${spring.mail.username}")
     private String destinatario;
@@ -289,10 +294,12 @@ public class SolicitacaoService {
             titulo = MensagemEmail.MENSAGEM_PENDENTE_COMPRA.getDescricao();
             conteudo += solicitacao.getAlerta();
         }
-        SimpleMailMessage email = new SimpleMailMessage();
-        email.setTo(destinatario);
-        email.setSubject(titulo);
-        email.setText(conteudo);
-        mailSender.send(email);
+
+//        TODO: VALIDAR PARA IMPLEMENTAÇÃO
+//        SimpleMailMessage email = new SimpleMailMessage();
+//        email.setTo(destinatario);
+//        email.setSubject(titulo);
+//        email.setText(conteudo);
+//        mailSender.send(email);
     }
 }
