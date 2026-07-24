@@ -2,12 +2,17 @@ package school.sptech.sistema_estoque.service;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import school.sptech.sistema_estoque.dto.estoque.front.FrontResponse;
 import school.sptech.sistema_estoque.dto.estoque.solicitacao.SolicitacaoRequest;
 import school.sptech.sistema_estoque.dto.mapper.AlertaMapper;
 import school.sptech.sistema_estoque.dto.mapper.HistoricoMapper;
 import school.sptech.sistema_estoque.dto.mapper.SolicitacaoMapper;
+import school.sptech.sistema_estoque.enums.MensagemEmail;
 import school.sptech.sistema_estoque.enums.StatusAlertaSolicitacao;
 import school.sptech.sistema_estoque.enums.StatusSolicitacao;
 import school.sptech.sistema_estoque.exception.EntidadeInvalidException;
@@ -22,12 +27,16 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class SolicitacaoService {
     private final ProfessorPort professorPort;
     private final SolicitacaoPort solicitacaoPort;
     private final MotivoPort motivoPort;
     private final MaterialPort materialPort;
+    private final JavaMailSender mailSender;
+
+    @Value("${spring.mail.username}")
+    private String destinatario;
 
     public Solicitacao cadastrarSolicitacao(SolicitacaoRequest request) {
         if (request == null){throw new EntidadeInvalidException("Solicitacao Inválida");}
@@ -118,6 +127,7 @@ public class SolicitacaoService {
                 solicitacaoPort.salvarAlertaSolicitacao(getAlertaSolicitacao(solicitacao, solicitacao.getAlerta()));
                 atualizarQuantidadeMateriais(listaMaterial);
             }
+            enviarNotificacaoEmail(status,solicitacao,listaMaterial);
         }else {status = StatusSolicitacao.REJEITADA;}
         if (!historicos.isEmpty()){
             Historico historico = historicos.getFirst().orElseThrow(() -> new EntidadeInvalidException("Histórico não encontrado"));
@@ -208,6 +218,14 @@ public class SolicitacaoService {
         }
     }
 
+    public List<ListaMaterial> pegarListaDeMateriais(List<Optional<ListaMaterial>> listaMaterial){
+        List<ListaMaterial> listaDeMateriais = new ArrayList<>();
+        for (Optional<ListaMaterial> listaMaterialOpt : listaMaterial) {
+            listaMaterialOpt.ifPresent(listaDeMateriais::add);
+        }
+        return listaDeMateriais;
+    }
+
     public StatusSolicitacao getNextStatusParaFinalizar(Solicitacao solicitacao){
         List<Optional<ListaMaterial>> listaMaterial = solicitacaoPort.findListaBySolicitacaoId(solicitacao.getId());
         StatusSolicitacao status = null;
@@ -252,5 +270,30 @@ public class SolicitacaoService {
         List<Optional<AlertaDevolucao>> alertasOpt = solicitacaoPort.findAlertaBySolicitacaoId(solicitacao.getId());
         alertasOpt.forEach(opt -> opt.ifPresent(alerta -> alertas.add(alerta.getDescricao())));
         return new FrontResponse(solicitacao.getDescricao(),solicitacao.getDataSolicitacao(),solicitacao.getDataParaEnvio(),professor.getNome(),listaMateriaisSave,alertas);
+    }
+
+    public void enviarNotificacaoEmail(StatusSolicitacao status, Solicitacao solicitacao, List<Optional<ListaMaterial>> listaMaterial){
+        String conteudo = String.format("""
+                A Solicitação Enviada pelo Professor %s foi Aceita!!
+                
+                Lista de Materiais:
+                """,solicitacao.getProfessor().getNome());
+        List<ListaMaterial> materiais = pegarListaDeMateriais(listaMaterial);
+        for (ListaMaterial lista : materiais) {
+            conteudo += String.format("- %s: %d unidade(s)%n", lista.getMaterial().getNomeMaterial(), lista.getQuantidade());
+        }
+        String titulo = "";
+        conteudo += String.format("%n");
+        if (status == StatusSolicitacao.ACEITA){
+            titulo = MensagemEmail.MENSAGEM_TUDO_CERTO.getDescricao();
+        } else if (status == StatusSolicitacao.PENDENTE_COMPRA) {
+            titulo = MensagemEmail.MENSAGEM_PENDENTE_COMPRA.getDescricao();
+            conteudo += solicitacao.getAlerta();
+        }
+        SimpleMailMessage email = new SimpleMailMessage();
+        email.setTo(destinatario);
+        email.setSubject(titulo);
+        email.setText(conteudo);
+        mailSender.send(email);
     }
 }
