@@ -56,8 +56,10 @@ public class SecurityConfig {
             "/v3/api-docs/**",
             "/v1/ia",
             "/v1/saidas",
-            "/v1/solicitacoes"
-
+            "/v1/solicitacoes",
+            "/v1/categorias",
+            "/v1/fornecedores",
+            "/v1/unidademedida",
     };
 
     @Bean
