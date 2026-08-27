@@ -59,6 +59,10 @@ public class SecurityConfig {
             "/v1/solicitacoes",
             "/v1/materiais/mais-solicitado"
 
+            "/v1/solicitacoes",
+            "/v1/categorias",
+            "/v1/fornecedores",
+            "/v1/unidademedida",
     };
 
     @Bean
