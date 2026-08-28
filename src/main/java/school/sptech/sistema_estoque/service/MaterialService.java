@@ -2,6 +2,7 @@ package school.sptech.sistema_estoque.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import school.sptech.sistema_estoque.dto.estoque.dashboard.MaterialMaisSolicitadoDto;
 import school.sptech.sistema_estoque.dto.estoque.material.MaterialUpdateRequest;
 import school.sptech.sistema_estoque.dto.estoque.material.MaterialRequest;
 import school.sptech.sistema_estoque.dto.estoque.material.MaterialResponse;
@@ -12,6 +13,7 @@ import school.sptech.sistema_estoque.exception.EntidadeNaoExisteException;
 import school.sptech.sistema_estoque.model.estoque.*;
 import school.sptech.sistema_estoque.port.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -63,5 +65,29 @@ public class MaterialService {
         if (request.descricao() != null) {material.setDescricao(request.descricao());}
         Material salvo = materialPort.save(material);
         return MaterialMapper.toResponse(salvo);
+    }
+
+    public MaterialMaisSolicitadoDto buscarMaterialMaisSolicitado(LocalDateTime dataInicio, LocalDateTime dataFim) {
+        if (dataFim == null) {
+            dataFim = LocalDateTime.now();
+        }
+        if (dataInicio == null) {
+            dataInicio = dataFim.minusDays(30);
+        }
+
+        List<MaterialMaisSolicitadoDto> resultados = materialPort.findMaterialMaisSolicitadoPorPeriodo(dataInicio, dataFim);
+
+        if (resultados.isEmpty()) {
+            return new MaterialMaisSolicitadoDto("Nenhum material no período", 0L, dataInicio, dataFim);
+        }
+
+        MaterialMaisSolicitadoDto resultadoBanco = resultados.get(0);
+
+        return new MaterialMaisSolicitadoDto(
+                resultadoBanco.nomeMaterial(),
+                resultadoBanco.totalSolicitado(),
+                dataInicio,
+                dataFim
+        );
     }
 }

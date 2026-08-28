@@ -1,10 +1,14 @@
 package school.sptech.sistema_estoque.adapter;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
+import school.sptech.sistema_estoque.dto.estoque.dashboard.MaterialMaisSolicitadoDto;
 import school.sptech.sistema_estoque.model.estoque.Material;
 import school.sptech.sistema_estoque.port.MaterialPort;
+import school.sptech.sistema_estoque.repository.ListaMaterialRepository;
 import school.sptech.sistema_estoque.repository.MaterialRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,9 +16,11 @@ import java.util.Optional;
 public class MaterialAdapter implements MaterialPort {
 
     private final MaterialRepository materialRepository;
+    private final ListaMaterialRepository listaMaterialRepository;
 
-    public MaterialAdapter(MaterialRepository materialRepository) {
+    public MaterialAdapter(MaterialRepository materialRepository, ListaMaterialRepository listaMaterialRepository) {
         this.materialRepository = materialRepository;
+        this.listaMaterialRepository = listaMaterialRepository;
     }
 
     @Override
@@ -35,6 +41,11 @@ public class MaterialAdapter implements MaterialPort {
     @Override
     public void delete(Material material) {
         materialRepository.delete(material);
+    }
+
+    @Override
+    public List<MaterialMaisSolicitadoDto> findMaterialMaisSolicitadoPorPeriodo(LocalDateTime dataInicio, LocalDateTime dataFim) {
+        return listaMaterialRepository.findMaterialMaisSolicitadoPorPeriodo(dataInicio, dataFim, PageRequest.of(0, 1));
     }
 
     @Override

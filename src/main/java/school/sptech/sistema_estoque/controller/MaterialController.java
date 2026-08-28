@@ -4,14 +4,17 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import school.sptech.sistema_estoque.dto.estoque.dashboard.MaterialMaisSolicitadoDto;
 import school.sptech.sistema_estoque.dto.estoque.material.MaterialUpdateRequest;
 import school.sptech.sistema_estoque.dto.estoque.material.MaterialRequest;
 import school.sptech.sistema_estoque.dto.estoque.material.MaterialResponse;
 import school.sptech.sistema_estoque.dto.mapper.MaterialMapper;
 import school.sptech.sistema_estoque.service.MaterialService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -65,6 +68,15 @@ public class MaterialController {
             @RequestBody MaterialUpdateRequest request) {
 
         return ResponseEntity.ok(service.atualizarParcial(id, request));
+    }
+    @Operation(summary = "Obter o Material mais solicitado no período")
+    @GetMapping("/mais-solicitado")
+    public ResponseEntity<MaterialMaisSolicitadoDto> getMaterialMaisSolicitado(
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dataInicio,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dataFim
+    ) {
+        MaterialMaisSolicitadoDto dto = service.buscarMaterialMaisSolicitado(dataInicio, dataFim);
+        return ResponseEntity.ok(dto);
     }
 
 }

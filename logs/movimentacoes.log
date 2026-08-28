@@ -1,14 +1,4 @@
-2026-07-06 19:25:17 INFO  - [ENTRADA] Material 'Papel Sulfite' saiu com quantidade 1
-2026-07-06 19:25:17 DEBUG - [PAINEL - ENTRADA] Material 'Papel Sulfite' saiu com quantidade 1
-2026-07-16 19:52:21 INFO  - [ENTRADA] Material 'Tina Acrílica Azul' entrou com quantidade 10
-2026-07-16 19:52:21 DEBUG - [PAINEL - ENTRADA] Material 'Tina Acrílica Azul' entrou com quantidade 10
-2026-07-16 20:03:57 INFO  - [ENTRADA] Material 'Tina Acrílica Azul' saiu com quantidade 1
-2026-07-16 20:03:57 DEBUG - [PAINEL - ENTRADA] Material 'Tina Acrílica Azul' saiu com quantidade 1
-2026-07-16 20:04:04 INFO  - [ENTRADA] Material 'Tina Acrílica Azul' saiu com quantidade 1
-2026-07-16 20:04:04 DEBUG - [PAINEL - ENTRADA] Material 'Tina Acrílica Azul' saiu com quantidade 1
-2026-07-16 20:04:28 INFO  - [ENTRADA] Material 'Tina Acrílica Azul' saiu com quantidade 1
-2026-07-16 20:04:28 DEBUG - [PAINEL - ENTRADA] Material 'Tina Acrílica Azul' saiu com quantidade 1
-2026-07-16 20:05:12 INFO  - [ENTRADA] Material 'Tina Acrílica Azul' saiu com quantidade 10
-2026-07-16 20:05:12 DEBUG - [PAINEL - ENTRADA] Material 'Tina Acrílica Azul' saiu com quantidade 10
-2026-07-16 20:05:23 INFO  - [ENTRADA] Material 'Tina Acrílica Azul' saiu com quantidade 10
-2026-07-16 20:05:23 DEBUG - [PAINEL - ENTRADA] Material 'Tina Acrílica Azul' saiu com quantidade 10
+2026-07-30 21:31:11 INFO  - [ENTRADA] Material 'TC_AUTO_Material_20260730213109' entrou com quantidade 50
+2026-07-30 21:31:11 DEBUG - [PAINEL - ENTRADA] Material 'TC_AUTO_Material_20260730213109' entrou com quantidade 50
+2026-07-30 21:31:11 INFO  - [ENTRADA] PedidoEntrada com fornecedor: '1' e material '1' da data: '2026-07-30T10:00' foi definido como devolucao.
+2026-07-30 21:31:11 DEBUG - [PAINEL - ENTRADA] PedidoEntrada com fornecedor: '1' e material '1' da data: '2026-07-30T10:00' foi definido como devolucao.
