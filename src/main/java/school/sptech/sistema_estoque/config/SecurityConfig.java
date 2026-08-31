@@ -47,28 +47,13 @@ public class SecurityConfig {
             "/swagger-ui.html",
             "/swagger-resources",
             "/swagger-resources/**",
-            "/v1/almoxarifes/login",
-            "/v1/almoxarifes",
-            "/v1/codigos",
-            "/v1/almoxarifes/logout",
-            "/h2-console/**",
-            "/h2-console/*/**",
             "/v3/api-docs/**",
-            "/v1/ia",
-            "/v1/saidas",
-            "/v1/solicitacoes",
-            "/v1/categorias",
-            "/v1/fornecedores",
-            "/v1/unidademedida",
+            "/v1/almoxarifes/login"
     };
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, AutenticacaoFilter jwtAuthenticationFilter) throws Exception {
         http
-            // permite h2
-            .headers(headers -> headers
-                    .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
-
             .cors(Customizer.withDefaults())
 
             // desabilita cookies para auth
@@ -79,7 +64,7 @@ public class SecurityConfig {
                     .anyRequest().authenticated()
             )
 
-            // em caso de erro, chama o entry point
+            // em caso de erro, chama o entry point (401/403)
             .exceptionHandling(handling -> handling
                     .authenticationEntryPoint(autenticacaoEntryPoint))
 
