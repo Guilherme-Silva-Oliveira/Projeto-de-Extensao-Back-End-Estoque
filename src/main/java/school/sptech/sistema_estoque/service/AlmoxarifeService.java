@@ -16,6 +16,7 @@ import school.sptech.sistema_estoque.dto.estoque.almoxarife.AlmoxarifeResponse;
 import school.sptech.sistema_estoque.dto.estoque.almoxarife.AlmoxarifeToken;
 import school.sptech.sistema_estoque.dto.estoque.almoxarife.AlmoxarifeUpdateRequest;
 import school.sptech.sistema_estoque.dto.mapper.AlmoxarifeMapper;
+import school.sptech.sistema_estoque.enums.Role;
 import school.sptech.sistema_estoque.exception.EntidadeConflictException;
 import school.sptech.sistema_estoque.exception.EntidadeInvalidException;
 import school.sptech.sistema_estoque.exception.EntidadeNaoExisteException;
@@ -41,7 +42,7 @@ public class AlmoxarifeService {
         if (almoxarifePort.existsByEmailAndAlmoxarifadoId(request.email(), request.idAlmoxarifado())){throw new EntidadeConflictException("Já existe um almoxarife cadastrado com esse email e id de almoxarifado");}
         Almoxarifado almoxarifado = almoxarifadoPort.findById(request.idAlmoxarifado()).orElseThrow(()-> new EntidadeNaoExisteException("Almoxarifado Não Encontrado"));
         String novaSenha = encoder.encode(request.senha());
-        Almoxarife almoxarife = new Almoxarife(null, request.nome(), request.email(), request.telefone(), novaSenha, almoxarifado);
+        Almoxarife almoxarife = new Almoxarife(null, request.nome(), request.email(), request.telefone(), novaSenha, Role.ALMOXARIFE, almoxarifado);
         return almoxarifePort.save(almoxarife);
     }
 

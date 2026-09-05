@@ -2,6 +2,7 @@ package school.sptech.sistema_estoque.dto.estoque.almoxarife;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import school.sptech.sistema_estoque.dto.estoque.almoxarifado.AlmoxarifadoResponse;
+import school.sptech.sistema_estoque.enums.Role;
 
 public class AlmoxarifeToken {
     @Schema(description = "ID do Almoxarife") Integer id;
@@ -9,6 +10,7 @@ public class AlmoxarifeToken {
     @Schema(description = "Email do Almoxarife") String email;
     @Schema(description = "Telefone do Almoxarife") String telefone;
     @Schema(description = "Almoxarifado Associado") AlmoxarifadoResponse almoxarifado;
+    @Schema(description = "Nível de Permissão") private Role role;
     @Schema(description = "Token do Almoxarife") String token;
     public AlmoxarifeToken() {
     }
@@ -56,5 +58,13 @@ public class AlmoxarifeToken {
     }
     public void setAlmoxarifado(AlmoxarifadoResponse almoxarifado) {
         this.almoxarifado = almoxarifado;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }

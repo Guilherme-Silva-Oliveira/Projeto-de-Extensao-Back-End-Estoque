@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import school.sptech.sistema_estoque.dto.estoque.almoxarifado.AlmoxarifadoRequest;
 import school.sptech.sistema_estoque.dto.estoque.almoxarifado.AlmoxarifadoResponse;
@@ -27,6 +28,7 @@ public class AlmoxarifadoController {
             @ApiResponse(responseCode = "400",description = "Corpo para Cadastro Inválido"),
             @ApiResponse(responseCode = "201",description = "Almoxarifado Cadastrado")
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<AlmoxarifadoResponse> cadastrarAlmoxarifado(@RequestBody AlmoxarifadoRequest request){
         var almoxarifado = service.cadastrarAlmoxarifado(request);
@@ -50,6 +52,7 @@ public class AlmoxarifadoController {
             @ApiResponse(responseCode = "404",description = "Nenhum Almoxarifado Encontrado"),
             @ApiResponse(responseCode = "204",description = "Almoxarifado Excluído")
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> excluirAlmoxarifado(@PathVariable Integer id){
         service.excluirAlmoxarifado(id);

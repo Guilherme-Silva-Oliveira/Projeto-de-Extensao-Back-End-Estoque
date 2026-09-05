@@ -1,17 +1,11 @@
 package school.sptech.sistema_estoque.model.estoque;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import school.sptech.sistema_estoque.enums.Role;
 
 @Entity
 @AllArgsConstructor
@@ -34,6 +28,10 @@ public class Almoxarife {
 
     @Column(name = "senha")
     private String senha;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role")
+    private Role role;
 
     @ManyToOne
     @JoinColumn(name = "almoxarifado_id")

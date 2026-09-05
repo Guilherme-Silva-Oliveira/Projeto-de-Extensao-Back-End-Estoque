@@ -32,6 +32,7 @@ public class AlmoxarifeMapper {
         a.setNome(almoxarife.getNome());
         a.setEmail(almoxarife.getEmail());
         a.setTelefone(almoxarife.getTelefone());
+        a.setRole(almoxarife.getRole());
         a.setToken(token);
         a.setAlmoxarifado(AlmoxarifadoMapper.toResponse(
                     almoxarife.getAlmoxarifado()));
@@ -48,7 +49,8 @@ public class AlmoxarifeMapper {
                 entity.getNome(),
                 entity.getEmail(),
                 entity.getTelefone(),
-                almoxarifadoResponse
+                almoxarifadoResponse,
+                entity.getRole()
         );
     }
 
@@ -58,7 +60,8 @@ public class AlmoxarifeMapper {
                 entity.getNome(),
                 entity.getEmail(),
                 entity.getTelefone(),
-                entity.getAlmoxarifado()
-        );
+                entity.getAlmoxarifado(),
+                entity.getRole()
+                );
     }
 }

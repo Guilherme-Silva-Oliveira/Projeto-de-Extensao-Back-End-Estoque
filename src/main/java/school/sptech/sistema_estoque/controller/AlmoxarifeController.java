@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import school.sptech.sistema_estoque.dto.estoque.almoxarife.*;
@@ -41,6 +42,7 @@ public class AlmoxarifeController {
             @ApiResponse(responseCode = "400",description = "Almoxarifado Não Encontrado"),
             @ApiResponse(responseCode = "201",description = "Almoxarife Cadastrado")
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<AlmoxarifeResponse> cadastrarAlmoxarife(@RequestBody AlmoxarifeRequest request){
         return ResponseEntity.status(201).body(AlmoxarifeMapper.toResponse(service.cadastrarAlmoxarife(request)));
@@ -51,6 +53,7 @@ public class AlmoxarifeController {
             @ApiResponse(responseCode = "204",description = "Nenhum Almoxarife Encontrado"),
             @ApiResponse(responseCode = "200",description = "Almoxarifes Encontrados")
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<AlmoxarifeResponse>> listarAlmoxarifes(){
         var almoxarifes = service.listarAlmoxarifes();
@@ -63,6 +66,7 @@ public class AlmoxarifeController {
             @ApiResponse(responseCode = "404",description = "Nenhum Almoxarife Encontrado"),
             @ApiResponse(responseCode = "204",description = "Almoxarife Excluído")
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> excluirAlmoxarife(@PathVariable Integer id){
         service.excluirAlmoxarife(id);
@@ -112,6 +116,7 @@ public class AlmoxarifeController {
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{id}")
     public ResponseEntity<AlmoxarifeResponse> atualizarParcial(
             @PathVariable Integer id,

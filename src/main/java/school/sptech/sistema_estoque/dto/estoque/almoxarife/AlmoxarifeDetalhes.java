@@ -1,29 +1,36 @@
 package school.sptech.sistema_estoque.dto.estoque.almoxarife;
 
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import school.sptech.sistema_estoque.enums.Role;
 
 public class AlmoxarifeDetalhes implements UserDetails {
 
   private final String nome;
   private final String email;
   private final String senha;
+  private final Role role;
 
-  public AlmoxarifeDetalhes(String nome, String email, String senha) {
+  public AlmoxarifeDetalhes(String nome, String email, String senha, Role role) {
     this.nome = nome;
     this.email = email;
     this.senha = senha;
+      this.role = role;
   }
-
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-      return Collections.emptyList();
+      String autoridade = (this.role != null) ? this.role.getRoleName() : Role.ALMOXARIFE.getRoleName();
+      return List.of(new SimpleGrantedAuthority(autoridade));
   }
 
+  public Role getRole() {
+    return role;
+  }
 
   public String getNome() {
     return nome;
@@ -38,8 +45,6 @@ public class AlmoxarifeDetalhes implements UserDetails {
   public String getUsername() {
       return this.email;
   }
-
-
 
   @Override
   public boolean isAccountNonExpired() {
@@ -60,5 +65,4 @@ public class AlmoxarifeDetalhes implements UserDetails {
   public boolean isEnabled() {
       return true;
   }
-
 }
