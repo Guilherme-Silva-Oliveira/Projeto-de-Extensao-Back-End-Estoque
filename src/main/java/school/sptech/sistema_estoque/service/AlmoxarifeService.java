@@ -69,7 +69,7 @@ public class AlmoxarifeService {
         Almoxarife almoxarife = almoxarifePort.findById(id).orElseThrow(() -> new EntidadeInvalidException("Almoxarife não encontrado"));
         if (request.nome() != null) {almoxarife.setNome(request.nome());}
         if (request.telefone() != null) {almoxarife.setTelefone(request.telefone());}
-        if (request.senha() != null) {almoxarife.setSenha(request.senha());}
+        if (request.senha() != null) {almoxarife.setSenha(encoder.encode(request.senha()));}
         if (request.idAlmoxarifado() != null) {
             Almoxarifado novoAlmoxarifado = almoxarifadoPort.findById(request.idAlmoxarifado())
                 .orElseThrow(() -> new EntidadeInvalidException("Almoxarifado não encontrado"));
