@@ -27,6 +27,4 @@ public class Material {
     private List<Limite> limites;
     @OneToMany(mappedBy = "material", cascade = CascadeType.REMOVE, orphanRemoval = true) @JsonIgnore
     private List<PedidoEntrada> pedidosEntrada;
-    @OneToMany(mappedBy = "material", cascade = CascadeType.REMOVE, orphanRemoval = true) @JsonIgnore
-    private List<CodigoBarras> codigosBarras;
 }
