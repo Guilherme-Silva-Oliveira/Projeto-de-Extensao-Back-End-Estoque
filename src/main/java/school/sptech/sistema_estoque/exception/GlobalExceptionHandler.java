@@ -41,4 +41,14 @@ public class GlobalExceptionHandler {
         erro.put("mensagem", e.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(erro);
     }
+
+    @ExceptionHandler(UsuarioBloqueadoException.class)
+    public ResponseEntity<Map<String, Object>> handleUsuarioBloqueado(UsuarioBloqueadoException e) {
+        Map<String, Object> erro = new HashMap<>();
+        erro.put("timestamp", LocalDateTime.now());
+        erro.put("status", HttpStatus.TOO_MANY_REQUESTS.value());
+        erro.put("erro", "Too Many Requests");
+        erro.put("mensagem", e.getMessage());
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(erro);
+    }
 }
