@@ -22,6 +22,7 @@ public class AutenticacaoService implements UserDetailsService {
         return new AlmoxarifeDetalhes(
                 almoxarife.getNome(),
                 almoxarife.getEmail(), 
-                almoxarife.getSenha());
+                almoxarife.getSenha(),
+                almoxarife.getRole());
     }
 }
