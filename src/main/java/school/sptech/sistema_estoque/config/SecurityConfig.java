@@ -48,7 +48,8 @@ public class SecurityConfig {
             "/swagger-resources",
             "/swagger-resources/**",
             "/v3/api-docs/**",
-            "/v1/almoxarifes/login"
+            "/v1/almoxarifes/login",
+            "/error"
     };
 
     @Bean
