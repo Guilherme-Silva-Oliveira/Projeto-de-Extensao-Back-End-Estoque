@@ -78,6 +78,18 @@ public class SolicitacaoController {
         return ResponseEntity.ok(devolucoes.stream().map(AlertaDevolucaoMapper::toResponse).toList());
     }
 
+    @Operation(summary = "Listar Todas as Solicitações Rejeitadas")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204",description = "Nenhuma Solicitação Encontrada"),
+            @ApiResponse(responseCode = "200",description = "Solicitações Encontradas")
+    })
+    @GetMapping("/rejeitadas")
+    public ResponseEntity<List<SolicitacaoResponse>> listarRejeitadas(){
+        var solicitacoes = service.listarSolicitacoesRejeitadas();
+        if (solicitacoes.isEmpty()){return ResponseEntity.noContent().build();}
+        return ResponseEntity.ok(solicitacoes.stream().map(SolicitacaoMapper::toResponse).toList());
+    }
+
     @Operation(summary = "Excluir Solicitação")
     @ApiResponses({
             @ApiResponse(responseCode = "404",description = "Nenhuma Solicitação Encontrada"),

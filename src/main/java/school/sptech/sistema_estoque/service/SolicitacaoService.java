@@ -31,6 +31,7 @@ public class SolicitacaoService {
     private final MaterialPort materialPort;
     private final ListaMaterialPort listaPort;
     private final AlertaDevolucaoPort devolucaoPort;
+    private final HistoricoPort historicoPort;
 
     public Solicitacao cadastrarSolicitacao(SolicitacaoRequest request) {
         if (request == null){throw new EntidadeInvalidException("Solicitacao Inválida");}
@@ -99,9 +100,24 @@ public class SolicitacaoService {
         return solicitacaoPort.findAll();
     }
 
+    public List<Solicitacao> listarSolicitacoesRejeitadas() {
+        List<Solicitacao> todas = solicitacaoPort.findAll();
+        List<Solicitacao> rejeitadas = new ArrayList<>();
+        for (Solicitacao s : todas) {
+            List<Optional<Historico>> historicos = historicoPort.findBySolicitacaoId(s.getId());
+            boolean temRejeitada = historicos.stream()
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .anyMatch(h -> h.getStatusSolicitacao() != null && h.getStatusSolicitacao().equals(StatusSolicitacao.REJEITADA.getDescricao()));
+            if (temRejeitada) {
+                rejeitadas.add(s);
+            }
+        }
+        return rejeitadas;
+    }
+
     public List<AlertaDevolucao> listarDevolucoes() {
-        List<AlertaDevolucao> devolucoes = devolucaoPort.findAll();
-        return devolucoes;
+        return devolucaoPort.findAll();
     }
 
     public List<ListaMaterial> listarMateriaisPorSolicitacao(Integer solicitacaoId) {
