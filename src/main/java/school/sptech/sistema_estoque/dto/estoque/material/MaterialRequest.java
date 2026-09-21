@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import java.time.LocalDate;
+
 public record MaterialRequest(
         @NotNull @Schema(description = "Fk para Categoria",example = "1") Integer idCategoria,
         @NotNull @Schema(description = "Fk para Almoxarifado",example = "1") Integer idAlmoxarifado,
@@ -11,5 +13,6 @@ public record MaterialRequest(
         @Schema(description = "Código de Barras do Material",example = "670981205") String codigoBarras,
         @NotNull @Schema(description = "Fk para Unidade de Medida",example = "1") Integer idUnidadeMedida,
         @Schema(description = "Descricao do material",example = "Papel Branco A4") String descricao,
-        @NotNull @Schema(description = "ID do Setor",example = "1") Integer setorId
+        @NotNull @Schema(description = "ID do Setor",example = "1") Integer setorId,
+        @Schema(description = "Data Vencimento",example = "17/09/2026") LocalDate dataVencimento
         ){}

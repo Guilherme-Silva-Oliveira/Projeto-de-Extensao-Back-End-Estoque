@@ -26,6 +26,6 @@ public class SolicitacaoMapper {
     }
 
     public static SolicitacaoResponse toResponse(Solicitacao entity){
-        return new SolicitacaoResponse(entity.getId(),entity.getDescricao(), entity.getDataSolicitacao(), entity.getDataParaEnvio(),entity.getAlerta());
+        return new SolicitacaoResponse(entity.getId(),entity.getDescricao(), entity.getDataSolicitacao(), entity.getDataParaEnvio(),entity.getAlerta(),entity.getMotivo().getDescricao());
     }
 }

@@ -6,11 +6,17 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import school.sptech.sistema_estoque.dto.estoque.alerta_devolucao.AlertaDevolucaoResponse;
 import school.sptech.sistema_estoque.dto.estoque.front.FrontResponse;
+import school.sptech.sistema_estoque.dto.estoque.lista_material.ListaMaterialResponse;
 import school.sptech.sistema_estoque.dto.estoque.solicitacao.DecisaoSolicitacaoDTO;
 import school.sptech.sistema_estoque.dto.estoque.solicitacao.SolicitacaoRequest;
 import school.sptech.sistema_estoque.dto.estoque.solicitacao.SolicitacaoResponse;
+import school.sptech.sistema_estoque.dto.mapper.AlertaDevolucaoMapper;
+import school.sptech.sistema_estoque.dto.mapper.ListaMaterialMapper;
 import school.sptech.sistema_estoque.dto.mapper.SolicitacaoMapper;
+import school.sptech.sistema_estoque.model.estoque.AlertaDevolucao;
+import school.sptech.sistema_estoque.model.estoque.ListaMaterial;
 import school.sptech.sistema_estoque.model.estoque.Solicitacao;
 import school.sptech.sistema_estoque.service.SolicitacaoService;
 
@@ -46,6 +52,30 @@ public class SolicitacaoController {
         var solicitacoes = service.listarSolicitacoes();
         if (solicitacoes.isEmpty()){return ResponseEntity.noContent().build();}
         return ResponseEntity.ok(solicitacoes.stream().map(SolicitacaoMapper::toResponse).toList());
+    }
+
+    @Operation(summary = "Listar Todas as Solicitações com Materiais Associados")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204",description = "Nenhuma Solicitação Encontrada"),
+            @ApiResponse(responseCode = "200",description = "Solicitações Encontradas")
+    })
+    @GetMapping("/materiais/{solicitacaoId}")
+    public ResponseEntity<List<ListaMaterialResponse>> listarSolicitacoesComMateriais(@PathVariable Integer solicitacaoId){
+        var listaMateriais = service.listarMateriaisPorSolicitacao(solicitacaoId);
+        if (listaMateriais.isEmpty()){return ResponseEntity.noContent().build();}
+        return ResponseEntity.ok(listaMateriais.stream().map(ListaMaterialMapper::toResponse).toList());
+    }
+
+    @Operation(summary = "Listar Todas as Solicitações com Devolução")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204",description = "Nenhuma Solicitação Encontrada"),
+            @ApiResponse(responseCode = "200",description = "Solicitações Encontradas")
+    })
+    @GetMapping("/devolucoes")
+    public ResponseEntity<List<AlertaDevolucaoResponse>> listarDevolucoes(){
+        var devolucoes = service.listarDevolucoes();
+        if (devolucoes.isEmpty()){return ResponseEntity.noContent().build();}
+        return ResponseEntity.ok(devolucoes.stream().map(AlertaDevolucaoMapper::toResponse).toList());
     }
 
     @Operation(summary = "Excluir Solicitação")

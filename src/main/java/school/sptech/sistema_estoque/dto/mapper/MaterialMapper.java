@@ -16,6 +16,7 @@ public class MaterialMapper {
         m.setNomeMaterial(request.nomeMaterial());
         m.setQuantidade(0);
         m.setDescricao(request.descricao());
+        m.setDataVencimento(request.dataVencimento());
         return m;
     }
 
@@ -28,7 +29,8 @@ public class MaterialMapper {
                 entity.getNomeMaterial(),
                 entity.getQuantidade(),
                 entity.getDescricao(),
-                entity.getSetorEstoque().getIdentificadorSetor()
+                entity.getSetorEstoque().getIdentificadorSetor(),
+                entity.getDataVencimento()
         );
     }
 }
