@@ -27,7 +27,8 @@ public class MaterialMapper {
                 AlmoxarifadoMapper.toResponse(entity.getAlmoxarifado()),
                 entity.getNomeMaterial(),
                 entity.getQuantidade(),
-                entity.getDescricao()
+                entity.getDescricao(),
+                entity.getSetorEstoque().getIdentificadorSetor()
         );
     }
 }

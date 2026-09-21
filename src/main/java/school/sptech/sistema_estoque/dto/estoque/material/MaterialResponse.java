@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import school.sptech.sistema_estoque.dto.estoque.almoxarifado.AlmoxarifadoResponse;
 import school.sptech.sistema_estoque.dto.estoque.categoria.CategoriaResponse;
 import school.sptech.sistema_estoque.dto.estoque.unidade_medida.UnidadeMedidaResponse;
+import school.sptech.sistema_estoque.model.estoque.SetorEstoque;
 
 public record MaterialResponse(
         @Schema(description = "ID para o Material") Integer id,
@@ -12,5 +13,6 @@ public record MaterialResponse(
         @Schema(description = "Almoxarifado Associado") AlmoxarifadoResponse almoxarifado,
         @Schema(description = "Nome do Material") String nomeMaterial,
         @Schema(description = "Quantidade de materiais") Integer quantidade,
-        @Schema(description = "Descricao do mateial") String descricao
+        @Schema(description = "Descricao do mateial") String descricao,
+        @Schema(description = "Setor de Estoque Associado") String setorEstoque
 ) {}

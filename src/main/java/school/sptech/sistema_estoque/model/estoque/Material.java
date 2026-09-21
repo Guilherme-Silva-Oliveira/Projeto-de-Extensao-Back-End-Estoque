@@ -21,6 +21,7 @@ public class Material {
     @ManyToOne private Categoria categoria;
     @ManyToOne private Almoxarifado almoxarifado;
     @ManyToOne private UnidadeMedida unidadeMedida;
+    @ManyToOne @JoinColumn(name = "setor_id") private SetorEstoque setorEstoque;
     private Integer quantidade;
 
     @OneToMany(mappedBy = "material", cascade = CascadeType.REMOVE, orphanRemoval = true) @JsonIgnore
