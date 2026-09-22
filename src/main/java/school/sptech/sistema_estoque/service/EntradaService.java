@@ -11,7 +11,6 @@ import school.sptech.sistema_estoque.exception.EntidadeNaoExisteException;
 import school.sptech.sistema_estoque.model.estoque.Fornecedor;
 import school.sptech.sistema_estoque.model.estoque.Material;
 import school.sptech.sistema_estoque.model.estoque.PedidoEntrada;
-import school.sptech.sistema_estoque.model.estoque.compound_id.PedidoEntradaId;
 import school.sptech.sistema_estoque.observer.MovimentacaoObserver;
 import school.sptech.sistema_estoque.port.FornecedorPort;
 import school.sptech.sistema_estoque.port.MaterialPort;
@@ -50,19 +49,13 @@ public class EntradaService {
     public List<PedidoEntrada> listarPedidosEntrada() {
         return pedidoEntradaPort.findAll();
     }
-    public void excluirEntrada(Integer fornecedorId, Integer materialId) {
-        PedidoEntradaId id = new PedidoEntradaId();
-        id.setFornecedor(fornecedorId);
-        id.setMaterial(materialId);
+    public void excluirEntrada(Integer id) {
         Optional<PedidoEntrada> opt = pedidoEntradaPort.findById(id);
         if (opt.isEmpty()) { throw new EntidadeNaoExisteException("Entrada não encontrada"); }
         pedidoEntradaPort.delete(opt.get());
     }
     @Transactional
-    public PedidoEntrada definirDevolucao(Integer fornecedorId, Integer materialId){
-        PedidoEntradaId id = new PedidoEntradaId();
-        id.setFornecedor(fornecedorId);
-        id.setMaterial(materialId);
+    public PedidoEntrada definirDevolucao(Integer id){
         Optional<PedidoEntrada> pedidoEntrada = pedidoEntradaPort.findById(id);
         if (pedidoEntrada.isEmpty()){
             throw new EntidadeInvalidException("PedidoEntrada nao encontrado");
