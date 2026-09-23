@@ -7,10 +7,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import school.sptech.sistema_estoque.dto.estoque.fornecedor.FornecedorRequest;
 import school.sptech.sistema_estoque.dto.estoque.fornecedor.FornecedorResponse;
+import school.sptech.sistema_estoque.dto.estoque.limite.LimiteRequest;
+import school.sptech.sistema_estoque.dto.estoque.limite.LimiteResponse;
 import school.sptech.sistema_estoque.dto.estoque.movimentacao.MovimentacaoFront;
+import school.sptech.sistema_estoque.dto.estoque.pedido_entrada.PedidoEntradaRequest;
 import school.sptech.sistema_estoque.dto.estoque.pedido_entrada.PedidoEntradaResponse;
 import school.sptech.sistema_estoque.dto.mapper.EntradaMapper;
 import school.sptech.sistema_estoque.dto.mapper.FornecedorMapper;
+import school.sptech.sistema_estoque.dto.mapper.LimiteMapper;
 import school.sptech.sistema_estoque.service.FrontendService;
 
 import java.util.List;

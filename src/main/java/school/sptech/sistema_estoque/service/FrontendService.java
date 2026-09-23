@@ -4,6 +4,8 @@ package school.sptech.sistema_estoque.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import school.sptech.sistema_estoque.dto.estoque.movimentacao.MovimentacaoFront;
+import school.sptech.sistema_estoque.dto.estoque.pedido_entrada.PedidoEntradaRequest;
+import school.sptech.sistema_estoque.dto.mapper.EntradaMapper;
 import school.sptech.sistema_estoque.dto.mapper.MovimentacaoMapper;
 import school.sptech.sistema_estoque.model.estoque.ListaMaterial;
 import school.sptech.sistema_estoque.model.estoque.PedidoEntrada;
