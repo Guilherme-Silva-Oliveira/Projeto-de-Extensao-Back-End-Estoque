@@ -12,6 +12,8 @@ public record SolicitacaoResponse(
         @Schema(description = "Descrição da Solicitação")String descricao,
         @Schema(description = "Data da Solicitação") LocalDateTime dataSolicitacao,
         @Schema(description = "Data da Solicitação") LocalDateTime dataParaEnvio,
-        @Schema(description = "Alerta") String alerta
+        @Schema(description = "Alerta") String alerta,
+        @Schema(description = "Motivo da Solicitação") String motivo
+
 ) {
 }

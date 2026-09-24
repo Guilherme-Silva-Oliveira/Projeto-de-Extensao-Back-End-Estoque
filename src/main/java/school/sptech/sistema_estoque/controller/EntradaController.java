@@ -65,15 +65,15 @@ public class EntradaController {
             @ApiResponse(responseCode = "404",description = "Nenhuma Entrada Encontrada"),
             @ApiResponse(responseCode = "204",description = "Entrada Excluída")
     })
-    @DeleteMapping("/fornecedor/{fornecedorId}/material/{materialId}")
-    public ResponseEntity<Void> excluirEntrada(@PathVariable Integer fornecedorId, @PathVariable Integer materialId){
-        service.excluirEntrada(fornecedorId, materialId);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> excluirEntrada(@PathVariable Integer id){
+        service.excluirEntrada(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/fornecedor/{fornecedorId}/material/{materialId}/devolucao")
-    public ResponseEntity<PedidoEntradaResponse> alternarStatus(@PathVariable Integer fornecedorId, @PathVariable Integer materialId) {
-    PedidoEntradaResponse response = EntradaMapper.toResponse(service.definirDevolucao(fornecedorId, materialId));
+    @PatchMapping("/fornecedor/devolucao/{id}")
+    public ResponseEntity<PedidoEntradaResponse> alternarStatus(@PathVariable Integer id) {
+    PedidoEntradaResponse response = EntradaMapper.toResponse(service.definirDevolucao(id));
     return ResponseEntity.ok(response);
 }
 }

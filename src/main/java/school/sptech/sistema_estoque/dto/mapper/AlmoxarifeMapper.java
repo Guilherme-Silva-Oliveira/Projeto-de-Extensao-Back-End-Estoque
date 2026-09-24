@@ -8,6 +8,9 @@ import school.sptech.sistema_estoque.dto.estoque.almoxarife.AlmoxarifeToken;
 import school.sptech.sistema_estoque.model.estoque.Almoxarifado;
 import school.sptech.sistema_estoque.model.estoque.Almoxarife;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 public class AlmoxarifeMapper {
     public static Almoxarife toEntity(AlmoxarifeRequest request, Almoxarifado almoxarifado) {
         Almoxarife a = new Almoxarife();
@@ -23,6 +26,9 @@ public class AlmoxarifeMapper {
         Almoxarife a = new Almoxarife();
         a.setEmail(request.email());
         a.setSenha(request.senha());
+        a.setDataCriacao(LocalDateTime.now());
+        a.setStatusUsuario(true);
+        a.setUltimoAcesso(LocalDateTime.now());
         return a;
     }
 
@@ -49,6 +55,9 @@ public class AlmoxarifeMapper {
                 entity.getNome(),
                 entity.getEmail(),
                 entity.getTelefone(),
+                entity.getDataCriacao(),
+                entity.getUltimoAcesso(),
+                entity.getStatusUsuario(),
                 almoxarifadoResponse,
                 entity.getRole()
         );
@@ -60,6 +69,9 @@ public class AlmoxarifeMapper {
                 entity.getNome(),
                 entity.getEmail(),
                 entity.getTelefone(),
+                entity.getDataCriacao(),
+                entity.getUltimoAcesso(),
+                entity.getStatusUsuario(),
                 entity.getAlmoxarifado(),
                 entity.getRole()
                 );

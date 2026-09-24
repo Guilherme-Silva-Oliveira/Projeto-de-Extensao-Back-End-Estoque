@@ -25,6 +25,7 @@ import school.sptech.sistema_estoque.model.estoque.Almoxarife;
 import school.sptech.sistema_estoque.port.AlmoxarifadoPort;
 import school.sptech.sistema_estoque.port.AlmoxarifePort;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -42,7 +43,7 @@ public class AlmoxarifeService {
         if (almoxarifePort.existsByEmailAndAlmoxarifadoId(request.email(), request.idAlmoxarifado())){throw new EntidadeConflictException("Já existe um almoxarife cadastrado com esse email e id de almoxarifado");}
         Almoxarifado almoxarifado = almoxarifadoPort.findById(request.idAlmoxarifado()).orElseThrow(()-> new EntidadeNaoExisteException("Almoxarifado Não Encontrado"));
         String novaSenha = encoder.encode(request.senha());
-        Almoxarife almoxarife = new Almoxarife(null, request.nome(), request.email(), request.telefone(), novaSenha, Role.ALMOXARIFE, almoxarifado);
+        Almoxarife almoxarife = new Almoxarife(null, request.nome(), request.email(), request.telefone(), LocalDateTime.now(), LocalDateTime.now(), true, novaSenha, Role.ALMOXARIFE, almoxarifado);
         return almoxarifePort.save(almoxarife);
     }
 
@@ -81,6 +82,11 @@ public class AlmoxarifeService {
                         .orElseThrow(() -> new ResponseStatusException(404, "Email do Almoxarife não cadastrado", null));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         final String token = gerenciadorTokenJwt.generateToken(authentication);
+
+        //Atualizar Último Acesso do Usuário
+        almoxarifeAutenticado.setUltimoAcesso(LocalDateTime.now());
+        almoxarifePort.save(almoxarifeAutenticado);
+
         return AlmoxarifeMapper.toEntity(almoxarifeAutenticado, token);
     }
 

@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -18,6 +19,7 @@ public class Material {
     private Integer id;
     private String nomeMaterial;
     private String descricao;
+    private LocalDate dataVencimento;
     @ManyToOne private Categoria categoria;
     @ManyToOne private Almoxarifado almoxarifado;
     @ManyToOne private UnidadeMedida unidadeMedida;

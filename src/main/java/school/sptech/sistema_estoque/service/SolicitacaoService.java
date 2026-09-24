@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -28,6 +29,9 @@ public class SolicitacaoService {
     private final SolicitacaoPort solicitacaoPort;
     private final MotivoPort motivoPort;
     private final MaterialPort materialPort;
+    private final ListaMaterialPort listaPort;
+    private final AlertaDevolucaoPort devolucaoPort;
+    private final HistoricoPort historicoPort;
 
     public Solicitacao cadastrarSolicitacao(SolicitacaoRequest request) {
         if (request == null){throw new EntidadeInvalidException("Solicitacao Inválida");}
@@ -94,6 +98,33 @@ public class SolicitacaoService {
 
     public List<Solicitacao> listarSolicitacoes() {
         return solicitacaoPort.findAll();
+    }
+
+    public List<Solicitacao> listarSolicitacoesRejeitadas() {
+        List<Solicitacao> todas = solicitacaoPort.findAll();
+        List<Solicitacao> rejeitadas = new ArrayList<>();
+        for (Solicitacao s : todas) {
+            List<Optional<Historico>> historicos = historicoPort.findBySolicitacaoId(s.getId());
+            boolean temRejeitada = historicos.stream()
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .anyMatch(h -> h.getStatusSolicitacao() != null && h.getStatusSolicitacao().equals(StatusSolicitacao.REJEITADA.getDescricao()));
+            if (temRejeitada) {
+                rejeitadas.add(s);
+            }
+        }
+        return rejeitadas;
+    }
+
+    public List<AlertaDevolucao> listarDevolucoes() {
+        return devolucaoPort.findAll();
+    }
+
+    public List<ListaMaterial> listarMateriaisPorSolicitacao(Integer solicitacaoId) {
+        return listaPort.findBySolicitacaoId(solicitacaoId).stream()
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
     }
 
     public void excluirSolicitacao(Integer id){
@@ -210,20 +241,24 @@ public class SolicitacaoService {
 
     public StatusSolicitacao getNextStatusParaFinalizar(Solicitacao solicitacao){
         List<Optional<ListaMaterial>> listaMaterial = solicitacaoPort.findListaBySolicitacaoId(solicitacao.getId());
-        StatusSolicitacao status = null;
         if (listaMaterial.isEmpty()) {
             throw new EntidadeInvalidException("Nenhuma Lista de Materiais Associada à esta Solicitação!!");
-        }else{
-            for (Optional<ListaMaterial> lmOpt : listaMaterial) {
-                if (lmOpt.isPresent()) {
-                    ListaMaterial lm = lmOpt.get();
-                    if (lm.getDeveDevolver()){
-                        status = StatusSolicitacao.PENDENTE_DEVOLUCAO;
-                    }
+        }
+
+        // Por padrão, se não houver itens para devolver, a solicitação pode ser finalizada.
+        StatusSolicitacao status = StatusSolicitacao.FINALIZADA;
+        for (Optional<ListaMaterial> lmOpt : listaMaterial) {
+            if (lmOpt.isPresent()) {
+                ListaMaterial lm = lmOpt.get();
+                if (lm.getDeveDevolver()){
+                    status = StatusSolicitacao.PENDENTE_DEVOLUCAO;
+                    break; // já sabemos que há devolução pendente
                 }
             }
         }
-        if (status != null){
+
+        // Só salvar alerta se houver devolução pendente
+        if (status == StatusSolicitacao.PENDENTE_DEVOLUCAO){
             solicitacaoPort.salvarAlerta(AlertaMapper.toEntity(solicitacao));
         }
         return status;

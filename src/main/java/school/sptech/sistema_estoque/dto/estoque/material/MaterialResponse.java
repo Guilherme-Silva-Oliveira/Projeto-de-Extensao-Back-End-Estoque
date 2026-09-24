@@ -6,6 +6,8 @@ import school.sptech.sistema_estoque.dto.estoque.categoria.CategoriaResponse;
 import school.sptech.sistema_estoque.dto.estoque.unidade_medida.UnidadeMedidaResponse;
 import school.sptech.sistema_estoque.model.estoque.SetorEstoque;
 
+import java.time.LocalDate;
+
 public record MaterialResponse(
         @Schema(description = "ID para o Material") Integer id,
         @Schema(description = "Categoria Associada") CategoriaResponse categoria,
@@ -14,5 +16,6 @@ public record MaterialResponse(
         @Schema(description = "Nome do Material") String nomeMaterial,
         @Schema(description = "Quantidade de materiais") Integer quantidade,
         @Schema(description = "Descricao do mateial") String descricao,
-        @Schema(description = "Setor de Estoque Associado") String setorEstoque
+        @Schema(description = "Setor de Estoque Associado") String setorEstoque,
+        @Schema(description = "Data de Vencimento") LocalDate dataVencimento
 ) {}
