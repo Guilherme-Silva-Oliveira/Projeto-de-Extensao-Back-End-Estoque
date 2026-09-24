@@ -83,5 +83,4 @@ public class MaterialController {
         MaterialMaisSolicitadoDto dto = service.buscarMaterialMaisSolicitado(dataInicio, dataFim);
         return ResponseEntity.ok(dto);
     }
-
 }

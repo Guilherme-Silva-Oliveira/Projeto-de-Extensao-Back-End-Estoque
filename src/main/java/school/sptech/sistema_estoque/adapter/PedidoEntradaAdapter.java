@@ -4,7 +4,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import school.sptech.sistema_estoque.model.estoque.PedidoEntrada;
-import school.sptech.sistema_estoque.model.estoque.compound_id.PedidoEntradaId;
 import school.sptech.sistema_estoque.port.PedidoEntradaPort;
 import school.sptech.sistema_estoque.repository.PedidoEntradaRepository;
 
@@ -25,17 +24,12 @@ public class PedidoEntradaAdapter implements PedidoEntradaPort {
     }
 
     @Override
-    public List<PedidoEntrada> findAll() {
-        return repository.findAll();
-    }
-
-    @Override
     public Page<PedidoEntrada> findAll(Pageable pageable) {
         return repository.findAll(pageable);
     }
 
     @Override
-    public Optional<PedidoEntrada> findById(PedidoEntradaId id) {
+    public Optional<PedidoEntrada> findById(Integer id) {
         return repository.findById(id);
     }
 

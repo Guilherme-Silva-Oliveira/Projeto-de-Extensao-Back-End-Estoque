@@ -5,19 +5,20 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import school.sptech.sistema_estoque.model.estoque.compound_id.PedidoEntradaId;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Getter @Setter
-@IdClass(PedidoEntradaId.class)
 public class PedidoEntrada {
 
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
     private Integer professorId;
-    @Id @ManyToOne @JoinColumn(name = "fornecedor_id")
+    @ManyToOne @JoinColumn(name = "fornecedor_id")
     private Fornecedor fornecedor;
-    @Id @ManyToOne @JoinColumn(name = "material_id")
+    @ManyToOne @JoinColumn(name = "material_id")
     private Material material;
     private Integer quantidade;
     private LocalDateTime dataEntrada;
