@@ -11,6 +11,7 @@ public interface SolicitacaoPort {
     Solicitacao save(Solicitacao solicitacao);
     Optional<Solicitacao> findByProfessorId(Integer professorId);
     List<Solicitacao> findAll();
+    Page<Solicitacao> findAll(Pageable pageable);
     Optional<Solicitacao> findById(Integer id);
     void delete(Solicitacao solicitacao);
     Historico saveHistorico (Historico historico);

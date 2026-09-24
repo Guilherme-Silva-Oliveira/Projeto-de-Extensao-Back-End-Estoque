@@ -3,18 +3,11 @@ package school.sptech.sistema_estoque.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import school.sptech.sistema_estoque.dto.estoque.fornecedor.FornecedorRequest;
-import school.sptech.sistema_estoque.dto.estoque.fornecedor.FornecedorResponse;
-import school.sptech.sistema_estoque.dto.estoque.limite.LimiteRequest;
-import school.sptech.sistema_estoque.dto.estoque.limite.LimiteResponse;
 import school.sptech.sistema_estoque.dto.estoque.movimentacao.MovimentacaoFront;
-import school.sptech.sistema_estoque.dto.estoque.pedido_entrada.PedidoEntradaRequest;
-import school.sptech.sistema_estoque.dto.estoque.pedido_entrada.PedidoEntradaResponse;
-import school.sptech.sistema_estoque.dto.mapper.EntradaMapper;
-import school.sptech.sistema_estoque.dto.mapper.FornecedorMapper;
-import school.sptech.sistema_estoque.dto.mapper.LimiteMapper;
 import school.sptech.sistema_estoque.service.FrontendService;
 
 import java.util.List;
@@ -34,8 +27,10 @@ public class FrontendController {
             @ApiResponse(responseCode = "200",description = "Movimentações Encontradas")
     })
     @GetMapping("/movimentacoes")
-    public ResponseEntity<List<MovimentacaoFront>> listarMovimentacoes(){
-        var movimentacoes = service.listarMovimentacoes();
+    public ResponseEntity<List<MovimentacaoFront>> listarMovimentacoes(
+            @PageableDefault(size = 10, page = 0) Pageable pageable
+    ) {
+        var movimentacoes = service.listarMovimentacoes(pageable);
         if (movimentacoes.isEmpty()){return ResponseEntity.noContent().build();}
         return ResponseEntity.ok(movimentacoes);
     }

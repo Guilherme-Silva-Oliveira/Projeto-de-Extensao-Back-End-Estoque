@@ -4,6 +4,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -46,10 +49,12 @@ public class MaterialController {
             @ApiResponse(responseCode = "200",description = "Materiais Encontrados")
     })
     @GetMapping
-    public ResponseEntity<List<MaterialResponse>> listarMateriais(){
-        var materiais = service.listarMateriais();
-        if (materiais.isEmpty()){return ResponseEntity.noContent().build();}
-        return ResponseEntity.ok(materiais.stream().map(MaterialMapper::toResponse).toList());
+    public ResponseEntity<Page<MaterialResponse>> listarMateriais(
+            @PageableDefault(size = 10, page = 0) Pageable pageable
+    ){
+        var page = service.listarMateriais(pageable);
+        if (page.isEmpty()){return ResponseEntity.noContent().build();}
+        return ResponseEntity.ok(page.map(MaterialMapper::toResponse));
     }
 
     @Operation(summary = "Excluir Material")

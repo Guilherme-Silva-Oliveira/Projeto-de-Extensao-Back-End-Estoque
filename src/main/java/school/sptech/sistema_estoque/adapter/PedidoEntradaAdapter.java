@@ -24,8 +24,8 @@ public class PedidoEntradaAdapter implements PedidoEntradaPort {
     }
 
     @Override
-    public List<PedidoEntrada> findAll() {
-        return repository.findAll();
+    public Page<PedidoEntrada> findAll(Pageable pageable) {
+        return repository.findAll(pageable);
     }
 
     @Override

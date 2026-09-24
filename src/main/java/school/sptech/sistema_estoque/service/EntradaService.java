@@ -46,8 +46,8 @@ public class EntradaService {
         observer.atualizar(mensagem);
         return saved;
     }
-    public List<PedidoEntrada> listarPedidosEntrada() {
-        return pedidoEntradaPort.findAll();
+    public Page<PedidoEntrada> listarPedidosEntrada(Pageable pageable) {
+        return pedidoEntradaPort.findAll(pageable);
     }
     public void excluirEntrada(Integer id) {
         Optional<PedidoEntrada> opt = pedidoEntradaPort.findById(id);

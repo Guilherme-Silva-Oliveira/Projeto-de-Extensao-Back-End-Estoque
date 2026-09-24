@@ -15,7 +15,8 @@ import school.sptech.sistema_estoque.port.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @Service
 @AllArgsConstructor
@@ -50,8 +51,8 @@ public class MaterialService {
         return salvo;
     }
 
-    public List<Material> listarMateriais(){
-        return materialPort.findAll();
+    public Page<Material> listarMateriais(Pageable pageable){
+        return materialPort.findAll(pageable);
     }
 
     public void excluirMaterial(Integer id){
