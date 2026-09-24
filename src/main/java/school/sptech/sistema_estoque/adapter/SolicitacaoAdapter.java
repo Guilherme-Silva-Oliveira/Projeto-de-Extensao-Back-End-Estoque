@@ -39,6 +39,11 @@ public class SolicitacaoAdapter implements SolicitacaoPort {
     }
 
     @Override
+    public Page<Solicitacao> findAll(Pageable pageable) {
+        return solicitacaoRepository.findAll(pageable);
+    }
+
+    @Override
     public Optional<Solicitacao> findById(Integer id) {
         return solicitacaoRepository.findById(id);
     }

@@ -2,6 +2,8 @@ package school.sptech.sistema_estoque.service;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import school.sptech.sistema_estoque.dto.estoque.front.FrontResponse;
 import school.sptech.sistema_estoque.dto.estoque.solicitacao.SolicitacaoRequest;
@@ -92,8 +94,8 @@ public class SolicitacaoService {
         return paraSalvarHistorico;
     }
 
-    public List<Solicitacao> listarSolicitacoes() {
-        return solicitacaoPort.findAll();
+    public Page<Solicitacao> listarSolicitacoes(Pageable pageable) {
+        return solicitacaoPort.findAll(pageable);
     }
 
     public void excluirSolicitacao(Integer id){

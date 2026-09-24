@@ -8,6 +8,8 @@ import school.sptech.sistema_estoque.port.MaterialPort;
 import school.sptech.sistema_estoque.repository.ListaMaterialRepository;
 import school.sptech.sistema_estoque.repository.MaterialRepository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -49,8 +51,8 @@ public class MaterialAdapter implements MaterialPort {
     }
 
     @Override
-    public List<Material> findAll() {
-        return materialRepository.findAll();
+    public Page<Material> findAll(Pageable pageable) {
+        return materialRepository.findAll(pageable);
     }
 
     @Override

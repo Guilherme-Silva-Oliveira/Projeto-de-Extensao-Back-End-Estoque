@@ -1,5 +1,7 @@
 package school.sptech.sistema_estoque.port;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import school.sptech.sistema_estoque.dto.estoque.dashboard.MaterialMaisSolicitadoDto;
 import school.sptech.sistema_estoque.model.estoque.Almoxarifado;
 import school.sptech.sistema_estoque.model.estoque.Material;
@@ -10,7 +12,7 @@ import java.util.Optional;
 
 public interface MaterialPort {
     Material save(Material material);
-    List<Material> findAll();
+    Page<Material> findAll(Pageable pageable);
     Boolean existsByNomeMaterialAndAlmoxarifadoId(String nomeMaterial, Integer idAlmoxarifado);
     Optional<Material> findById(Integer id);
     Optional<Material> findByNomeMaterial(String nome);

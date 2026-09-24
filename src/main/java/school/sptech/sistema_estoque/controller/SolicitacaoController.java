@@ -4,6 +4,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import school.sptech.sistema_estoque.dto.estoque.front.FrontResponse;
@@ -42,10 +45,12 @@ public class SolicitacaoController {
             @ApiResponse(responseCode = "200",description = "Solicitações Encontradas")
     })
     @GetMapping
-    public ResponseEntity<List<SolicitacaoResponse>> listarSolicitacoes(){
-        var solicitacoes = service.listarSolicitacoes();
+    public ResponseEntity<Page<SolicitacaoResponse>> listarSolicitacoes(
+            @PageableDefault(size = 10, page = 0) Pageable pageable
+    ){
+        var solicitacoes = service.listarSolicitacoes(pageable);
         if (solicitacoes.isEmpty()){return ResponseEntity.noContent().build();}
-        return ResponseEntity.ok(solicitacoes.stream().map(SolicitacaoMapper::toResponse).toList());
+        return ResponseEntity.ok(solicitacoes.map(SolicitacaoMapper::toResponse));
     }
 
     @Operation(summary = "Excluir Solicitação")

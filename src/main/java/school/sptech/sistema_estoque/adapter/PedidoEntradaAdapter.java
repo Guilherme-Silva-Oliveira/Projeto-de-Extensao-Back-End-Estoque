@@ -30,6 +30,11 @@ public class PedidoEntradaAdapter implements PedidoEntradaPort {
     }
 
     @Override
+    public Page<PedidoEntrada> findAll(Pageable pageable) {
+        return repository.findAll(pageable);
+    }
+
+    @Override
     public Optional<PedidoEntrada> findById(PedidoEntradaId id) {
         return repository.findById(id);
     }
