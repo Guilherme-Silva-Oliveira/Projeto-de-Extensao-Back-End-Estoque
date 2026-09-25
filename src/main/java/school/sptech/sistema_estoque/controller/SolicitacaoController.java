@@ -7,9 +7,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import school.sptech.sistema_estoque.dto.estoque.alerta_devolucao.AlertaDevolucaoResponse;
+import school.sptech.sistema_estoque.dto.estoque.dashboard.MaterialMaisSolicitadoDto;
 import school.sptech.sistema_estoque.dto.estoque.front.FrontResponse;
 import school.sptech.sistema_estoque.dto.estoque.lista_material.ListaMaterialResponse;
 import school.sptech.sistema_estoque.dto.estoque.solicitacao.DecisaoSolicitacaoDTO;
@@ -22,7 +24,9 @@ import school.sptech.sistema_estoque.model.estoque.AlertaDevolucao;
 import school.sptech.sistema_estoque.model.estoque.ListaMaterial;
 import school.sptech.sistema_estoque.model.estoque.Solicitacao;
 import school.sptech.sistema_estoque.service.SolicitacaoService;
+import school.sptech.sistema_estoque.dto.estoque.dashboard.GestaoSolicitacoesDto;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -146,5 +150,15 @@ public class SolicitacaoController {
     @GetMapping("/relatorio/{professorId}")
     public ResponseEntity<FrontResponse> gerarRelatorio(@PathVariable Integer professorId){
         return ResponseEntity.ok(service.gerarRelatorio(professorId));
+    }
+
+    @Operation(summary = "Obter as solicitações em aberto e solicitações próximas")
+    @GetMapping("/gestao-solicitacoes")
+    public ResponseEntity<GestaoSolicitacoesDto> buscarGestaoSolicitacoes(
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dataInicio,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dataFim
+    ) {
+        GestaoSolicitacoesDto dto = service.buscarGestaoSolicitacoes(dataInicio, dataFim);
+        return ResponseEntity.ok(dto);
     }
 }

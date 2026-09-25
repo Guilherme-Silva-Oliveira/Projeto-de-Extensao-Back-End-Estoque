@@ -16,12 +16,10 @@ import school.sptech.sistema_estoque.exception.EntidadeInvalidException;
 import school.sptech.sistema_estoque.exception.EntidadeNaoExisteException;
 import school.sptech.sistema_estoque.model.estoque.*;
 import school.sptech.sistema_estoque.port.*;
+import school.sptech.sistema_estoque.dto.estoque.dashboard.GestaoSolicitacoesDto;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -289,5 +287,65 @@ public class SolicitacaoService {
         List<Optional<AlertaDevolucao>> alertasOpt = solicitacaoPort.findAlertaBySolicitacaoId(solicitacao.getId());
         alertasOpt.forEach(opt -> opt.ifPresent(alerta -> alertas.add(alerta.getDescricao())));
         return new FrontResponse(solicitacao.getDescricao(),solicitacao.getDataSolicitacao(),solicitacao.getDataParaEnvio(),professor.getNome(),listaMateriaisSave,alertas);
+    }
+
+    private static final List<String> STATUS_FINALIZADORES = List.of(
+            StatusSolicitacao.REJEITADA.getDescricao(),
+            StatusSolicitacao.CANCELADA.getDescricao(),
+            StatusSolicitacao.FINALIZADA.getDescricao(),
+            StatusSolicitacao.PRAZO_EXPIRADO.getDescricao()
+    );
+
+    private static final long DIAS_PARA_PROXIMAS = 3;
+
+    public GestaoSolicitacoesDto buscarGestaoSolicitacoes(LocalDateTime dataInicio, LocalDateTime dataFim) {
+        LocalDateTime inicio = dataInicio != null ? dataInicio : LocalDateTime.now().minusMonths(1);
+        LocalDateTime fim = dataFim != null ? dataFim : LocalDateTime.now();
+        LocalDateTime agora = LocalDateTime.now();
+        LocalDateTime limiteProximas = agora.plusDays(DIAS_PARA_PROXIMAS);
+
+        long emAberto = 0;
+        long proximas = 0;
+
+        for (Solicitacao s : solicitacaoPort.findAll()) {
+            boolean dentroDoPeriodo = !s.getDataSolicitacao().isBefore(inicio) && !s.getDataSolicitacao().isAfter(fim);
+            if (!dentroDoPeriodo) {
+                continue;
+            }
+
+            String statusAtual = statusMaisRecente(s.getId());
+            if (statusAtual != null && STATUS_FINALIZADORES.contains(statusAtual)) {
+                continue;
+            }
+
+            emAberto++;
+
+            boolean temPrazoProximo = s.getDataParaEnvio() != null
+                    && !s.getDataParaEnvio().isBefore(agora)
+                    && !s.getDataParaEnvio().isAfter(limiteProximas);
+
+            if (temPrazoProximo) {
+                proximas++;
+            }
+        }
+
+        return new GestaoSolicitacoesDto(emAberto, proximas);
+    }
+
+    private String statusMaisRecente(Integer solicitacaoId) {
+        Historico maisRecente = null;
+
+        for (Optional<Historico> historicoOpt : historicoPort.findBySolicitacaoId(solicitacaoId)) {
+            if (historicoOpt.isEmpty()) {
+                continue;
+            }
+
+            Historico historico = historicoOpt.get();
+            if (maisRecente == null || historico.getDataAlteracao().isAfter(maisRecente.getDataAlteracao())) {
+                maisRecente = historico;
+            }
+        }
+
+        return maisRecente != null ? maisRecente.getStatusSolicitacao() : null;
     }
 }
