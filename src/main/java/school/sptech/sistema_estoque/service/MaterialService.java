@@ -3,6 +3,8 @@ package school.sptech.sistema_estoque.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import school.sptech.sistema_estoque.dto.estoque.dashboard.MaterialMaisSolicitadoDto;
+import school.sptech.sistema_estoque.dto.estoque.dashboard.MaterialProximoMinimoDto;
+import school.sptech.sistema_estoque.dto.estoque.dashboard.MovimentacaoMaterialDto;
 import school.sptech.sistema_estoque.dto.estoque.material.MaterialUpdateRequest;
 import school.sptech.sistema_estoque.dto.estoque.material.MaterialRequest;
 import school.sptech.sistema_estoque.dto.estoque.material.MaterialResponse;
@@ -12,20 +14,30 @@ import school.sptech.sistema_estoque.exception.EntidadeInvalidException;
 import school.sptech.sistema_estoque.exception.EntidadeNaoExisteException;
 import school.sptech.sistema_estoque.model.estoque.*;
 import school.sptech.sistema_estoque.port.*;
+import school.sptech.sistema_estoque.repository.LimiteRepository;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.*;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import school.sptech.sistema_estoque.repository.ListaMaterialRepository;
+import school.sptech.sistema_estoque.repository.MaterialQuantidadeRepository;
+import school.sptech.sistema_estoque.repository.PedidoEntradaRepository;
 
 @Service
 @AllArgsConstructor
 public class MaterialService {
-    private final MaterialPort materialPort;;
+    private static final double MARGEM_PROXIMO = 0.2; // 20% acima do mínimo já conta como "próximo"
+
+    private final MaterialPort materialPort;
     private final CategoriaPort categoriaPort;
     private final AlmoxarifadoPort almoxarifadoPort;
     private final UnidadeMedidaPort unidadeMedidaPort;
     private final SetorEstoquePort setorEstoquePort;
+    private final LimiteRepository limiteRepository;
+    private final PedidoEntradaRepository pedidoEntradaRepository;
+    private final ListaMaterialRepository listaMaterialRepository;
 
     public Material cadastrarMaterial(MaterialRequest request){
         if (request==null){throw new EntidadeInvalidException("Material Inválido");}
@@ -91,5 +103,72 @@ public class MaterialService {
                 dataInicio,
                 dataFim
         );
+    }
+
+    public List<MaterialProximoMinimoDto> buscarMateriaisProximosOuAbaixoDoMinimo() {
+        List<Limite> limitesMinimos = limiteRepository.findByTipoLimite_Tipo("MINIMO");
+        List<MaterialProximoMinimoDto> resultado = new ArrayList<>();
+
+        for (Limite limite : limitesMinimos) {
+            Material material = limite.getMaterial();
+
+            Integer minimo = parseLimite(limite.getLimite());
+            if (minimo == null) {
+                continue;
+            }
+
+            int atual = material.getQuantidade();
+            int diferenca = atual - minimo;
+            double margem = minimo * MARGEM_PROXIMO;
+
+            boolean proximoOuAbaixo = diferenca <= margem;
+
+            if (proximoOuAbaixo) {
+                resultado.add(new MaterialProximoMinimoDto(
+                        material.getNomeMaterial(),
+                        atual,
+                        minimo,
+                        diferenca
+                ));
+            }
+        }
+
+        resultado.sort(Comparator.comparingInt(MaterialProximoMinimoDto::diferenca));
+        return resultado;
+    }
+
+    private Integer parseLimite(String valor) {
+        try {
+            return Integer.parseInt(valor);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    public List<MovimentacaoMaterialDto> buscarTop10Movimentacoes() {
+        Map<String, Long> entradasPorMaterial = new HashMap<>();
+        for (MaterialQuantidadeRepository p : pedidoEntradaRepository.somarEntradasPorMaterial()) {
+            entradasPorMaterial.put(p.getNomeMaterial(), p.getTotal());
+        }
+
+        Map<String, Long> saidasPorMaterial = new HashMap<>();
+        for (MaterialQuantidadeRepository p : listaMaterialRepository.somarSaidasPorMaterial()) {
+            saidasPorMaterial.put(p.getNomeMaterial(), p.getTotal());
+        }
+
+        Set<String> todosOsMateriais = new HashSet<>();
+        todosOsMateriais.addAll(entradasPorMaterial.keySet());
+        todosOsMateriais.addAll(saidasPorMaterial.keySet());
+
+        List<MovimentacaoMaterialDto> resultado = new ArrayList<>();
+        for (String nome : todosOsMateriais) {
+            long entradas = entradasPorMaterial.getOrDefault(nome, 0L);
+            long saidas = saidasPorMaterial.getOrDefault(nome, 0L);
+            resultado.add(new MovimentacaoMaterialDto(nome, entradas, saidas));
+        }
+
+        resultado.sort((a, b) -> Long.compare(b.entradas() + b.saidas(), a.entradas() + a.saidas()));
+
+        return resultado.size() > 10 ? resultado.subList(0, 10) : resultado;
     }
 }

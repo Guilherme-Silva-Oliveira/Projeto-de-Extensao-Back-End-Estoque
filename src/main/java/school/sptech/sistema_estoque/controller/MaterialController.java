@@ -11,6 +11,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import school.sptech.sistema_estoque.dto.estoque.dashboard.MaterialMaisSolicitadoDto;
+import school.sptech.sistema_estoque.dto.estoque.dashboard.MaterialProximoMinimoDto;
+import school.sptech.sistema_estoque.dto.estoque.dashboard.MovimentacaoMaterialDto;
 import school.sptech.sistema_estoque.dto.estoque.material.MaterialUpdateRequest;
 import school.sptech.sistema_estoque.dto.estoque.material.MaterialRequest;
 import school.sptech.sistema_estoque.dto.estoque.material.MaterialResponse;
@@ -82,5 +84,17 @@ public class MaterialController {
     ) {
         MaterialMaisSolicitadoDto dto = service.buscarMaterialMaisSolicitado(dataInicio, dataFim);
         return ResponseEntity.ok(dto);
+    }
+
+    @Operation(summary = "Materiais próximos ou abaixo do estoque mínimo")
+    @GetMapping("/proximos-minimo")
+    public ResponseEntity<List<MaterialProximoMinimoDto>> materiaisProximosMinimo() {
+        return ResponseEntity.ok(service.buscarMateriaisProximosOuAbaixoDoMinimo());
+    }
+
+    @Operation(summary = "Top 10 materiais com mais movimentações (entradas e saídas)")
+    @GetMapping("/movimentacoes")
+    public ResponseEntity<List<MovimentacaoMaterialDto>> movimentacoes() {
+        return ResponseEntity.ok(service.buscarTop10Movimentacoes());
     }
 }
