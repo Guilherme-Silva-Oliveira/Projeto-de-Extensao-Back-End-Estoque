@@ -28,4 +28,9 @@ public class AlertaDevolucaoAdapter implements AlertaDevolucaoPort {
     public Optional<AlertaDevolucao> findById(Integer id) {
         return repository.findById(id);
     }
+
+    @Override
+    public void saveAlerta(AlertaDevolucao devolucao) {
+        repository.save(devolucao);
+    }
 }
