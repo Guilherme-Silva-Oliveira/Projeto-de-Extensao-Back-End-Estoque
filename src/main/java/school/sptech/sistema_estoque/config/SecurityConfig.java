@@ -49,7 +49,10 @@ public class SecurityConfig {
             "/swagger-resources/**",
             "/v3/api-docs/**",
             "/v1/almoxarifes/login",
-            "/error"
+            "/error",
+            // TODO libera endpoints de listagem para servico de alertas
+            "/v1/solicitacoes",
+            "/v1/materiais"
     };
 
     @Bean
