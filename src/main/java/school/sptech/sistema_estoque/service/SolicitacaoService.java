@@ -1,6 +1,6 @@
 package school.sptech.sistema_estoque.service;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 @AllArgsConstructor
@@ -35,93 +36,101 @@ public class SolicitacaoService {
     private final AlertaDevolucaoPort devolucaoPort;
     private final HistoricoPort historicoPort;
 
+    private static final List<String> STATUS_ENCERRADOS = List.of(
+            StatusSolicitacao.CANCELADA.getDescricao(),
+            StatusSolicitacao.FINALIZADA.getDescricao()
+    );
+
     public Solicitacao cadastrarSolicitacao(SolicitacaoRequest request) {
-        if (request == null){throw new EntidadeInvalidException("Solicitacao Inválida");}
-        Professor professor = professorPort.findById(request.idProfessor()).orElseThrow(()-> new EntidadeNaoExisteException("Professor Não Encontrado"));
-        Motivo motivo = motivoPort.findById(request.idMotivo()).orElseThrow(()-> new EntidadeNaoExisteException("Motivo Não Encontrado"));
+        if (request == null) { throw new EntidadeInvalidException("Solicitacao Inválida"); }
+        Professor professor = professorPort.findById(request.idProfessor())
+                .orElseThrow(() -> new EntidadeNaoExisteException("Professor Não Encontrado"));
+        Motivo motivo = motivoPort.findById(request.idMotivo())
+                .orElseThrow(() -> new EntidadeNaoExisteException("Motivo Não Encontrado"));
 
         List<String> listaMateriais = Arrays.asList(request.materiais().split(","));
         List<String> listaQuantidades = Arrays.asList(request.quantidade().split(","));
         List<String> listaDevolucoes = Arrays.asList(request.deveDevolver().split(","));
 
-        Solicitacao solicitacao = SolicitacaoMapper.toEntity(request, professor,motivo, request.dataSolicitacao(), StatusSolicitacao.RECEBIDA);
+        if (listaMateriais.size() != listaQuantidades.size() || listaMateriais.size() != listaDevolucoes.size()) {
+            throw new EntidadeInvalidException("Materiais, quantidades e devoluções devem ter a mesma quantidade de itens");
+        }
+
+        Solicitacao solicitacao = SolicitacaoMapper.toEntity(request, professor, motivo, request.dataSolicitacao(), StatusSolicitacao.RECEBIDA);
         Solicitacao paraSalvarHistorico = solicitacaoPort.save(solicitacao);
 
         List<String> materiaisFaltando = new ArrayList<>();
         List<Integer> quantidadesFaltando = new ArrayList<>();
-        Boolean existeFaltando = false;
+        boolean algumSuficiente = false;
+        boolean algumExato = false;
+
         for (int i = 0; i < listaMateriais.size(); i++) {
-            Material material = materialPort.findByNomeMaterial(listaMateriais.get(i)).orElseThrow(()-> new EntidadeNaoExisteException("Material Não Encontrado"));
-            ListaMaterial listaMaterial = getNovaListaMaterial(paraSalvarHistorico, Integer.valueOf(listaQuantidades.get(i)), Boolean.valueOf(listaDevolucoes.get(i)), material);
+            String nomeMaterial = listaMateriais.get(i);
+            Material material = materialPort.findByNomeMaterial(nomeMaterial)
+                    .orElseThrow(() -> new EntidadeNaoExisteException("Material Não Encontrado: " + nomeMaterial));
+
+            Integer quantidadeSolicitada = Integer.valueOf(listaQuantidades.get(i));
+            ListaMaterial listaMaterial = getNovaListaMaterial(paraSalvarHistorico, quantidadeSolicitada, Boolean.valueOf(listaDevolucoes.get(i)), material);
             solicitacaoPort.salvarLista(listaMaterial);
-            if (material.getQuantidade() < listaMaterial.getQuantidade()) {
-                Integer faltantes = listaMaterial.getQuantidade() - material.getQuantidade();
-                solicitacao.setAlerta(String.format(
-                        "%s: %s %d faltando",
-                        StatusAlertaSolicitacao.MATERIAIS_INSUFICIENTES.getDescricao(),
-                        material.getNomeMaterial(),
-                        faltantes
-                ));
+
+            if (material.getQuantidade() < quantidadeSolicitada) {
                 materiaisFaltando.add(material.getNomeMaterial());
-                quantidadesFaltando.add(faltantes);
-                existeFaltando = true;
-            } else if (material.getQuantidade() == listaMaterial.getQuantidade()) {
-                if (!existeFaltando) {
-                    solicitacao.setAlerta(String.format(
-                            "%s: Após a solicitação, o estoque ficará sem itens",
-                            StatusAlertaSolicitacao.ESTOQUE_VAZIO.getDescricao()
-                    ));
-                }
-            }else {
-                if (!existeFaltando){
-                    solicitacao.setAlerta(String.format(
-                            "%s: Material encaminhado para solicitação",
-                            StatusAlertaSolicitacao.TUDO_CERTO.getDescricao()
-                    ));
-                }
-            }
-            if (materiaisFaltando.size() > 1){
-                List<String> itens = new ArrayList<>();
-                for (int j = 0; j < materiaisFaltando.size(); j++) {
-                    itens.add(quantidadesFaltando.get(j) + " " + materiaisFaltando.get(j));
-                }
-                String alerta = String.join(", ", itens);
-                solicitacao.setAlerta(String.format(
-                        "%s: %s faltando",
-                        StatusAlertaSolicitacao.MATERIAIS_INSUFICIENTES.getDescricao(),
-                        alerta
-                ));
+                quantidadesFaltando.add(quantidadeSolicitada - material.getQuantidade());
+            } else if (material.getQuantidade().equals(quantidadeSolicitada)) {
+                algumExato = true;
+            } else {
+                algumSuficiente = true;
             }
         }
+
+        String alerta;
+        if (!materiaisFaltando.isEmpty()) {
+            String itensFaltando = IntStream.range(0, materiaisFaltando.size())
+                    .mapToObj(i -> quantidadesFaltando.get(i) + " " + materiaisFaltando.get(i))
+                    .collect(Collectors.joining(", "));
+            alerta = String.format("%s: %s faltando", StatusAlertaSolicitacao.MATERIAIS_INSUFICIENTES.getDescricao(), itensFaltando);
+        } else if (algumExato && !algumSuficiente) {
+            alerta = String.format("%s: Após a solicitação, o estoque ficará sem itens", StatusAlertaSolicitacao.ESTOQUE_VAZIO.getDescricao());
+        } else {
+            alerta = String.format("%s: Material encaminhado para solicitação", StatusAlertaSolicitacao.TUDO_CERTO.getDescricao());
+        }
+
+        solicitacao.setAlerta(alerta);
         solicitacaoPort.saveHistorico(HistoricoMapper.toEntity(paraSalvarHistorico));
         solicitacaoPort.save(paraSalvarHistorico);
         return paraSalvarHistorico;
     }
 
+
     public Page<Solicitacao> listarSolicitacoes(Pageable pageable) {
-        return solicitacaoPort.findAll(pageable);
+        return solicitacaoPort.findAtivas(STATUS_ENCERRADOS, pageable);
+    }
+
+    public Page<Solicitacao> listarFinalizadas(Pageable pageable) {
+        return solicitacaoPort.findPorStatus(StatusSolicitacao.FINALIZADA.getDescricao(), pageable);
     }
 
     public List<Solicitacao> listarSolicitacoesRejeitadas() {
         List<Solicitacao> todas = solicitacaoPort.findAll();
-        List<Solicitacao> rejeitadas = new ArrayList<>();
+        List<Solicitacao> canceladas = new ArrayList<>();
         for (Solicitacao s : todas) {
             List<Optional<Historico>> historicos = historicoPort.findBySolicitacaoId(s.getId());
-            boolean temRejeitada = historicos.stream()
+            boolean foiCancelada = historicos.stream()
                     .filter(Optional::isPresent)
                     .map(Optional::get)
-                    .anyMatch(h -> h.getStatusSolicitacao() != null && h.getStatusSolicitacao().equals(StatusSolicitacao.REJEITADA.getDescricao()));
-            if (temRejeitada) {
-                rejeitadas.add(s);
+                    .anyMatch(h -> h.getStatusSolicitacao() != null && h.getStatusSolicitacao().equals(StatusSolicitacao.CANCELADA.getDescricao()));
+            if (foiCancelada) {
+                canceladas.add(s);
             }
         }
-        return rejeitadas;
+        return canceladas;
     }
 
     public List<AlertaDevolucao> listarDevolucoes() {
         return devolucaoPort.findAll();
     }
 
+    @Transactional(readOnly = true)
     public List<ListaMaterial> listarMateriaisPorSolicitacao(Integer solicitacaoId) {
         return listaPort.findBySolicitacaoId(solicitacaoId).stream()
                 .filter(Optional::isPresent)
@@ -151,13 +160,15 @@ public class SolicitacaoService {
                 solicitacaoPort.salvarAlertaSolicitacao(getAlertaSolicitacao(solicitacao, solicitacao.getAlerta()));
                 atualizarQuantidadeMateriais(listaMaterial);
             }
-        }else {status = StatusSolicitacao.REJEITADA;}
+        }else {status = StatusSolicitacao.CANCELADA;}
         if (!historicos.isEmpty()){
             Historico historico = historicos.getFirst().orElseThrow(() -> new EntidadeInvalidException("Histórico não encontrado"));
             solicitacaoPort.saveHistorico(getNovoHistorico(historico.getSolicitacao(), status));
         }else{
             throw new EntidadeInvalidException("Nenhum Histórico Associado à esta Solicitação!!");
         }
+        solicitacao.setStatusAtual(status.getDescricao());
+        solicitacaoPort.save(solicitacao);
         return solicitacao;
     }
 
@@ -174,6 +185,8 @@ public class SolicitacaoService {
         Status statusBD = solicitacaoPort.findStatusById(status).orElseThrow(() -> new EntidadeInvalidException("Status não encontrado"));
         StatusSolicitacao statusTarget = StatusSolicitacao.valueOf(statusBD.getDescStatus());
         solicitacaoPort.saveHistorico(getNovoHistorico(solicitacao, statusTarget));
+        solicitacao.setStatusAtual(statusTarget.getDescricao());
+        solicitacaoPort.save(solicitacao);
     }
 
     @Transactional
@@ -182,9 +195,35 @@ public class SolicitacaoService {
         List<Optional<Historico>> historicos = solicitacaoPort.findBySolicitacaoId(solicitacaoId);
         if (!historicos.isEmpty()){
             Historico historico = historicos.getFirst().orElseThrow(() -> new EntidadeInvalidException("Histórico não encontrado"));
-            solicitacaoPort.saveHistorico(getNovoHistorico(historico.getSolicitacao(), getNextStatusParaFinalizar(solicitacao)));
+            StatusSolicitacao proximoStatus = getNextStatusParaFinalizar(solicitacao);
+            solicitacaoPort.saveHistorico(getNovoHistorico(historico.getSolicitacao(), proximoStatus));
+            solicitacao.setStatusAtual(proximoStatus.getDescricao());
+            solicitacaoPort.save(solicitacao);
         }else{
             throw new EntidadeInvalidException("Nenhum Histórico Associado à esta Solicitação!!");
+        }
+    }
+
+    // Reaproveita o campo "reservado" de ListaMaterial (existia na tabela mas não
+    // era usado em lugar nenhum) como marcador de "entregue" por item. Cada
+    // checkbox marcado no front corresponde a um ID real de lista_material aqui.
+    // Quando o último item pendente é entregue, finaliza a solicitação sozinha.
+    @Transactional
+    public void entregarMateriais(Integer solicitacaoId, List<Integer> listaMaterialIds) {
+        for (Integer id : listaMaterialIds) {
+            ListaMaterial item = listaPort.findById(id)
+                    .orElseThrow(() -> new EntidadeNaoExisteException("Item da lista de materiais não encontrado: " + id));
+            item.setReservado(true);
+            listaPort.save(item);
+        }
+
+        boolean todosEntregues = listaPort.findBySolicitacaoId(solicitacaoId).stream()
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .allMatch(ListaMaterial::getReservado);
+
+        if (todosEntregues) {
+            finalizarSolicitacao(solicitacaoId);
         }
     }
 
@@ -194,7 +233,10 @@ public class SolicitacaoService {
         List<Solicitacao> solicitacoes = solicitacaoPort.findAll();
         solicitacoes.forEach(solicitacao -> {
             if (solicitacao.getDataParaEnvio().isBefore(LocalDateTime.now())) {
-                solicitacaoPort.saveHistorico(getNovoHistorico(solicitacao,StatusSolicitacao.valueOf(statusExpirado.getDescStatus())));
+                StatusSolicitacao statusFinal = StatusSolicitacao.valueOf(statusExpirado.getDescStatus());
+                solicitacaoPort.saveHistorico(getNovoHistorico(solicitacao,statusFinal));
+                solicitacao.setStatusAtual(statusFinal.getDescricao());
+                solicitacaoPort.save(solicitacao);
             }
         });
     }
@@ -209,6 +251,8 @@ public class SolicitacaoService {
                     a.setDevolvido(true);
                     solicitacaoPort.salvarAlerta(a);
                     solicitacaoPort.saveHistorico(getNovoHistorico(solicitacao,StatusSolicitacao.FINALIZADA));
+                    solicitacao.setStatusAtual(StatusSolicitacao.FINALIZADA.getDescricao());
+                    solicitacaoPort.save(solicitacao);
                 }
             }
         }else {
@@ -216,6 +260,7 @@ public class SolicitacaoService {
         }
     }
 
+    @Transactional(readOnly = true)
     public FrontResponse gerarRelatorio(Integer professorId){
         Professor professor = professorPort.findById(professorId).orElseThrow(() -> new EntidadeInvalidException("Professor não encontrado"));
         Solicitacao solicitacao = solicitacaoPort.findByProfessorId(professor.getId()).orElseThrow(() -> new EntidadeInvalidException("Solicitação não encontrada"));
@@ -247,19 +292,17 @@ public class SolicitacaoService {
             throw new EntidadeInvalidException("Nenhuma Lista de Materiais Associada à esta Solicitação!!");
         }
 
-        // Por padrão, se não houver itens para devolver, a solicitação pode ser finalizada.
         StatusSolicitacao status = StatusSolicitacao.FINALIZADA;
         for (Optional<ListaMaterial> lmOpt : listaMaterial) {
             if (lmOpt.isPresent()) {
                 ListaMaterial lm = lmOpt.get();
                 if (lm.getDeveDevolver()){
                     status = StatusSolicitacao.PENDENTE_DEVOLUCAO;
-                    break; // já sabemos que há devolução pendente
+                    break;
                 }
             }
         }
 
-        // Só salvar alerta se houver devolução pendente
         if (status == StatusSolicitacao.PENDENTE_DEVOLUCAO){
             solicitacaoPort.salvarAlerta(AlertaMapper.toEntity(solicitacao));
         }

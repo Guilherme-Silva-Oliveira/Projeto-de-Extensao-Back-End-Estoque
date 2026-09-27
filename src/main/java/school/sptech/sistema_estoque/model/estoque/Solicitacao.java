@@ -25,4 +25,5 @@ public class Solicitacao {
     private LocalDateTime dataSolicitacao;
     private LocalDateTime dataParaEnvio;
     private String alerta;
+    private String statusAtual;
 }

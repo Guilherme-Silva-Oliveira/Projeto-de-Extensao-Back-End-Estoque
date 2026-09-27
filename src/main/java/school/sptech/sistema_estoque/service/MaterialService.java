@@ -2,6 +2,7 @@ package school.sptech.sistema_estoque.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import school.sptech.sistema_estoque.dto.estoque.dashboard.MaterialMaisSolicitadoDto;
 import school.sptech.sistema_estoque.dto.estoque.material.MaterialUpdateRequest;
 import school.sptech.sistema_estoque.dto.estoque.material.MaterialRequest;
@@ -21,7 +22,7 @@ import org.springframework.data.domain.Pageable;
 @Service
 @AllArgsConstructor
 public class MaterialService {
-    private final MaterialPort materialPort;;
+    private final MaterialPort materialPort;
     private final CategoriaPort categoriaPort;
     private final AlmoxarifadoPort almoxarifadoPort;
     private final UnidadeMedidaPort unidadeMedidaPort;
@@ -51,6 +52,7 @@ public class MaterialService {
         return salvo;
     }
 
+    @Transactional(readOnly = true)
     public Page<Material> listarMateriais(Pageable pageable){
         return materialPort.findAll(pageable);
     }

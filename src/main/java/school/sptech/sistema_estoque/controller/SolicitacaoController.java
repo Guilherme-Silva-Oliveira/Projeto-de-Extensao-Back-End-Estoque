@@ -45,7 +45,7 @@ public class SolicitacaoController {
         return ResponseEntity.status(201).body(SolicitacaoMapper.toResponse(service.cadastrarSolicitacao(request)));
     }
 
-    @Operation(summary = "Listar Todas as Solicitações")
+    @Operation(summary = "Listar Todas as Solicitações Ativas (exclui canceladas/reprovadas/finalizadas)")
     @ApiResponses({
             @ApiResponse(responseCode = "204",description = "Nenhuma Solicitação Encontrada"),
             @ApiResponse(responseCode = "200",description = "Solicitações Encontradas")
@@ -95,6 +95,20 @@ public class SolicitacaoController {
         return ResponseEntity.ok(solicitacoes.stream().map(SolicitacaoMapper::toResponse).toList());
     }
 
+    @Operation(summary = "Listar Todas as Solicitações Finalizadas (aceitas e já entregues/concluídas)")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204",description = "Nenhuma Solicitação Encontrada"),
+            @ApiResponse(responseCode = "200",description = "Solicitações Encontradas")
+    })
+    @GetMapping("/finalizadas")
+    public ResponseEntity<Page<SolicitacaoResponse>> listarFinalizadas(
+            @PageableDefault(size = 10, page = 0) Pageable pageable
+    ){
+        var solicitacoes = service.listarFinalizadas(pageable);
+        if (solicitacoes.isEmpty()){return ResponseEntity.noContent().build();}
+        return ResponseEntity.ok(solicitacoes.map(SolicitacaoMapper::toResponse));
+    }
+
     @Operation(summary = "Excluir Solicitação")
     @ApiResponses({
             @ApiResponse(responseCode = "404",description = "Nenhuma Solicitação Encontrada"),
@@ -108,8 +122,8 @@ public class SolicitacaoController {
 
     @PatchMapping("/{id}/decisao")
     public ResponseEntity<SolicitacaoResponse> aceitarSolicitacao(
-        @PathVariable Integer id,
-        @RequestBody DecisaoSolicitacaoDTO decisao
+            @PathVariable Integer id,
+            @RequestBody DecisaoSolicitacaoDTO decisao
     ) {
         Solicitacao resultado = service.avaliar(id, decisao.aceita());
         SolicitacaoResponse response = SolicitacaoMapper.toResponse(resultado);
@@ -118,8 +132,8 @@ public class SolicitacaoController {
 
     @PostMapping("/atualizarStatus/{solicitacaoId}/{status}")
     public ResponseEntity<Void> atualizarStatus(
-        @PathVariable Integer solicitacaoId,
-        @PathVariable Integer status
+            @PathVariable Integer solicitacaoId,
+            @PathVariable Integer status
     ) {
         service.atualizarStatus(solicitacaoId, status);
         return ResponseEntity.ok().build();

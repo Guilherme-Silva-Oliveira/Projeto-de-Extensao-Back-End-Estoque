@@ -44,6 +44,16 @@ public class SolicitacaoAdapter implements SolicitacaoPort {
     }
 
     @Override
+    public Page<Solicitacao> findAtivas(List<String> statusExcluidos, Pageable pageable) {
+        return solicitacaoRepository.findByStatusAtualNotIn(statusExcluidos, pageable);
+    }
+
+    @Override
+    public Page<Solicitacao> findPorStatus(String status, Pageable pageable) {
+        return solicitacaoRepository.findByStatusAtual(status, pageable);
+    }
+
+    @Override
     public Optional<Solicitacao> findById(Integer id) {
         return solicitacaoRepository.findById(id);
     }

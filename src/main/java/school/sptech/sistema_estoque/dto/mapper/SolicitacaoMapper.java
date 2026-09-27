@@ -22,10 +22,22 @@ public class SolicitacaoMapper {
         entity.setMotivo(motivo);
         entity.setDataParaEnvio(request.dataParaEnvio());
         entity.setAlerta(request.alerta());
+        entity.setStatusAtual(status.getDescricao());
         return entity;
     }
 
     public static SolicitacaoResponse toResponse(Solicitacao entity){
-        return new SolicitacaoResponse(entity.getId(),entity.getDescricao(), entity.getDataSolicitacao(), entity.getDataParaEnvio(),entity.getAlerta(),entity.getMotivo().getDescricao());
+        String nomeProfessor = entity.getProfessor() != null ? entity.getProfessor().getNome() : "--";
+        String descricaoMotivo = entity.getMotivo() != null ? entity.getMotivo().getDescricao() : "--";
+
+        return new SolicitacaoResponse(
+                entity.getId(),
+                nomeProfessor,
+                entity.getDescricao(),
+                entity.getDataSolicitacao(),
+                entity.getDataParaEnvio(),
+                entity.getAlerta(),
+                descricaoMotivo
+        );
     }
 }
