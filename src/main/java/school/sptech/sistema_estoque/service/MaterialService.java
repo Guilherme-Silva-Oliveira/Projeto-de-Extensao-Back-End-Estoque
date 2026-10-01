@@ -106,7 +106,8 @@ public class MaterialService {
     }
 
     public List<MaterialProximoMinimoDto> buscarMateriaisProximosOuAbaixoDoMinimo() {
-        List<Limite> limitesMinimos = limiteRepository.findByTipoLimite_Tipo("MINIMO");
+
+        List<Limite> limitesMinimos = limiteRepository.findByTipoLimite_TipoIgnoreCase("MINIMO");
         List<MaterialProximoMinimoDto> resultado = new ArrayList<>();
 
         for (Limite limite : limitesMinimos) {
