@@ -49,8 +49,11 @@ public class SecurityConfig {
             "/swagger-resources/**",
             "/v3/api-docs/**",
             "/v1/almoxarifes/login",
-            "/error",
-            // TODO libera endpoints de listagem para servico de alertas
+            "/error"
+    };
+
+
+    private static final String[] URLS_LEITURA_PUBLICA = {
             "/v1/solicitacoes",
             "/v1/materiais"
     };
@@ -58,25 +61,27 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, AutenticacaoFilter jwtAuthenticationFilter) throws Exception {
         http
-            .cors(Customizer.withDefaults())
+                .cors(Customizer.withDefaults())
 
-            // desabilita cookies para auth
-            .csrf(CsrfConfigurer<HttpSecurity>::disable)
+                // desabilita cookies para auth
+                .csrf(CsrfConfigurer<HttpSecurity>::disable)
 
-            .authorizeHttpRequests(authorize -> authorize
-                    .requestMatchers(URLS_PERMITIDAS).permitAll()
-                    .anyRequest().authenticated()
-            )
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(URLS_PERMITIDAS).permitAll()
+                        // ======= NOVO: libera só GET nesses paths, POST/PATCH/DELETE continuam exigindo login =======
+                        .requestMatchers(HttpMethod.GET, URLS_LEITURA_PUBLICA).permitAll()
+                        .anyRequest().authenticated()
+                )
 
-            // em caso de erro, chama o entry point (401/403)
-            .exceptionHandling(handling -> handling
-                    .authenticationEntryPoint(autenticacaoEntryPoint))
+                // em caso de erro, chama o entry point (401/403)
+                .exceptionHandling(handling -> handling
+                        .authenticationEntryPoint(autenticacaoEntryPoint))
 
-            // define stateless
-            .sessionManagement(management -> management
-                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                // define stateless
+                .sessionManagement(management -> management
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-            // define o filtro JWT antes de outro tipo de verificação
+        // define o filtro JWT antes de outro tipo de verificação
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
@@ -94,7 +99,7 @@ public class SecurityConfig {
         return authenticationManagerBuilder.build();
     }
 
-    // cria o filter com o gerenciador 
+    // cria o filter com o gerenciador
     @Bean
     public AutenticacaoFilter jwtAuthenticationFilterBean(GerenciadorTokenJwt jwtTokenManager) {
         return new AutenticacaoFilter(autenticacaoService, jwtTokenManager);
