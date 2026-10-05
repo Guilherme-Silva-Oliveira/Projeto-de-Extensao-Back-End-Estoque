@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -120,9 +121,18 @@ public class AlmoxarifeController {
     @PatchMapping("/{id}")
     public ResponseEntity<AlmoxarifeResponse> atualizarParcial(
             @PathVariable Integer id,
-            @RequestBody AlmoxarifeUpdateRequest request) {
+            @Valid @RequestBody AlmoxarifeUpdateRequest request) {
 
         return ResponseEntity.ok(service.atualizarParcial(id, request));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PatchMapping("/{id}/senha")
+    public ResponseEntity<Void> alterarSenha(
+            @PathVariable Integer id,
+            @Valid @RequestBody AlmoxarifeSenhaRequest request) {
+        service.alterarSenha(id, request);
+        return ResponseEntity.noContent().build();
     }
 
 }
