@@ -1,6 +1,7 @@
 package school.sptech.sistema_estoque.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -10,10 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import school.sptech.sistema_estoque.config.GerenciadorTokenJwt;
-import school.sptech.sistema_estoque.dto.estoque.almoxarife.AlmoxarifeRequest;
-import school.sptech.sistema_estoque.dto.estoque.almoxarife.AlmoxarifeResponse;
-import school.sptech.sistema_estoque.dto.estoque.almoxarife.AlmoxarifeToken;
-import school.sptech.sistema_estoque.dto.estoque.almoxarife.AlmoxarifeUpdateRequest;
+import school.sptech.sistema_estoque.dto.estoque.almoxarife.*;
 import school.sptech.sistema_estoque.dto.mapper.AlmoxarifeMapper;
 import school.sptech.sistema_estoque.enums.Role;
 import school.sptech.sistema_estoque.exception.EntidadeConflictException;
@@ -58,7 +56,6 @@ public class AlmoxarifeService {
 
 
     public AlmoxarifeToken autenticar(Almoxarife almoxarife) {
-        // 1. Verifica no cache se o e-mail atingiu o limite de tentativas (bloqueio temporário)
         if (loginAttemptService.isBlocked(almoxarife.getEmail())) {
             throw new UsuarioBloqueadoException("Conta temporariamente bloqueada por excesso de tentativas. Tente novamente mais tarde.");
         }
@@ -68,12 +65,9 @@ public class AlmoxarifeService {
 
         final Authentication authentication;
         try {
-            // Tenta validar as credenciais
             authentication = this.authenticationManager.authenticate(credentials);
-            // 2. Se as credenciais estiverem corretas, limpa o histórico de falhas do usuário
             loginAttemptService.loginSucceeded(almoxarife.getEmail());
         } catch (Exception e) {
-            // 3. Se a autenticação falhar (senha errada, etc.), incrementa as falhas no cache
             loginAttemptService.loginFailed(almoxarife.getEmail());
             throw e;
         }
@@ -83,7 +77,7 @@ public class AlmoxarifeService {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         final String token = gerenciadorTokenJwt.generateToken(authentication);
 
-        //Atualizar Último Acesso do Usuário
+        //ultimo acesso para almoxarifado
         almoxarifeAutenticado.setUltimoAcesso(LocalDateTime.now());
         almoxarifePort.save(almoxarifeAutenticado);
 
@@ -91,16 +85,51 @@ public class AlmoxarifeService {
     }
 
     public AlmoxarifeResponse atualizarParcial(Integer id, AlmoxarifeUpdateRequest request) {
-        Almoxarife almoxarife = almoxarifePort.findById(id).orElseThrow(() -> new EntidadeInvalidException("Almoxarife não encontrado"));
-        if (request.nome() != null) {almoxarife.setNome(request.nome());}
-        if (request.telefone() != null) {almoxarife.setTelefone(request.telefone());}
-        if (request.senha() != null) {almoxarife.setSenha(encoder.encode(request.senha()));}
-        if (request.idAlmoxarifado() != null) {
-            Almoxarifado novoAlmoxarifado = almoxarifadoPort.findById(request.idAlmoxarifado())
-                .orElseThrow(() -> new EntidadeInvalidException("Almoxarifado não encontrado"));
-            almoxarife.setAlmoxarifado(novoAlmoxarifado);
+        Almoxarife almoxarife = almoxarifePort.findById(id)
+                .orElseThrow(() -> new EntidadeNaoExisteException("Almoxarife não encontrado"));
+
+        if (request.nome() != null && !request.nome().isBlank()) {
+            almoxarife.setNome(request.nome());
         }
-        Almoxarife salvo = almoxarifePort.save(almoxarife);
-        return AlmoxarifeMapper.toResponse(salvo);
+
+        if (request.email() != null && !request.email().isBlank()
+                && !request.email().equalsIgnoreCase(almoxarife.getEmail())) {
+            boolean emailEmUso = almoxarifePort.findByEmail(request.email())
+                    .filter(a -> !a.getId().equals(id))
+                    .isPresent();
+            if (emailEmUso) {
+                throw new EntidadeConflictException("Já existe um almoxarife com esse e-mail");
+            }
+            almoxarife.setEmail(request.email());
+        }
+
+        if (request.telefone() != null && !request.telefone().isBlank()) {
+            almoxarife.setTelefone(request.telefone());
+        }
+
+
+        if (request.idAlmoxarifado() != null) {
+            Almoxarifado novo = almoxarifadoPort.findById(request.idAlmoxarifado())
+                    .orElseThrow(() -> new EntidadeNaoExisteException("Almoxarifado não encontrado"));
+            almoxarife.setAlmoxarifado(novo);
+        }
+
+        return AlmoxarifeMapper.toResponse(almoxarifePort.save(almoxarife));
+    }
+
+    public void alterarSenha(Integer id, AlmoxarifeSenhaRequest request) {
+        Almoxarife almoxarife = almoxarifePort.findById(id)
+                .orElseThrow(() -> new EntidadeNaoExisteException("Almoxarife não encontrado"));
+
+        if (!encoder.matches(request.senhaAntiga(), almoxarife.getSenha())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Senha antiga incorreta");
+        }
+
+        if (encoder.matches(request.senhaNova(), almoxarife.getSenha())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A nova senha deve ser diferente da antiga");
+        }
+
+        almoxarife.setSenha(encoder.encode(request.senhaNova()));
+        almoxarifePort.save(almoxarife);
     }
 }

@@ -7,7 +7,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import school.sptech.sistema_estoque.dto.estoque.limite.LimiteRequest;
+import school.sptech.sistema_estoque.dto.estoque.limite.LimiteResponse;
 import school.sptech.sistema_estoque.dto.estoque.movimentacao.MovimentacaoFront;
+import school.sptech.sistema_estoque.dto.front.AlertaParaFront;
+import school.sptech.sistema_estoque.dto.mapper.LimiteMapper;
 import school.sptech.sistema_estoque.service.FrontendService;
 
 import java.util.List;
@@ -33,5 +37,29 @@ public class FrontendController {
         var movimentacoes = service.listarMovimentacoes(pageable);
         if (movimentacoes.isEmpty()){return ResponseEntity.noContent().build();}
         return ResponseEntity.ok(movimentacoes);
+    }
+
+    @Operation(summary = "Listar Todas os Alertas de Material")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204",description = "Nenhuma Movimentação Encontrada"),
+            @ApiResponse(responseCode = "200",description = "Movimentações Encontradas")
+    })
+    @GetMapping("/alertas")
+    public ResponseEntity<List<AlertaParaFront>> listarAlertas() {
+        var alertas = service.listarAlertas();
+        if (alertas.isEmpty()){return ResponseEntity.noContent().build();}
+        return ResponseEntity.ok(alertas);
+    }
+
+    @Operation(summary = "Atualizar um Alerta")
+    @ApiResponses({
+            @ApiResponse(responseCode = "400",description = "Corpo para Cadastro Inválido"),
+            @ApiResponse(responseCode = "400",description = "Alerta Não Encontrado"),
+            @ApiResponse(responseCode = "201",description = "Alerta Atualizado")
+    })
+    @PutMapping("/alertas/{id}/{tipoAlerta}")
+    public ResponseEntity<AlertaParaFront> atualizarAlerta(@PathVariable Integer id, @PathVariable String tipoAlerta) {
+        service.atualizarAlerta(id,tipoAlerta);
+        return ResponseEntity.ok().build();
     }
 }
