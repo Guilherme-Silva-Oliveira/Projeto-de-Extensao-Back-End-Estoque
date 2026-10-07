@@ -2,8 +2,6 @@
 package school.sptech.sistema_estoque.service;
 
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import school.sptech.sistema_estoque.dto.estoque.movimentacao.MovimentacaoFront;
 import school.sptech.sistema_estoque.dto.front.AlertaParaFront;
@@ -27,16 +25,19 @@ public class FrontendService {
     private final AlertaDevolucaoPort alertaDevolucaoPort;
     private final AlertaSolicitacaoPort alertaSolicitacaoPort;
 
-    public List<MovimentacaoFront> listarMovimentacoes(Pageable pageable) {
-        Page<PedidoEntrada> entradas = entradaPort.findAll(pageable);
+    public List<MovimentacaoFront> listarMovimentacoes() {
+        List<PedidoEntrada> entradas = entradaPort.findAll();
         List<ListaMaterial> listaMateriais = listaPort.findAll();
         List<MovimentacaoFront> movimentacoes = new ArrayList<>();
+
         for (PedidoEntrada entrada : entradas) {
             movimentacoes.add(MovimentacaoMapper.fromEntradaEntity(entrada));
         }
         for (ListaMaterial material : listaMateriais) {
             movimentacoes.add(MovimentacaoMapper.fromSolicitacaotoEntity(material));
         }
+
+        movimentacoes.sort((a, b) -> b.dataMovimentacao().compareTo(a.dataMovimentacao()));
         return movimentacoes;
     }
 
