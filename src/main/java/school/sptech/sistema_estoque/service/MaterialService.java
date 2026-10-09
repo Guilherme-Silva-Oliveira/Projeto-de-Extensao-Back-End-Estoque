@@ -107,13 +107,13 @@ public class MaterialService {
 
     public List<MaterialProximoMinimoDto> buscarMateriaisProximosOuAbaixoDoMinimo() {
 
-        List<Limite> limitesMinimos = limiteRepository.findByTipoLimite_TipoIgnoreCase("MINIMO");
+        List<Limite> limitesMinimos = limiteRepository.findByDescLimite("MINIMO");
         List<MaterialProximoMinimoDto> resultado = new ArrayList<>();
 
         for (Limite limite : limitesMinimos) {
             Material material = limite.getMaterial();
 
-            Integer minimo = parseLimite(limite.getLimite());
+            Integer minimo = Integer.valueOf(String.valueOf(limite.getLimite()));
             if (minimo == null) {
                 continue;
             }
@@ -136,14 +136,6 @@ public class MaterialService {
 
         resultado.sort(Comparator.comparingInt(MaterialProximoMinimoDto::diferenca));
         return resultado;
-    }
-
-    private Integer parseLimite(String valor) {
-        try {
-            return Integer.parseInt(valor);
-        } catch (NumberFormatException e) {
-            return null;
-        }
     }
 
     public List<MovimentacaoMaterialDto> buscarTop10Movimentacoes() {

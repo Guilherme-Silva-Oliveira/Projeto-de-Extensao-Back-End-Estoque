@@ -13,10 +13,10 @@ import lombok.Setter;
 public class Limite {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String limite;
 
-    @ManyToOne @JoinColumn(name = "tipo_limite_id")
-    private TipoLimite tipoLimite;
+    private String descLimite;
+    private Double limite;
+
     @ManyToOne @JoinColumn(name = "material_id")
     private Material material;
 }
