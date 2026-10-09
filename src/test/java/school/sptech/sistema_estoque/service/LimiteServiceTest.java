@@ -13,10 +13,8 @@ import school.sptech.sistema_estoque.exception.EntidadeInvalidException;
 import school.sptech.sistema_estoque.exception.EntidadeNaoExisteException;
 import school.sptech.sistema_estoque.model.estoque.Limite;
 import school.sptech.sistema_estoque.model.estoque.Material;
-import school.sptech.sistema_estoque.model.estoque.TipoLimite;
 import school.sptech.sistema_estoque.port.LimitePort;
 import school.sptech.sistema_estoque.port.MaterialPort;
-import school.sptech.sistema_estoque.port.TipoLimitePort;
 
 import java.util.List;
 import java.util.Optional;

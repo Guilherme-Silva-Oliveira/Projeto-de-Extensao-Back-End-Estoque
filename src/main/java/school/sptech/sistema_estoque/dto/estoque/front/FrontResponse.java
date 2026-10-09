@@ -1,11 +1,6 @@
 package school.sptech.sistema_estoque.dto.estoque.front;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import school.sptech.sistema_estoque.dto.estoque.tipo_limite.TipoLimiteResponse;
-import school.sptech.sistema_estoque.model.estoque.AlertaDevolucao;
-import school.sptech.sistema_estoque.model.estoque.ListaMaterial;
-import school.sptech.sistema_estoque.model.estoque.Professor;
-import school.sptech.sistema_estoque.model.estoque.Solicitacao;
 
 import java.time.LocalDateTime;
 import java.util.List;

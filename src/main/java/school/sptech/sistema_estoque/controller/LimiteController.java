@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import school.sptech.sistema_estoque.dto.estoque.limite.LimitePatchDto;
 import school.sptech.sistema_estoque.dto.estoque.limite.LimiteRequest;
 import school.sptech.sistema_estoque.dto.estoque.limite.LimiteResponse;
-import school.sptech.sistema_estoque.dto.estoque.tipo_limite.TipoLimiteRequest;
-import school.sptech.sistema_estoque.dto.estoque.tipo_limite.TipoLimiteResponse;
 import school.sptech.sistema_estoque.dto.mapper.LimiteMapper;
 import school.sptech.sistema_estoque.service.LimiteService;
 
@@ -57,37 +55,6 @@ public class LimiteController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> excluirLimite(@PathVariable Integer id){
         service.excluirLimite(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @Operation(summary = "Cadastrar um Tipo Limite")
-    @ApiResponses({
-            @ApiResponse(responseCode = "400",description = "Corpo para Cadastro Inválido"),
-            @ApiResponse(responseCode = "201",description = "Tipo Limite Cadastrado")
-    })
-    @PostMapping("/tipos")
-    public ResponseEntity<TipoLimiteResponse> cadastrarTipoLimite(@RequestBody TipoLimiteRequest request){
-        return ResponseEntity.status(201).body(LimiteMapper.toTipoLimiteResponse(service.cadastrarTipoLimite(request)));
-    }
-
-    @Operation(summary = "Listar Todos os Tipo Limites")
-    @ApiResponses({
-            @ApiResponse(responseCode = "204",description = "Nenhum Tipo Limite Encontrado"),
-            @ApiResponse(responseCode = "200",description = "Tipo Limites Encontrados")
-    })
-    @GetMapping("/tipos")
-    public ResponseEntity<List<TipoLimiteResponse>> listarTiposLimite(){
-        return ResponseEntity.ok(service.listarTiposLimite().stream().map(LimiteMapper::toTipoLimiteResponse).toList());
-    }
-
-    @Operation(summary = "Excluir Tipo Limite")
-    @ApiResponses({
-            @ApiResponse(responseCode = "404",description = "Nenhum Tipo Limite Encontrado"),
-            @ApiResponse(responseCode = "204",description = "Tipo Limite Excluído")
-    })
-    @DeleteMapping("/tipos/{id}")
-    public ResponseEntity<Void> excluirTipoLimite(@PathVariable Integer id){
-        service.excluirTipoLimite(id);
         return ResponseEntity.noContent().build();
     }
 
