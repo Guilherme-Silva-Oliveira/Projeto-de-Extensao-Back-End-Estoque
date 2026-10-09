@@ -112,12 +112,11 @@ public class MaterialService {
 
         for (Limite limite : limitesMinimos) {
             Material material = limite.getMaterial();
-
-            Integer minimo = Integer.valueOf(String.valueOf(limite.getLimite()));
-            if (minimo == null) {
+            if (material == null || limite.getLimite() == null) {
                 continue;
             }
 
+            int minimo = limite.getLimite().intValue();
             int atual = material.getQuantidade();
             int diferenca = atual - minimo;
             double margem = minimo * MARGEM_PROXIMO;
