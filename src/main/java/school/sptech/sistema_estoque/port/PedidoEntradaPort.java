@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface PedidoEntradaPort {
     PedidoEntrada save(PedidoEntrada pedidoEntrada);
-    Page<PedidoEntrada> findAll(Pageable pageable);
+    List<PedidoEntrada> findAll();
     Optional<PedidoEntrada> findById(Integer id);
     void delete(PedidoEntrada pedidoEntrada);
     Page<PedidoEntrada> buscarApenasDevolucoes(Pageable pageable);

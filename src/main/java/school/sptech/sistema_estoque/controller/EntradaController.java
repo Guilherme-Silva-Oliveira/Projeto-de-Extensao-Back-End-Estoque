@@ -15,6 +15,7 @@ import school.sptech.sistema_estoque.dto.mapper.EntradaMapper;
 import school.sptech.sistema_estoque.service.EntradaService;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/v1/entradas")
@@ -44,12 +45,12 @@ public class EntradaController {
             @ApiResponse(responseCode = "200",description = "Entradas Encontradas")
     })
     @GetMapping
-    public ResponseEntity<Page<PedidoEntradaResponse>> listarEntradas(
+    public ResponseEntity<Stream<PedidoEntradaResponse>> listarEntradas(
             @PageableDefault(size = 10, page = 0) Pageable pageable
     ){
-        var entradas = service.listarPedidosEntrada(pageable);
+        var entradas = service.listarPedidosEntrada();
         if (entradas.isEmpty()){return ResponseEntity.noContent().build();}
-        return ResponseEntity.ok(entradas.map(EntradaMapper::toResponse));
+        return ResponseEntity.ok(entradas.stream().map(EntradaMapper::toResponse));
     }
 
     @GetMapping("/devolucoes")
