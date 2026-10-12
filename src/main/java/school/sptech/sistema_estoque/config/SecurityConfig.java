@@ -123,7 +123,8 @@ public class SecurityConfig {
         // Em produção: List.of("https://meuapp.com.br")
         configuracao.setAllowedOrigins(List.of(
                 "http://localhost:5173",  // Vite dev server
-                "http://localhost:3000"   // Create React App (alternativa)
+                "http://localhost:3000",   // Create React App (alternativa)
+                "http://localhost" // frontend pelo nginx
         ));
 
         // Necessário para que o browser envie/receba cookies nas requisições cross-origin
