@@ -44,8 +44,18 @@ public class FrontendService {
     public List<AlertaParaFront> listarAlertas() {
         List<AlertaSolicitacao> alertasSolicitacao = alertaSolicitacaoPort.findAll();
         List<AlertaDevolucao> alertasDevolucao = alertaDevolucaoPort.findAll();
+
+        if (alertasSolicitacao == null) {
+            alertasSolicitacao = new ArrayList<>();
+        }
+        if (alertasDevolucao == null) {
+            alertasDevolucao = new ArrayList<>();
+        }
         List<AlertaParaFront> alertasParaFront = new ArrayList<>();
         for (AlertaSolicitacao alerta : alertasSolicitacao) {
+            if (alerta.getSolicitacao().getAlerta() == null){
+                alerta.getSolicitacao().setAlerta(StatusAlertaSolicitacao.TUDO_CERTO.getDescricao());
+            }
             if (!alerta.getSolicitacao().getAlerta().contains(StatusAlertaSolicitacao.TUDO_CERTO.getDescricao())){
                 if (!alerta.getResolvido()){
                     alertasParaFront.add(fromAlertaSolicitacao(alerta));
