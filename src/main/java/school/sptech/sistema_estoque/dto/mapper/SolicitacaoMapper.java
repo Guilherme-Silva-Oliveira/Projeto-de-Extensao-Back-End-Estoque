@@ -37,7 +37,8 @@ public class SolicitacaoMapper {
         );
     }
 
-    public static SolicitacaoReprovadaResponse toReprovadaResponse(Solicitacao entity, LocalDateTime dataReprovacao){
+
+    public static SolicitacaoReprovadaResponse toReprovadaResponse(Solicitacao entity, LocalDateTime dataReprovacao, String motivoReprovacao){
         return new SolicitacaoReprovadaResponse(
                 entity.getId(),
                 entity.getDescricao(),
@@ -46,10 +47,10 @@ public class SolicitacaoMapper {
                 entity.getAlerta(),
                 entity.getMotivo().getDescricao(),
                 entity.getProfessor().getNome(),
-                dataReprovacao
+                dataReprovacao,
+                motivoReprovacao
         );
     }
-
 
     public static SolicitacaoFinalizadaResponse toFinalizadaResponse(Solicitacao entity, LocalDateTime dataFinalizacao){
         return new SolicitacaoFinalizadaResponse(

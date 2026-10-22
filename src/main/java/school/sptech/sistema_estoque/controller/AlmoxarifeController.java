@@ -45,7 +45,8 @@ public class AlmoxarifeController {
     })
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<AlmoxarifeResponse> cadastrarAlmoxarife(@RequestBody AlmoxarifeRequest request){
+
+    public ResponseEntity<AlmoxarifeResponse> cadastrarAlmoxarife(@Valid @RequestBody AlmoxarifeRequest request){
         return ResponseEntity.status(201).body(AlmoxarifeMapper.toResponse(service.cadastrarAlmoxarife(request)));
     }
 
@@ -78,9 +79,9 @@ public class AlmoxarifeController {
     public ResponseEntity<AlmoxarifeResponse> login(
             @RequestBody AlmoxarifeLogin loginDto,
             HttpServletResponse response) {
-        
+
         final Almoxarife almoxarife = AlmoxarifeMapper.toEntity(loginDto);
-            
+
         // gera o token internamente, para o cookie
         AlmoxarifeToken autenticado = this.service.autenticar(almoxarife);
 
@@ -109,7 +110,7 @@ public class AlmoxarifeController {
                 .secure(false)
                 .sameSite("Lax")
                 .path("/")
-                .maxAge(0)  
+                .maxAge(0)
                 .build();
 
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());

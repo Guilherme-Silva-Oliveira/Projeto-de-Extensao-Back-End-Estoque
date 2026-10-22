@@ -12,6 +12,7 @@ public record SolicitacaoReprovadaResponse(
         @Schema(description = "Alerta") String alerta,
         @Schema(description = "Motivo da Solicitação") String motivo,
         @Schema(description = "Nome do Professor") String professor,
-        @Schema(description = "Data e Hora da Reprovação") LocalDateTime dataReprovacao
+        @Schema(description = "Data e Hora da Reprovação") LocalDateTime dataReprovacao,
+        @Schema(description = "Motivo da Reprovação") String motivoReprovacao
 ) {
 }

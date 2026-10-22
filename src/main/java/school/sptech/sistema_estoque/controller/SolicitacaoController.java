@@ -14,7 +14,7 @@ import school.sptech.sistema_estoque.dto.estoque.alerta_devolucao.AlertaDevoluca
 import school.sptech.sistema_estoque.dto.estoque.front.FrontResponse;
 import school.sptech.sistema_estoque.dto.estoque.lista_material.ListaMaterialResponse;
 import school.sptech.sistema_estoque.dto.estoque.solicitacao.DecisaoSolicitacaoDTO;
-import school.sptech.sistema_estoque.dto.estoque.solicitacao.SolicitacaoFinalizadaResponse; // ======= NOVO =======
+import school.sptech.sistema_estoque.dto.estoque.solicitacao.SolicitacaoFinalizadaResponse;
 import school.sptech.sistema_estoque.dto.estoque.solicitacao.SolicitacaoReprovadaResponse;
 import school.sptech.sistema_estoque.dto.estoque.solicitacao.SolicitacaoRequest;
 import school.sptech.sistema_estoque.dto.estoque.solicitacao.SolicitacaoResponse;
@@ -75,7 +75,6 @@ public class SolicitacaoController {
         if (solicitacoes.isEmpty()){return ResponseEntity.noContent().build();}
         return ResponseEntity.ok(solicitacoes.map(SolicitacaoMapper::toResponse));
     }
-
 
     @Operation(summary = "Listar Solicitações Finalizadas")
     @ApiResponses({
@@ -138,12 +137,13 @@ public class SolicitacaoController {
         return ResponseEntity.noContent().build();
     }
 
+
     @PatchMapping("/{id}/decisao")
     public ResponseEntity<SolicitacaoResponse> aceitarSolicitacao(
             @PathVariable Integer id,
             @RequestBody DecisaoSolicitacaoDTO decisao
     ) {
-        Solicitacao resultado = service.avaliar(id, decisao.aceita());
+        Solicitacao resultado = service.avaliar(id, decisao.aceita(), decisao.motivo());
         SolicitacaoResponse response = SolicitacaoMapper.toResponse(resultado);
         return ResponseEntity.ok(response);
     }
