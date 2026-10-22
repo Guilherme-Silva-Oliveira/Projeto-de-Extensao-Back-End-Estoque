@@ -11,17 +11,16 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import school.sptech.sistema_estoque.dto.estoque.alerta_devolucao.AlertaDevolucaoResponse;
-import school.sptech.sistema_estoque.dto.estoque.dashboard.MaterialMaisSolicitadoDto;
 import school.sptech.sistema_estoque.dto.estoque.front.FrontResponse;
 import school.sptech.sistema_estoque.dto.estoque.lista_material.ListaMaterialResponse;
 import school.sptech.sistema_estoque.dto.estoque.solicitacao.DecisaoSolicitacaoDTO;
+import school.sptech.sistema_estoque.dto.estoque.solicitacao.SolicitacaoFinalizadaResponse;
+import school.sptech.sistema_estoque.dto.estoque.solicitacao.SolicitacaoReprovadaResponse;
 import school.sptech.sistema_estoque.dto.estoque.solicitacao.SolicitacaoRequest;
 import school.sptech.sistema_estoque.dto.estoque.solicitacao.SolicitacaoResponse;
 import school.sptech.sistema_estoque.dto.mapper.AlertaDevolucaoMapper;
 import school.sptech.sistema_estoque.dto.mapper.ListaMaterialMapper;
 import school.sptech.sistema_estoque.dto.mapper.SolicitacaoMapper;
-import school.sptech.sistema_estoque.model.estoque.AlertaDevolucao;
-import school.sptech.sistema_estoque.model.estoque.ListaMaterial;
 import school.sptech.sistema_estoque.model.estoque.Solicitacao;
 import school.sptech.sistema_estoque.service.SolicitacaoService;
 import school.sptech.sistema_estoque.dto.estoque.dashboard.GestaoSolicitacoesDto;
@@ -63,6 +62,34 @@ public class SolicitacaoController {
         return ResponseEntity.ok(solicitacoes.map(SolicitacaoMapper::toResponse));
     }
 
+    @Operation(summary = "Listar Solicitações em Aberto (exclui reprovadas, finalizadas, expiradas e pendentes de devolução)")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204",description = "Nenhuma Solicitação Encontrada"),
+            @ApiResponse(responseCode = "200",description = "Solicitações Encontradas")
+    })
+    @GetMapping("/abertas")
+    public ResponseEntity<Page<SolicitacaoResponse>> listarAbertas(
+            @PageableDefault(size = 10, page = 0) Pageable pageable
+    ){
+        var solicitacoes = service.listarAbertas(pageable);
+        if (solicitacoes.isEmpty()){return ResponseEntity.noContent().build();}
+        return ResponseEntity.ok(solicitacoes.map(SolicitacaoMapper::toResponse));
+    }
+
+    @Operation(summary = "Listar Solicitações Finalizadas")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204",description = "Nenhuma Solicitação Encontrada"),
+            @ApiResponse(responseCode = "200",description = "Solicitações Encontradas")
+    })
+    @GetMapping("/finalizadas")
+    public ResponseEntity<Page<SolicitacaoFinalizadaResponse>> listarFinalizadas(
+            @PageableDefault(size = 10, page = 0) Pageable pageable
+    ){
+        var solicitacoes = service.listarFinalizadas(pageable);
+        if (solicitacoes.isEmpty()){return ResponseEntity.noContent().build();}
+        return ResponseEntity.ok(solicitacoes);
+    }
+
     @Operation(summary = "Listar Todas as Solicitações com Materiais Associados")
     @ApiResponses({
             @ApiResponse(responseCode = "204",description = "Nenhuma Solicitação Encontrada"),
@@ -93,10 +120,10 @@ public class SolicitacaoController {
             @ApiResponse(responseCode = "200",description = "Solicitações Encontradas")
     })
     @GetMapping("/rejeitadas")
-    public ResponseEntity<List<SolicitacaoResponse>> listarRejeitadas(){
+    public ResponseEntity<List<SolicitacaoReprovadaResponse>> listarRejeitadas(){
         var solicitacoes = service.listarSolicitacoesRejeitadas();
         if (solicitacoes.isEmpty()){return ResponseEntity.noContent().build();}
-        return ResponseEntity.ok(solicitacoes.stream().map(SolicitacaoMapper::toResponse).toList());
+        return ResponseEntity.ok(solicitacoes);
     }
 
     @Operation(summary = "Excluir Solicitação")
@@ -110,20 +137,21 @@ public class SolicitacaoController {
         return ResponseEntity.noContent().build();
     }
 
+
     @PatchMapping("/{id}/decisao")
     public ResponseEntity<SolicitacaoResponse> aceitarSolicitacao(
-        @PathVariable Integer id,
-        @RequestBody DecisaoSolicitacaoDTO decisao
+            @PathVariable Integer id,
+            @RequestBody DecisaoSolicitacaoDTO decisao
     ) {
-        Solicitacao resultado = service.avaliar(id, decisao.aceita());
+        Solicitacao resultado = service.avaliar(id, decisao.aceita(), decisao.motivo());
         SolicitacaoResponse response = SolicitacaoMapper.toResponse(resultado);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/atualizarStatus/{solicitacaoId}/{status}")
     public ResponseEntity<Void> atualizarStatus(
-        @PathVariable Integer solicitacaoId,
-        @PathVariable Integer status
+            @PathVariable Integer solicitacaoId,
+            @PathVariable Integer status
     ) {
         service.atualizarStatus(solicitacaoId, status);
         return ResponseEntity.ok().build();

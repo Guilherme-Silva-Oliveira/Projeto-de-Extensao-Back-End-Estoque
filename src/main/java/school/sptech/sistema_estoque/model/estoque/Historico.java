@@ -20,4 +20,6 @@ public class Historico {
     private Solicitacao solicitacao;
     private LocalDateTime dataAlteracao;
     private String statusSolicitacao;
+    @Column(name = "motivo_reprovacao", length = 500)
+    private String motivoReprovacao;
 }

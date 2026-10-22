@@ -1,0 +1,17 @@
+package school.sptech.sistema_estoque.dto.estoque.solicitacao;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+
+import java.time.LocalDateTime;
+
+public record SolicitacaoFinalizadaResponse(
+        @Schema(description = "ID da Solicitação") Integer id,
+        @Schema(description = "Descrição da Solicitação") String descricao,
+        @Schema(description = "Data da Solicitação") LocalDateTime dataSolicitacao,
+        @Schema(description = "Data Prevista para Envio") LocalDateTime dataParaEnvio,
+        @Schema(description = "Alerta") String alerta,
+        @Schema(description = "Motivo da Solicitação") String motivo,
+        @Schema(description = "Nome do Professor") String professor,
+        @Schema(description = "Data e Hora da Finalização") LocalDateTime dataFinalizacao
+) {
+}

@@ -6,7 +6,9 @@ import jakarta.validation.constraints.NotNull;
 public record DecisaoSolicitacaoDTO(
         @NotNull(message = "A decisão deve ser informada (true para aceitar, false para recusar)")
         @Schema(description = "Identificador de aprovacao")
-        Boolean aceita
+        Boolean aceita,
+        @Schema(description = "Motivo da reprovação (obrigatório quando aceita = false)")
+        String motivo
 ) {
 
 }

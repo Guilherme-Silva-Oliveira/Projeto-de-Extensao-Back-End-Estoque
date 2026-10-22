@@ -3,9 +3,12 @@ package school.sptech.sistema_estoque.service;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import school.sptech.sistema_estoque.dto.estoque.front.FrontResponse;
+import school.sptech.sistema_estoque.dto.estoque.solicitacao.SolicitacaoFinalizadaResponse;
+import school.sptech.sistema_estoque.dto.estoque.solicitacao.SolicitacaoReprovadaResponse;
 import school.sptech.sistema_estoque.dto.estoque.solicitacao.SolicitacaoRequest;
 import school.sptech.sistema_estoque.dto.mapper.AlertaMapper;
 import school.sptech.sistema_estoque.dto.mapper.HistoricoMapper;
@@ -100,18 +103,52 @@ public class SolicitacaoService {
         return solicitacaoPort.findAll(pageable);
     }
 
-    public List<Solicitacao> listarSolicitacoesRejeitadas() {
-        List<Solicitacao> todas = solicitacaoPort.findAll();
-        List<Solicitacao> rejeitadas = new ArrayList<>();
-        for (Solicitacao s : todas) {
-            List<Optional<Historico>> historicos = historicoPort.findBySolicitacaoId(s.getId());
-            boolean temRejeitada = historicos.stream()
+    public Page<Solicitacao> listarAbertas(Pageable pageable) {
+        List<Solicitacao> abertas = solicitacaoPort.findAll().stream()
+                .filter(s -> estaEmAberto(s.getId()))
+                .toList();
+        return paginar(abertas, pageable);
+    }
+
+    public Page<SolicitacaoFinalizadaResponse> listarFinalizadas(Pageable pageable) {
+        List<SolicitacaoFinalizadaResponse> finalizadas = new ArrayList<>();
+        for (Solicitacao s : solicitacaoPort.findAll()) {
+            Optional<Historico> ultimo = historicoMaisRecente(s.getId());
+            if (ultimo.isPresent()
+                    && StatusSolicitacao.FINALIZADA.getDescricao().equals(ultimo.get().getStatusSolicitacao())) {
+                finalizadas.add(SolicitacaoMapper.toFinalizadaResponse(s, ultimo.get().getDataAlteracao()));
+            }
+        }
+        finalizadas.sort(Comparator.comparing(SolicitacaoFinalizadaResponse::dataFinalizacao).reversed());
+        return paginar(finalizadas, pageable);
+    }
+
+    private boolean estaEmAberto(Integer solicitacaoId) {
+        String status = statusMaisRecente(solicitacaoId);
+        return status == null || !STATUS_FORA_DE_ABERTAS.contains(status);
+    }
+
+    private <T> Page<T> paginar(List<T> lista, Pageable pageable) {
+        int inicio = (int) pageable.getOffset();
+        if (inicio >= lista.size()) {
+            return new PageImpl<>(List.of(), pageable, lista.size());
+        }
+        int fim = Math.min(inicio + pageable.getPageSize(), lista.size());
+        return new PageImpl<>(lista.subList(inicio, fim), pageable, lista.size());
+    }
+
+
+    public List<SolicitacaoReprovadaResponse> listarSolicitacoesRejeitadas() {
+        List<SolicitacaoReprovadaResponse> rejeitadas = new ArrayList<>();
+        for (Solicitacao s : solicitacaoPort.findAll()) {
+            Optional<Historico> reprovacao = historicoPort.findBySolicitacaoId(s.getId()).stream()
                     .filter(Optional::isPresent)
                     .map(Optional::get)
-                    .anyMatch(h -> h.getStatusSolicitacao() != null && h.getStatusSolicitacao().equals(StatusSolicitacao.REJEITADA.getDescricao()));
-            if (temRejeitada) {
-                rejeitadas.add(s);
-            }
+                    .filter(h -> h.getStatusSolicitacao() != null
+                            && h.getStatusSolicitacao().equals(StatusSolicitacao.REJEITADA.getDescricao()))
+                    .max(Comparator.comparing(Historico::getDataAlteracao));
+            reprovacao.ifPresent(h -> rejeitadas.add(
+                    SolicitacaoMapper.toReprovadaResponse(s, h.getDataAlteracao(), h.getMotivoReprovacao())));
         }
         return rejeitadas;
     }
@@ -132,12 +169,22 @@ public class SolicitacaoService {
         solicitacaoPort.delete(solicitacao);
     }
 
+
     @Transactional
-    public Solicitacao avaliar(Integer id, Boolean novaDecisao) {
+    public Solicitacao avaliar(Integer id, Boolean novaDecisao, String motivo) {
         Solicitacao solicitacao = solicitacaoPort.findById(id).orElseThrow(() -> new EntidadeInvalidException("Solicitação não encontrada"));
         List<Optional<Historico>> historicos = solicitacaoPort.findBySolicitacaoId(id);
         List<Optional<ListaMaterial>> listaMaterial = solicitacaoPort.findListaBySolicitacaoId(solicitacao.getId());
         if (listaMaterial.isEmpty()){throw new EntidadeInvalidException("Nenhum Material Associado à esta Solicitação!!");}
+
+        String motivoReprovacao = null;
+        if (!novaDecisao) {
+            if (motivo == null || motivo.isBlank()) {
+                throw new EntidadeInvalidException("Informe o motivo da reprovação");
+            }
+            motivoReprovacao = motivo.trim();
+        }
+
         StatusSolicitacao status = null;
         if (novaDecisao){
             status = StatusSolicitacao.ACEITA;
@@ -152,7 +199,7 @@ public class SolicitacaoService {
         }else {status = StatusSolicitacao.REJEITADA;}
         if (!historicos.isEmpty()){
             Historico historico = historicos.getFirst().orElseThrow(() -> new EntidadeInvalidException("Histórico não encontrado"));
-            solicitacaoPort.saveHistorico(getNovoHistorico(historico.getSolicitacao(), status));
+            solicitacaoPort.saveHistorico(getNovoHistorico(historico.getSolicitacao(), status, motivoReprovacao));
         }else{
             throw new EntidadeInvalidException("Nenhum Histórico Associado à esta Solicitação!!");
         }
@@ -160,10 +207,15 @@ public class SolicitacaoService {
     }
 
     public Historico getNovoHistorico(Solicitacao solicitacao, StatusSolicitacao status){
+        return getNovoHistorico(solicitacao, status, null);
+    }
+
+    public Historico getNovoHistorico(Solicitacao solicitacao, StatusSolicitacao status, String motivoReprovacao){
         Historico h = new Historico();
         h.setSolicitacao(solicitacao);
         h.setDataAlteracao(LocalDateTime.now());
         h.setStatusSolicitacao(status.getDescricao());
+        h.setMotivoReprovacao(motivoReprovacao);
         return h;
     }
 
@@ -245,19 +297,17 @@ public class SolicitacaoService {
             throw new EntidadeInvalidException("Nenhuma Lista de Materiais Associada à esta Solicitação!!");
         }
 
-        // Por padrão, se não houver itens para devolver, a solicitação pode ser finalizada.
         StatusSolicitacao status = StatusSolicitacao.FINALIZADA;
         for (Optional<ListaMaterial> lmOpt : listaMaterial) {
             if (lmOpt.isPresent()) {
                 ListaMaterial lm = lmOpt.get();
                 if (lm.getDeveDevolver()){
                     status = StatusSolicitacao.PENDENTE_DEVOLUCAO;
-                    break; // já sabemos que há devolução pendente
+                    break;
                 }
             }
         }
 
-        // Só salvar alerta se houver devolução pendente
         if (status == StatusSolicitacao.PENDENTE_DEVOLUCAO){
             solicitacaoPort.salvarAlerta(AlertaMapper.toEntity(solicitacao));
         }
@@ -296,6 +346,14 @@ public class SolicitacaoService {
             StatusSolicitacao.PRAZO_EXPIRADO.getDescricao()
     );
 
+    private static final List<String> STATUS_FORA_DE_ABERTAS = List.of(
+            StatusSolicitacao.REJEITADA.getDescricao(),
+            StatusSolicitacao.CANCELADA.getDescricao(),
+            StatusSolicitacao.FINALIZADA.getDescricao(),
+            StatusSolicitacao.PRAZO_EXPIRADO.getDescricao(),
+            StatusSolicitacao.PENDENTE_DEVOLUCAO.getDescricao()
+    );
+
     private static final long DIAS_PARA_PROXIMAS = 3;
 
     public GestaoSolicitacoesDto buscarGestaoSolicitacoes(LocalDateTime dataInicio, LocalDateTime dataFim) {
@@ -332,7 +390,7 @@ public class SolicitacaoService {
         return new GestaoSolicitacoesDto(emAberto, proximas);
     }
 
-    private String statusMaisRecente(Integer solicitacaoId) {
+    private Optional<Historico> historicoMaisRecente(Integer solicitacaoId) {
         Historico maisRecente = null;
 
         for (Optional<Historico> historicoOpt : historicoPort.findBySolicitacaoId(solicitacaoId)) {
@@ -341,11 +399,20 @@ public class SolicitacaoService {
             }
 
             Historico historico = historicoOpt.get();
-            if (maisRecente == null || historico.getDataAlteracao().isAfter(maisRecente.getDataAlteracao())) {
+            if (maisRecente == null
+                    || historico.getDataAlteracao().isAfter(maisRecente.getDataAlteracao())
+                    || (historico.getDataAlteracao().isEqual(maisRecente.getDataAlteracao())
+                    && historico.getId() > maisRecente.getId())) {
                 maisRecente = historico;
             }
         }
 
-        return maisRecente != null ? maisRecente.getStatusSolicitacao() : null;
+        return Optional.ofNullable(maisRecente);
+    }
+
+    private String statusMaisRecente(Integer solicitacaoId) {
+        return historicoMaisRecente(solicitacaoId)
+                .map(Historico::getStatusSolicitacao)
+                .orElse(null);
     }
 }
