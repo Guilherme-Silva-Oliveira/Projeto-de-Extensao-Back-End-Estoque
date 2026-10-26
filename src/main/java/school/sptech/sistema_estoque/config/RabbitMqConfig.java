@@ -40,7 +40,7 @@ public class RabbitMqConfig {
         return BindingBuilder
             .bind(queue)
             .to(directExchange)
-            .with(properties.queueName());
+            .with(properties.routingKeyName());
     }
 
     @Bean
