@@ -24,5 +24,6 @@ public class AlertasService {
         Solicitacao solicitacao = solicitacaoPort.findById(mensagem.referenciaId()).orElseThrow(()-> new EntidadeNaoExisteException("Solicitacao Não Encontrada"));
         a.setSolicitacao(solicitacao);
         alertaVerificacaoPort.saveAlerta(a);
+        System.out.println("Alerta Salvo");
     }
 }

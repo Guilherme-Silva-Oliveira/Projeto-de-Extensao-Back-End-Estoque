@@ -18,7 +18,7 @@ public class LimiteMapper {
                 entity.getId(),
                 entity.getDescLimite(),
                 entity.getLimite(),
-                entity.getMaterial()
+                MaterialMapper.toResponse(entity.getMaterial())
         );
     }
 }

@@ -49,7 +49,9 @@ public class SecurityConfig {
             "/swagger-resources/**",
             "/v3/api-docs/**",
             "/v1/almoxarifes/login",
-            "/error"
+            "/error",
+            "/v1/limites",
+            "/v1/solicitacoes/devolucoes"
     };
 
 
