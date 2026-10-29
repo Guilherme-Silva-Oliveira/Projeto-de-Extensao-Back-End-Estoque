@@ -3,6 +3,7 @@ package school.sptech.sistema_estoque.config;
 import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -118,16 +119,12 @@ public class SecurityConfig {
 
     // configuracao do CORS
     @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
+    public CorsConfigurationSource corsConfigurationSource(@Value("${cors.allowed.origins}") List<String> allowedOrigins) {
         CorsConfiguration configuracao = new CorsConfiguration();
 
         // Origens permitidas — deve ser explícita quando allowCredentials=true
         // Em produção: List.of("https://meuapp.com.br")
-        configuracao.setAllowedOrigins(List.of(
-                "http://localhost:5173",  // Vite dev server
-                "http://localhost:3000",   // Create React App (alternativa)
-                "http://localhost" // frontend pelo nginx
-        ));
+        configuracao.setAllowedOrigins(allowedOrigins);
 
         // Necessário para que o browser envie/receba cookies nas requisições cross-origin
         configuracao.setAllowCredentials(true);
