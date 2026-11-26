@@ -21,4 +21,4 @@ jobs:
         uses: docker/build-push-action@v7
         with:
           push: true
-          tags: pedrogiraldi/sax-alertas:${{ github.sha }}
+          tags: pedrogiraldi/sax-back:${{ github.sha }}
