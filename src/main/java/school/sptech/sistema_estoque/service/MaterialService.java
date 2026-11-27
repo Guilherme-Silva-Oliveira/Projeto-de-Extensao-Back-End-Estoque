@@ -77,6 +77,7 @@ public class MaterialService {
         if (request.nomeMaterial() != null) {material.setNomeMaterial(request.nomeMaterial());}
         if (request.quantidade() != null) {material.setQuantidade(request.quantidade());}
         if (request.descricao() != null) {material.setDescricao(request.descricao());}
+        if (request.dataVencimento() != null){material.setDataVencimento(request.dataVencimento());}
         Material salvo = materialPort.save(material);
         return MaterialMapper.toResponse(salvo);
     }

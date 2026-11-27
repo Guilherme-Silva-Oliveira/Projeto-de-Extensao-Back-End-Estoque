@@ -11,3 +11,6 @@ JWT_SECRET=RXhpc3RlIHVtYSB0ZW9yaWEgcXVlIGRpeiBxdWUsIHNlIHVtIGRpYSBhbGd16W0gZGVzY
 
 # Integração Externa
 CLASSAPP_TOKEN=05dba18e4056626ca29a
+
+# Redis
+Subir Container: docker run -d --name redis-sax -p 6379:6379 redis:latest

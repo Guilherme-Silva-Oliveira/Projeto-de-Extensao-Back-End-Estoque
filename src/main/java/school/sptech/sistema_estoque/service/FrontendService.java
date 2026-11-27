@@ -6,14 +6,14 @@ import org.springframework.stereotype.Service;
 import school.sptech.sistema_estoque.dto.estoque.movimentacao.MovimentacaoFront;
 import school.sptech.sistema_estoque.dto.front.AlertaParaFront;
 import school.sptech.sistema_estoque.dto.mapper.MovimentacaoMapper;
+import school.sptech.sistema_estoque.dto.mq.AlertaVerificacao;
 import school.sptech.sistema_estoque.enums.StatusAlertaSolicitacao;
 import school.sptech.sistema_estoque.exception.EntidadeNaoExisteException;
 import school.sptech.sistema_estoque.model.estoque.*;
-import school.sptech.sistema_estoque.port.AlertaDevolucaoPort;
-import school.sptech.sistema_estoque.port.AlertaSolicitacaoPort;
-import school.sptech.sistema_estoque.port.ListaMaterialPort;
-import school.sptech.sistema_estoque.port.PedidoEntradaPort;
+import school.sptech.sistema_estoque.port.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +24,7 @@ public class FrontendService {
     private final ListaMaterialPort listaPort;
     private final AlertaDevolucaoPort alertaDevolucaoPort;
     private final AlertaSolicitacaoPort alertaSolicitacaoPort;
+    private final AlertaVerificacaoPort alertaVerificacaoPort;
 
     public List<MovimentacaoFront> listarMovimentacoes() {
         List<PedidoEntrada> entradas = entradaPort.findAll();
@@ -51,6 +52,7 @@ public class FrontendService {
         if (alertasDevolucao == null) {
             alertasDevolucao = new ArrayList<>();
         }
+
         List<AlertaParaFront> alertasParaFront = new ArrayList<>();
         for (AlertaSolicitacao alerta : alertasSolicitacao) {
             if (alerta.getSolicitacao().getAlerta() == null){
@@ -67,7 +69,19 @@ public class FrontendService {
                 alertasParaFront.add(fromAlertaDevolucao(alerta));
             }
         }
+
         return alertasParaFront;
+    }
+
+    public List<AlertaVerificacao> listarAlertasVerificacao(){
+        List<AlertaVerificacao> alertas = alertaVerificacaoPort.findAll();
+        List<AlertaVerificacao> toExibir = new ArrayList<>();
+        for (AlertaVerificacao alerta : alertas) {
+            if (alerta.getDataCriacao().toLocalDate().equals(LocalDateTime.now().toLocalDate())) {
+                toExibir.add(alerta);
+            }
+        }
+        return toExibir;
     }
 
     public AlertaParaFront fromAlertaSolicitacao(AlertaSolicitacao alerta){

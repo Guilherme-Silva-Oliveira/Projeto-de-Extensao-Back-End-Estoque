@@ -10,6 +10,7 @@ import school.sptech.sistema_estoque.dto.estoque.limite.LimiteResponse;
 import school.sptech.sistema_estoque.dto.estoque.movimentacao.MovimentacaoFront;
 import school.sptech.sistema_estoque.dto.front.AlertaParaFront;
 import school.sptech.sistema_estoque.dto.mapper.LimiteMapper;
+import school.sptech.sistema_estoque.dto.mq.AlertaVerificacao;
 import school.sptech.sistema_estoque.service.FrontendService;
 
 import java.util.List;
@@ -43,6 +44,18 @@ public class FrontendController {
     @GetMapping("/alertas")
     public ResponseEntity<List<AlertaParaFront>> listarAlertas() {
         var alertas = service.listarAlertas();
+        if (alertas.isEmpty()){return ResponseEntity.noContent().build();}
+        return ResponseEntity.ok(alertas);
+    }
+
+    @Operation(summary = "Listar Todas os Alertas de Verificação")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204",description = "Nenhum Alerta Encontrado"),
+            @ApiResponse(responseCode = "200",description = "Alertas Encontrados")
+    })
+    @GetMapping("/alertas-verificacao")
+    public ResponseEntity<List<AlertaVerificacao>> listarAlertasVerificacao() {
+        var alertas = service.listarAlertasVerificacao();
         if (alertas.isEmpty()){return ResponseEntity.noContent().build();}
         return ResponseEntity.ok(alertas);
     }
